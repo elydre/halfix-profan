@@ -375,7 +375,7 @@ static void fninit(void)
 
 static inline int fpu_nm_check(void)
 {
-    if (cpu.cr[0] & (CR0_EM | CR0_TS))
+    if (cpu->cr[0] & (CR0_EM | CR0_TS))
         EXCEPTION_NM();
     return 0;
 }
@@ -449,7 +449,7 @@ static void fpu_update_pointers(uint32_t opcode)
 {
     //if (VIRT_EIP() == 0x759783bb)
     //    __asm__("int3");
-    fpu.fpu_cs = cpu.seg[CS];
+    fpu.fpu_cs = cpu->seg[CS];
     fpu.fpu_eip = VIRT_EIP();
     fpu.fpu_opcode = opcode;
 }
@@ -457,33 +457,33 @@ static void fpu_update_pointers2(uint32_t opcode, uint32_t virtaddr, uint32_t se
 {
     //if (VIRT_EIP() == 0x759783bb)
     //    __asm__("int3");
-    fpu.fpu_cs = cpu.seg[CS];
+    fpu.fpu_cs = cpu->seg[CS];
     fpu.fpu_eip = VIRT_EIP();
     fpu.fpu_opcode = opcode;
     fpu.fpu_data_ptr = virtaddr;
-    fpu.fpu_data_seg = cpu.seg[seg];
+    fpu.fpu_data_seg = cpu->seg[seg];
 }
 
 #if 0
 static int read_float32(uint32_t linaddr, float32* dest)
 {
     uint32_t low;
-    cpu_read32(linaddr, low, cpu.tlb_shift_read);
+    cpu_read32(linaddr, low, cpu->tlb_shift_read);
     *dest = low;
     return 0;
 }
 #endif
 static int write_float32(uint32_t linaddr, float32 src)
 {
-    cpu_write32(linaddr, src, cpu.tlb_shift_write);
+    cpu_write32(linaddr, src, cpu->tlb_shift_write);
     return 0;
 }
 #if 0
 static int read_float64(uint32_t linaddr, float64* dest)
 {
     uint32_t low, hi;
-    cpu_read32(linaddr, low, cpu.tlb_shift_read);
-    cpu_read32(linaddr + 4, hi, cpu.tlb_shift_read);
+    cpu_read32(linaddr, low, cpu->tlb_shift_read);
+    cpu_read32(linaddr + 4, hi, cpu->tlb_shift_read);
     *dest = (uint64_t)low | (uint64_t)hi << 32;
     return 0;
 }
@@ -491,8 +491,8 @@ static int read_float64(uint32_t linaddr, float64* dest)
 static int write_float64(uint32_t linaddr, float64 dest)
 {
     uint64_t x = dest;
-    cpu_write32(linaddr, (uint32_t)x, cpu.tlb_shift_write);
-    cpu_write32(linaddr + 4, (uint32_t)(x >> 32), cpu.tlb_shift_write);
+    cpu_write32(linaddr, (uint32_t)x, cpu->tlb_shift_write);
+    cpu_write32(linaddr + 4, (uint32_t)(x >> 32), cpu->tlb_shift_write);
     return 0;
 }
 
@@ -515,7 +515,7 @@ static int fpu_store_f80(uint32_t linaddr, floatx80* data)
     uint16_t exponent;
     uint64_t mantissa;
     floatx80_unpack(data, exponent, mantissa);
-    int shift = cpu.tlb_shift_write;
+    int shift = cpu->tlb_shift_write;
     cpu_write32(linaddr, (uint32_t)mantissa, shift);
     cpu_write32(linaddr + 4, (uint32_t)(mantissa >> 32), shift);
     cpu_write16(linaddr + 8, exponent, shift);
@@ -525,7 +525,7 @@ static int fpu_read_f80(uint32_t linaddr, floatx80* data)
 {
     uint16_t exponent;
     uint32_t low, hi;
-    int shift = cpu.tlb_shift_read;
+    int shift = cpu->tlb_shift_read;
     cpu_read32(linaddr, low, shift);
     cpu_read32(linaddr + 4, hi, shift);
     cpu_read16(linaddr + 8, exponent, shift);
@@ -573,14 +573,14 @@ static int fstenv(uint32_t linaddr, int code16)
     }
     // https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-1-manual.pdf
     // page 203
-    int x = cpu.tlb_shift_write;
+    int x = cpu->tlb_shift_write;
     //fpu_debug();
     //__asm__("int3");
     if (!code16) {
         cpu_write32(linaddr, 0xFFFF0000 | fpu.control_word, x);
         cpu_write32(linaddr + 4, 0xFFFF0000 | fpu_get_status_word(), x);
         cpu_write32(linaddr + 8, 0xFFFF0000 | fpu.tag_word, x);
-        if (cpu.cr[0] & CR0_PE) {
+        if (cpu->cr[0] & CR0_PE) {
             cpu_write32(linaddr + 12, fpu.fpu_eip, x);
             cpu_write32(linaddr + 16, fpu.fpu_cs | (fpu.fpu_opcode << 16), x);
             cpu_write32(linaddr + 20, fpu.fpu_data_ptr, x);
@@ -597,7 +597,7 @@ static int fstenv(uint32_t linaddr, int code16)
         cpu_write16(linaddr, fpu.control_word, x);
         cpu_write16(linaddr + 2, fpu_get_status_word(), x);
         cpu_write16(linaddr + 4, fpu.tag_word, x);
-        if (cpu.cr[0] & CR0_PE) {
+        if (cpu->cr[0] & CR0_PE) {
             cpu_write16(linaddr + 6, fpu.fpu_eip, x);
             cpu_write16(linaddr + 8, fpu.fpu_cs, x);
             cpu_write16(linaddr + 10, fpu.fpu_data_ptr, x);
@@ -617,65 +617,65 @@ static int fldenv(uint32_t linaddr, int code16)
 {
     uint32_t temp32;
     if (!code16) {
-        cpu_read32(linaddr, temp32, cpu.tlb_shift_read);
+        cpu_read32(linaddr, temp32, cpu->tlb_shift_read);
         fpu_set_control_word(temp32);
 
-        cpu_read16(linaddr + 4, fpu.status_word, cpu.tlb_shift_read);
+        cpu_read16(linaddr + 4, fpu.status_word, cpu->tlb_shift_read);
         fpu.ftop = fpu.status_word >> 11 & 7;
         fpu.status_word &= ~(7 << 11); // Clear FTOP.
 
-        cpu_read16(linaddr + 8, fpu.tag_word, cpu.tlb_shift_read);
-        if (cpu.cr[0] & CR0_PE) {
-            cpu_read32(linaddr + 12, fpu.fpu_eip, cpu.tlb_shift_read);
+        cpu_read16(linaddr + 8, fpu.tag_word, cpu->tlb_shift_read);
+        if (cpu->cr[0] & CR0_PE) {
+            cpu_read32(linaddr + 12, fpu.fpu_eip, cpu->tlb_shift_read);
 
-            cpu_read32(linaddr + 16, temp32, cpu.tlb_shift_read);
+            cpu_read32(linaddr + 16, temp32, cpu->tlb_shift_read);
             fpu.fpu_cs = temp32 & 0xFFFF;
             fpu.fpu_opcode = temp32 >> 16 & 0x7FF;
 
-            cpu_read32(linaddr + 20, fpu.fpu_data_ptr, cpu.tlb_shift_read);
-            cpu_read32(linaddr + 24, fpu.fpu_data_seg, cpu.tlb_shift_read);
+            cpu_read32(linaddr + 20, fpu.fpu_data_ptr, cpu->tlb_shift_read);
+            cpu_read32(linaddr + 24, fpu.fpu_data_seg, cpu->tlb_shift_read);
         } else {
             fpu.fpu_cs = 0;
             fpu.fpu_eip = 0;
-            cpu_read16(linaddr + 12, fpu.fpu_eip, cpu.tlb_shift_read);
+            cpu_read16(linaddr + 12, fpu.fpu_eip, cpu->tlb_shift_read);
 
-            cpu_read32(linaddr + 16, temp32, cpu.tlb_shift_read);
+            cpu_read32(linaddr + 16, temp32, cpu->tlb_shift_read);
             fpu.fpu_opcode = temp32 & 0x7FF;
             fpu.fpu_eip |= temp32 << 4 & 0xFFFF0000;
 
-            cpu_read32(linaddr + 20, temp32, cpu.tlb_shift_read);
+            cpu_read32(linaddr + 20, temp32, cpu->tlb_shift_read);
             fpu.fpu_data_ptr = temp32 & 0xFFFF;
 
-            cpu_read32(linaddr + 24, temp32, cpu.tlb_shift_read);
+            cpu_read32(linaddr + 24, temp32, cpu->tlb_shift_read);
             fpu.fpu_eip |= temp32 << 4 & 0xFFFF0000;
         }
     } else {
-        cpu_read16(linaddr, temp32, cpu.tlb_shift_read);
+        cpu_read16(linaddr, temp32, cpu->tlb_shift_read);
         fpu_set_control_word(temp32);
 
-        cpu_read16(linaddr + 2, fpu.status_word, cpu.tlb_shift_read);
+        cpu_read16(linaddr + 2, fpu.status_word, cpu->tlb_shift_read);
         fpu.ftop = fpu.status_word >> 11 & 7;
         fpu.status_word &= ~(7 << 11); // Clear FTOP.
 
-        cpu_read16(linaddr + 4, fpu.tag_word, cpu.tlb_shift_read);
-        if (cpu.cr[0] & CR0_PE) {
-            cpu_read16(linaddr + 6, fpu.fpu_eip, cpu.tlb_shift_read);
-            cpu_read16(linaddr + 8, fpu.fpu_cs, cpu.tlb_shift_read);
-            cpu_read16(linaddr + 10, fpu.fpu_data_ptr, cpu.tlb_shift_read);
-            cpu_read16(linaddr + 12, fpu.fpu_data_seg, cpu.tlb_shift_read);
+        cpu_read16(linaddr + 4, fpu.tag_word, cpu->tlb_shift_read);
+        if (cpu->cr[0] & CR0_PE) {
+            cpu_read16(linaddr + 6, fpu.fpu_eip, cpu->tlb_shift_read);
+            cpu_read16(linaddr + 8, fpu.fpu_cs, cpu->tlb_shift_read);
+            cpu_read16(linaddr + 10, fpu.fpu_data_ptr, cpu->tlb_shift_read);
+            cpu_read16(linaddr + 12, fpu.fpu_data_seg, cpu->tlb_shift_read);
         } else {
             fpu.fpu_cs = 0;
             fpu.fpu_eip = 0;
-            cpu_read16(linaddr + 6, fpu.fpu_eip, cpu.tlb_shift_read);
+            cpu_read16(linaddr + 6, fpu.fpu_eip, cpu->tlb_shift_read);
 
-            cpu_read16(linaddr + 8, temp32, cpu.tlb_shift_read);
+            cpu_read16(linaddr + 8, temp32, cpu->tlb_shift_read);
             fpu.fpu_opcode = temp32 & 0x7FF;
             fpu.fpu_eip |= temp32 << 4 & 0xF0000;
 
-            cpu_read16(linaddr + 10, temp32, cpu.tlb_shift_read);
+            cpu_read16(linaddr + 10, temp32, cpu->tlb_shift_read);
             fpu.fpu_data_ptr = temp32 & 0xFFFF;
 
-            cpu_read32(linaddr + 12, temp32, cpu.tlb_shift_read);
+            cpu_read32(linaddr + 12, temp32, cpu->tlb_shift_read);
             fpu.fpu_eip |= temp32 << 4 & 0xF0000;
         }
     }
@@ -1228,7 +1228,7 @@ int fpu_reg_op(struct decoded_instruction* i, uint32_t flags)
     case OP(0xDF, 4): // FSTSW - Store status word
         if ((opcode & 7) != AX)
             EXCEPTION_UD();
-        cpu.reg16[AX] = fpu_get_status_word();
+        cpu->reg16[AX] = fpu_get_status_word();
         break;
 
     case OP(0xDF, 5): // FUCOMIP - Unordered compare and pop
@@ -1273,7 +1273,7 @@ int fpu_reg_op(struct decoded_instruction* i, uint32_t flags)
 
 int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
 {
-    uint32_t opcode = i->imm32, linaddr = virtaddr + cpu.seg_base[seg];
+    uint32_t opcode = i->imm32, linaddr = virtaddr + cpu->seg_base[seg];
     floatx80 temp80;
     float64 temp64;
     float32 temp32;
@@ -1328,30 +1328,30 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
     case OP(0xDE, 6):
     case OP(0xDE, 7):
     case OP(0xDF, 0): {
-        //printf("%08x %02x /%d\n", cpu.phys_eip, (smaller_opcode >> 3) | 0xD8, opcode & 7);
-        //if(cpu.phys_eip == 0x0018b3f0) __asm__("int3");
+        //printf("%08x %02x /%d\n", cpu->phys_eip, (smaller_opcode >> 3) | 0xD8, opcode & 7);
+        //if(cpu->phys_eip == 0x0018b3f0) __asm__("int3");
         if (fpu_fwait())
             return 1;
         switch (opcode >> 9 & 3) {
         case 0:
-            cpu_read32(linaddr, temp32, cpu.tlb_shift_read);
+            cpu_read32(linaddr, temp32, cpu->tlb_shift_read);
             temp80 = float32_to_floatx80(temp32, &fpu.status);
             break;
         case 1:
-            cpu_read32(linaddr, temp32, cpu.tlb_shift_read);
+            cpu_read32(linaddr, temp32, cpu->tlb_shift_read);
             temp80 = int32_to_floatx80(temp32);
             break;
         case 2: {
             uint32_t low, hi;
             uint64_t res;
-            cpu_read32(linaddr, low, cpu.tlb_shift_read);
-            cpu_read32(linaddr + 4, hi, cpu.tlb_shift_read);
+            cpu_read32(linaddr, low, cpu->tlb_shift_read);
+            cpu_read32(linaddr + 4, hi, cpu->tlb_shift_read);
             res = (uint64_t)low | (uint64_t)hi << 32;
             temp80 = float64_to_floatx80(res, &fpu.status);
             break;
         }
         case 3: {
-            cpu_read16(linaddr, temp32, cpu.tlb_shift_read);
+            cpu_read16(linaddr, temp32, cpu->tlb_shift_read);
             temp80 = int32_to_floatx80((int16_t)temp32);
             break;
         }
@@ -1431,7 +1431,7 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
     }
     case OP(0xD9, 5): { // FLDCW
         uint16_t cw;
-        cpu_read16(linaddr, cw, cpu.tlb_shift_read);
+        cpu_read16(linaddr, cw, cpu->tlb_shift_read);
         fpu_set_control_word(cw);
         break;
     }
@@ -1442,7 +1442,7 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
         break;
     }
     case OP(0xD9, 7): // FSTCW - Store control word to memory
-        cpu_write16(linaddr, fpu.control_word, cpu.tlb_shift_write);
+        cpu_write16(linaddr, fpu.control_word, cpu->tlb_shift_write);
         break;
     case OP(0xDB, 1): // FISTTP - Store floating point register (truncate to 0) to memory and pop
     case OP(0xDB, 2): // FIST - Store floating point register (converted to integer) to memory
@@ -1465,7 +1465,7 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
             else
                 res = floatx80_to_int32_round_to_zero(fpu_get_st(0), &fpu.status);
             if (!fpu_check_exceptions2(0))
-                cpu_write32(linaddr, res, cpu.tlb_shift_write);
+                cpu_write32(linaddr, res, cpu->tlb_shift_write);
             break;
         }
         case 2: { // DD
@@ -1475,8 +1475,8 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
             else
                 res = floatx80_to_int64_round_to_zero(fpu_get_st(0), &fpu.status);
             if (!fpu_check_exceptions2(0)) {
-                cpu_write32(linaddr, res, cpu.tlb_shift_write);
-                cpu_write32(linaddr + 4, res >> 32, cpu.tlb_shift_write);
+                cpu_write32(linaddr, res, cpu->tlb_shift_write);
+                cpu_write32(linaddr + 4, res >> 32, cpu->tlb_shift_write);
             }
             break;
         }
@@ -1487,7 +1487,7 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
             else
                 res = floatx80_to_int16_round_to_zero(fpu_get_st(0), &fpu.status);
             if (!fpu_check_exceptions2(0))
-                cpu_write16(linaddr, res, cpu.tlb_shift_write);
+                cpu_write16(linaddr, res, cpu->tlb_shift_write);
             break;
         }
         }
@@ -1571,15 +1571,15 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
         break;
     }
     case OP(0xDD, 7): // FSTSW - Store status word to memory
-        cpu_write16(linaddr, fpu_get_status_word(), cpu.tlb_shift_write);
+        cpu_write16(linaddr, fpu_get_status_word(), cpu->tlb_shift_write);
         break;
     case OP(0xDF, 4): { // FBLD - The infamous "load BCD" instruction. Loads BCD integer and converts to floatx80
         uint32_t low, high, higher;
         if (fpu_fwait())
             return 1;
-        cpu_read32(linaddr, low, cpu.tlb_shift_read);
-        cpu_read32(linaddr + 4, high, cpu.tlb_shift_read);
-        cpu_read16(linaddr + 8, higher, cpu.tlb_shift_read);
+        cpu_read32(linaddr, low, cpu->tlb_shift_read);
+        cpu_read32(linaddr + 4, high, cpu->tlb_shift_read);
+        cpu_read16(linaddr + 8, higher, cpu->tlb_shift_read);
         fpu_update_pointers2(opcode, virtaddr, seg);
 
         uint64_t result = 0;
@@ -1616,8 +1616,8 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
             return 1;
         fpu_update_pointers2(opcode, virtaddr, seg);
 
-        cpu_read32(linaddr, low, cpu.tlb_shift_read);
-        cpu_read32(linaddr + 4, hi, cpu.tlb_shift_read);
+        cpu_read32(linaddr, low, cpu->tlb_shift_read);
+        cpu_read32(linaddr + 4, hi, cpu->tlb_shift_read);
         temp80 = int64_to_floatx80((uint64_t)low | (uint64_t)hi << 32);
         if (fpu_check_push())
             FPU_ABORT();
@@ -1640,13 +1640,13 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
             bcd /= 10;
             result |= (bcd % 10) << 4;
             bcd /= 10;
-            cpu_write8(linaddr + i, result, cpu.tlb_shift_write);
+            cpu_write8(linaddr + i, result, cpu->tlb_shift_write);
         }
 
         int result = bcd % 10;
         bcd /= 10;
         result |= (bcd % 10) << 4;
-        cpu_write8(linaddr + 9, result | (st0.exp >> 8 & 0x80), cpu.tlb_shift_write);
+        cpu_write8(linaddr + 9, result | (st0.exp >> 8 & 0x80), cpu->tlb_shift_write);
 
         fpu_pop();
         break;
@@ -1660,8 +1660,8 @@ int fpu_mem_op(struct decoded_instruction* i, uint32_t virtaddr, uint32_t seg)
         uint64_t i64 = floatx80_to_int64(fpu_get_st(0), &fpu.status);
         if (fpu_check_exceptions2(0))
             FPU_ABORT();
-        cpu_write32(linaddr, (uint32_t)i64, cpu.tlb_shift_write);
-        cpu_write32(linaddr + 4, (uint32_t)(i64 >> 32), cpu.tlb_shift_write);
+        cpu_write32(linaddr, (uint32_t)i64, cpu->tlb_shift_write);
+        cpu_write32(linaddr + 4, (uint32_t)(i64 >> 32), cpu->tlb_shift_write);
         fpu_commit_sw();
         fpu_pop();
         break;
@@ -1692,10 +1692,10 @@ int fpu_fxsave(uint32_t linaddr)
     if (fpu_nm_check())
         return 1;
 
-    if (cpu_access_verify(linaddr, linaddr + 288 - 1, cpu.tlb_shift_write))
+    if (cpu_access_verify(linaddr, linaddr + 288 - 1, cpu->tlb_shift_write))
         return 1;
-    cpu_write16(linaddr + 0, fpu.control_word, cpu.tlb_shift_write);
-    cpu_write16(linaddr + 2, fpu_get_status_word(), cpu.tlb_shift_write);
+    cpu_write16(linaddr + 0, fpu.control_word, cpu->tlb_shift_write);
+    cpu_write16(linaddr + 2, fpu_get_status_word(), cpu->tlb_shift_write);
     // "Abridge" tag word
     uint8_t tag = 0;
     for (int i = 0; i < 8; i++)
@@ -1704,30 +1704,30 @@ int fpu_fxsave(uint32_t linaddr)
 
     // Some fields are less than 16 or 32 bits wide, but we write them anyways.
     // They are filled with zeros.
-    cpu_write16(linaddr + 4, tag, cpu.tlb_shift_write);
-    cpu_write16(linaddr + 6, fpu.fpu_opcode, cpu.tlb_shift_write);
-    cpu_write32(linaddr + 8, fpu.fpu_eip, cpu.tlb_shift_write);
-    cpu_write32(linaddr + 12, fpu.fpu_cs, cpu.tlb_shift_write);
-    cpu_write32(linaddr + 16, fpu.fpu_data_ptr, cpu.tlb_shift_write);
-    cpu_write32(linaddr + 20, fpu.fpu_data_seg, cpu.tlb_shift_write);
-    cpu_write32(linaddr + 24, cpu.mxcsr, cpu.tlb_shift_write);
-    cpu_write32(linaddr + 28, MXCSR_MASK, cpu.tlb_shift_write);
+    cpu_write16(linaddr + 4, tag, cpu->tlb_shift_write);
+    cpu_write16(linaddr + 6, fpu.fpu_opcode, cpu->tlb_shift_write);
+    cpu_write32(linaddr + 8, fpu.fpu_eip, cpu->tlb_shift_write);
+    cpu_write32(linaddr + 12, fpu.fpu_cs, cpu->tlb_shift_write);
+    cpu_write32(linaddr + 16, fpu.fpu_data_ptr, cpu->tlb_shift_write);
+    cpu_write32(linaddr + 20, fpu.fpu_data_seg, cpu->tlb_shift_write);
+    cpu_write32(linaddr + 24, cpu->mxcsr, cpu->tlb_shift_write);
+    cpu_write32(linaddr + 28, MXCSR_MASK, cpu->tlb_shift_write);
     uint32_t tempaddr = linaddr + 32;
     for (int i = 0; i < 8; i++) {
         fpu_store_f80(tempaddr, fpu_get_st_ptr(i));
         // Fill other bytes with zeros
-        cpu_write16(tempaddr + 10, 0, cpu.tlb_shift_write);
-        cpu_write32(tempaddr + 12, 0, cpu.tlb_shift_write);
+        cpu_write16(tempaddr + 10, 0, cpu->tlb_shift_write);
+        cpu_write32(tempaddr + 12, 0, cpu->tlb_shift_write);
         tempaddr += 16;
     }
 
     // TODO: Find out what happens on real hardware when OSFXSR isn't set.
     tempaddr = linaddr + 160;
     for (int i = 0; i < 8; i++) {
-        cpu_write32(tempaddr, cpu.xmm32[(i * 4)], cpu.tlb_shift_write);
-        cpu_write32(tempaddr + 4, cpu.xmm32[(i * 4) + 1], cpu.tlb_shift_write);
-        cpu_write32(tempaddr + 8, cpu.xmm32[(i * 4) + 2], cpu.tlb_shift_write);
-        cpu_write32(tempaddr + 12, cpu.xmm32[(i * 4) + 3], cpu.tlb_shift_write);
+        cpu_write32(tempaddr, cpu->xmm32[(i * 4)], cpu->tlb_shift_write);
+        cpu_write32(tempaddr + 4, cpu->xmm32[(i * 4) + 1], cpu->tlb_shift_write);
+        cpu_write32(tempaddr + 8, cpu->xmm32[(i * 4) + 2], cpu->tlb_shift_write);
+        cpu_write32(tempaddr + 12, cpu->xmm32[(i * 4) + 3], cpu->tlb_shift_write);
         tempaddr += 16;
     }
     return 0;
@@ -1739,33 +1739,33 @@ int fpu_fxrstor(uint32_t linaddr)
         EXCEPTION_GP(0);
     if (fpu_nm_check())
         return 1;
-    if (cpu_access_verify(linaddr, linaddr + 288 - 1, cpu.tlb_shift_read))
+    if (cpu_access_verify(linaddr, linaddr + 288 - 1, cpu->tlb_shift_read))
         return 1;
 
     uint32_t mxcsr;
-    cpu_read32(linaddr + 24, mxcsr, cpu.tlb_shift_read);
+    cpu_read32(linaddr + 24, mxcsr, cpu->tlb_shift_read);
     if (mxcsr & ~MXCSR_MASK)
         EXCEPTION_GP(0);
-    cpu.mxcsr = mxcsr;
+    cpu->mxcsr = mxcsr;
     cpu_update_mxcsr();
 
     uint32_t temp = 0;
-    cpu_read16(linaddr + 0, temp, cpu.tlb_shift_read);
+    cpu_read16(linaddr + 0, temp, cpu->tlb_shift_read);
     fpu_set_control_word(temp);
-    cpu_read16(linaddr + 2, temp, cpu.tlb_shift_read);
+    cpu_read16(linaddr + 2, temp, cpu->tlb_shift_read);
     fpu.status_word = temp;
     fpu.ftop = fpu.status_word >> 11 & 7;
     fpu.status_word &= ~(7 << 11);
 
     uint8_t small_tag_word;
-    cpu_read8(linaddr + 4, small_tag_word, cpu.tlb_shift_read);
+    cpu_read8(linaddr + 4, small_tag_word, cpu->tlb_shift_read);
 
-    cpu_read16(linaddr + 6, fpu.fpu_opcode, cpu.tlb_shift_read);
+    cpu_read16(linaddr + 6, fpu.fpu_opcode, cpu->tlb_shift_read);
     fpu.fpu_opcode &= 0x7FF;
-    cpu_read32(linaddr + 8, fpu.fpu_eip, cpu.tlb_shift_read);
-    cpu_read16(linaddr + 12, fpu.fpu_cs, cpu.tlb_shift_read); // Note: 16-bit with 4 byte gap
-    cpu_read32(linaddr + 16, fpu.fpu_data_ptr, cpu.tlb_shift_read);
-    cpu_read16(linaddr + 20, fpu.fpu_data_seg, cpu.tlb_shift_read); // Note: 16-bit with 4 byte gap
+    cpu_read32(linaddr + 8, fpu.fpu_eip, cpu->tlb_shift_read);
+    cpu_read16(linaddr + 12, fpu.fpu_cs, cpu->tlb_shift_read); // Note: 16-bit with 4 byte gap
+    cpu_read32(linaddr + 16, fpu.fpu_data_ptr, cpu->tlb_shift_read);
+    cpu_read16(linaddr + 20, fpu.fpu_data_seg, cpu->tlb_shift_read); // Note: 16-bit with 4 byte gap
     uint32_t tempaddr = linaddr + 32;
     for (int i = 0; i < 8; i++) {
         if (fpu_read_f80(tempaddr, fpu_get_st_ptr(i)))
@@ -1776,10 +1776,10 @@ int fpu_fxrstor(uint32_t linaddr)
     // TODO: Find out what happens on real hardware when OSFXSR isn't set.
     tempaddr = linaddr + 160;
     for (int i = 0; i < 8; i++) {
-        cpu_read32(tempaddr, cpu.xmm32[(i * 4)], cpu.tlb_shift_read);
-        cpu_read32(tempaddr + 4, cpu.xmm32[(i * 4) + 1], cpu.tlb_shift_read);
-        cpu_read32(tempaddr + 8, cpu.xmm32[(i * 4) + 2], cpu.tlb_shift_read);
-        cpu_read32(tempaddr + 12, cpu.xmm32[(i * 4) + 3], cpu.tlb_shift_read);
+        cpu_read32(tempaddr, cpu->xmm32[(i * 4)], cpu->tlb_shift_read);
+        cpu_read32(tempaddr + 4, cpu->xmm32[(i * 4) + 1], cpu->tlb_shift_read);
+        cpu_read32(tempaddr + 8, cpu->xmm32[(i * 4) + 2], cpu->tlb_shift_read);
+        cpu_read32(tempaddr + 12, cpu->xmm32[(i * 4) + 3], cpu->tlb_shift_read);
         tempaddr += 16;
     }
 
@@ -1800,7 +1800,7 @@ int fpu_fwait(void)
 {
     // Now is as good of a time as any to call FPU exceptions
     if (fpu.status_word & 0x80) {
-        if (cpu.cr[0] & CR0_NE)
+        if (cpu->cr[0] & CR0_NE)
             EXCEPTION_MF();
         else {
             // yucky, but works. OS/2 uses this method
@@ -1872,10 +1872,10 @@ void* fpu_get_st_ptr1(void)
 void fpu_init_lib(void)
 {
     // Disable anything that might cause FPU exceptions
-    cpu.cr[0] &= ~(CR0_EM | CR0_TS);
+    cpu->cr[0] &= ~(CR0_EM | CR0_TS);
 
     // Enable FPU exceptions (but they're all masked anyways by fninit)
-    cpu.cr[0] |= CR0_NE;
+    cpu->cr[0] |= CR0_NE;
 
     // Initialize the FPU
     fninit();

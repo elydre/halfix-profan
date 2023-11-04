@@ -7,6 +7,7 @@
 #define EXIT_FAILURE 1
 
 #define get_func_addr ((uint32_t (*)(uint32_t, uint32_t)) *(uint32_t *) 0x1ffffb)
+#define abort() exit(1)
 
 #define calloc(nmemb, lsize) calloc_func(nmemb, lsize, 0)
 #define malloc(size) malloc_func(size, 0)
@@ -21,7 +22,6 @@
 #define malloc_func(size, as_kernel) ((void *(*)(uint32_t, int)) get_func_addr(STDLIB_ID, 5))(size, as_kernel)
 #define realloc_func(ptr, size, as_kernel) ((void *(*)(void *, uint32_t, int)) get_func_addr(STDLIB_ID, 6))(ptr, size, as_kernel)
 #define a64l(str) ((long int (*)(const char *)) get_func_addr(STDLIB_ID, 7))(str)
-#define abort() ((void (*)(void)) get_func_addr(STDLIB_ID, 8))()
 #define abs(j) ((int (*)(int)) get_func_addr(STDLIB_ID, 9))(j)
 #define atexit(func) ((int (*)(void (*)(void))) get_func_addr(STDLIB_ID, 10))(func)
 #define atof(s) ((double (*)(const char *)) get_func_addr(STDLIB_ID, 11))(s)

@@ -34,8 +34,6 @@ int fstat(int fd, struct stat *buf);
 int mkdir(const char *pathname, mode_t mode);
 
 // S_ISDIR
-#define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
-#define S_IFDIR 0x4000
-#define S_IFMT 0xF000
+#define S_ISDIR(mode) 0
 
 #endif

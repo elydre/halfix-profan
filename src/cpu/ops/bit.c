@@ -48,12 +48,12 @@ uint16_t bsf16(uint16_t src, uint16_t old){
     }
 }
 uint32_t bsf32(uint32_t src, uint32_t old){
-    cpu.laux = BIT;
+    cpu->laux = BIT;
     if(src){
-        cpu.lr = 1; // Clear ZF
+        cpu->lr = 1; // Clear ZF
         return __builtin_ctz(src);
     }else{
-        cpu.lr = 0; // Assert ZF
+        cpu->lr = 0; // Assert ZF
         return old;
     }
 }

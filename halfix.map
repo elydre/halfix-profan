@@ -1,0 +1,1830 @@
+
+Discarded input sections
+
+ .group         0x0000000000000000        0x8 build/entry.o
+ .group         0x0000000000000000        0x8 build/trace.o
+ .group         0x0000000000000000        0x8 build/trace.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/trace.o
+ .group         0x0000000000000000        0x8 build/softfloat.o
+ .group         0x0000000000000000        0x8 build/softfloat.o
+ .group         0x0000000000000000        0x8 build/softfloat.o
+ .group         0x0000000000000000        0x8 build/softfloat.o
+ .group         0x0000000000000000        0x8 build/softfloat.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/softfloat.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/softfloat.o
+ .group         0x0000000000000000        0x8 build/access.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/access.o
+ .group         0x0000000000000000        0x8 build/cpu.o
+ .group         0x0000000000000000        0x8 build/cpu.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/cpu.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/cpu.o
+ .group         0x0000000000000000        0x8 build/eflags.o
+ .group         0x0000000000000000        0x8 build/eflags.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/eflags.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/eflags.o
+ .group         0x0000000000000000        0x8 build/fpu.o
+ .group         0x0000000000000000        0x8 build/fpu.o
+ .group         0x0000000000000000        0x8 build/fpu.o
+ .group         0x0000000000000000        0x8 build/fpu.o
+ .group         0x0000000000000000        0x8 build/fpu.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/fpu.o
+ .text.__x86.get_pc_thunk.dx
+                0x0000000000000000        0x4 build/fpu.o
+ .text.__x86.get_pc_thunk.cx
+                0x0000000000000000        0x4 build/fpu.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/fpu.o
+ .text.__x86.get_pc_thunk.si
+                0x0000000000000000        0x4 build/fpu.o
+ .group         0x0000000000000000        0x8 build/opcodes.o
+ .group         0x0000000000000000        0x8 build/opcodes.o
+ .group         0x0000000000000000        0x8 build/opcodes.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/opcodes.o
+ .text.__x86.get_pc_thunk.dx
+                0x0000000000000000        0x4 build/opcodes.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/opcodes.o
+ .group         0x0000000000000000        0x8 build/smc.o
+ .group         0x0000000000000000        0x8 build/smc.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/smc.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/smc.o
+ .group         0x0000000000000000        0x8 build/seg.o
+ .group         0x0000000000000000        0x8 build/seg.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/seg.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/seg.o
+ .group         0x0000000000000000        0x8 build/decoder.o
+ .group         0x0000000000000000        0x8 build/decoder.o
+ .group         0x0000000000000000        0x8 build/decoder.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/decoder.o
+ .text.__x86.get_pc_thunk.dx
+                0x0000000000000000        0x4 build/decoder.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/decoder.o
+ .group         0x0000000000000000        0x8 build/mmu.o
+ .group         0x0000000000000000        0x8 build/mmu.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/mmu.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/mmu.o
+ .group         0x0000000000000000        0x8 build/prot.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/prot.o
+ .group         0x0000000000000000        0x8 build/ctrlflow.o
+ .group         0x0000000000000000        0x8 build/ctrlflow.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/ctrlflow.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/ctrlflow.o
+ .group         0x0000000000000000        0x8 build/string.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/string.o
+ .group         0x0000000000000000        0x8 build/bit.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/bit.o
+ .group         0x0000000000000000        0x8 build/arith.o
+ .group         0x0000000000000000        0x8 build/arith.o
+ .group         0x0000000000000000        0x8 build/arith.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/arith.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/arith.o
+ .text.__x86.get_pc_thunk.si
+                0x0000000000000000        0x4 build/arith.o
+ .group         0x0000000000000000        0x8 build/stack.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/stack.o
+ .group         0x0000000000000000        0x8 build/cpu_io.o
+ .group         0x0000000000000000        0x8 build/cpu_io.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/cpu_io.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/cpu_io.o
+ .group         0x0000000000000000        0x8 build/misc.o
+ .group         0x0000000000000000        0x8 build/misc.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/misc.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/misc.o
+ .group         0x0000000000000000        0x8 build/simd.o
+ .group         0x0000000000000000        0x8 build/simd.o
+ .group         0x0000000000000000        0x8 build/simd.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/simd.o
+ .text.__x86.get_pc_thunk.dx
+                0x0000000000000000        0x4 build/simd.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/simd.o
+ .group         0x0000000000000000        0x8 build/apic.o
+ .group         0x0000000000000000        0x8 build/apic.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/apic.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/apic.o
+ .group         0x0000000000000000        0x8 build/acpi.o
+ .group         0x0000000000000000        0x8 build/acpi.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/acpi.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/acpi.o
+ .group         0x0000000000000000        0x8 build/ioapic.o
+ .group         0x0000000000000000        0x8 build/ioapic.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/ioapic.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/ioapic.o
+ .group         0x0000000000000000        0x8 build/pic.o
+ .group         0x0000000000000000        0x8 build/pic.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/pic.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/pic.o
+ .group         0x0000000000000000        0x8 build/dma.o
+ .group         0x0000000000000000        0x8 build/dma.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/dma.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/dma.o
+ .group         0x0000000000000000        0x8 build/kbd.o
+ .group         0x0000000000000000        0x8 build/kbd.o
+ .group         0x0000000000000000        0x8 build/kbd.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/kbd.o
+ .text.__x86.get_pc_thunk.dx
+                0x0000000000000000        0x4 build/kbd.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/kbd.o
+ .group         0x0000000000000000        0x8 build/pit.o
+ .group         0x0000000000000000        0x8 build/pit.o
+ .group         0x0000000000000000        0x8 build/pit.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/pit.o
+ .text.__x86.get_pc_thunk.dx
+                0x0000000000000000        0x4 build/pit.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/pit.o
+ .group         0x0000000000000000        0x8 build/vga.o
+ .group         0x0000000000000000        0x8 build/vga.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/vga.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/vga.o
+ .group         0x0000000000000000        0x8 build/cmos.o
+ .group         0x0000000000000000        0x8 build/cmos.o
+ .group         0x0000000000000000        0x8 build/cmos.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/cmos.o
+ .text.__x86.get_pc_thunk.dx
+                0x0000000000000000        0x4 build/cmos.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/cmos.o
+ .group         0x0000000000000000        0x8 build/ide.o
+ .group         0x0000000000000000        0x8 build/ide.o
+ .group         0x0000000000000000        0x8 build/ide.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/ide.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/ide.o
+ .text.__x86.get_pc_thunk.si
+                0x0000000000000000        0x4 build/ide.o
+ .group         0x0000000000000000        0x8 build/fdc.o
+ .group         0x0000000000000000        0x8 build/fdc.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/fdc.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/fdc.o
+ .group         0x0000000000000000        0x8 build/pci.o
+ .group         0x0000000000000000        0x8 build/pci.o
+ .group         0x0000000000000000        0x8 build/pci.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/pci.o
+ .text.__x86.get_pc_thunk.dx
+                0x0000000000000000        0x4 build/pci.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/pci.o
+ .group         0x0000000000000000        0x8 build/net-none.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/net-none.o
+ .group         0x0000000000000000        0x8 build/main.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/main.o
+ .group         0x0000000000000000        0x8 build/display_profan.o
+ .group         0x0000000000000000        0x8 build/display_profan.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/display_profan.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/display_profan.o
+ .group         0x0000000000000000        0x8 build/drive.o
+ .group         0x0000000000000000        0x8 build/drive.o
+ .group         0x0000000000000000        0x8 build/drive.o
+ .group         0x0000000000000000        0x8 build/drive.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/drive.o
+ .text.__x86.get_pc_thunk.cx
+                0x0000000000000000        0x4 build/drive.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/drive.o
+ .text.__x86.get_pc_thunk.si
+                0x0000000000000000        0x4 build/drive.o
+ .group         0x0000000000000000        0x8 build/state.o
+ .group         0x0000000000000000        0x8 build/state.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/state.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/state.o
+ .group         0x0000000000000000        0x8 build/io.o
+ .group         0x0000000000000000        0x8 build/io.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/io.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/io.o
+ .group         0x0000000000000000        0x8 build/util.o
+ .group         0x0000000000000000        0x8 build/util.o
+ .group         0x0000000000000000        0x8 build/util.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/util.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/util.o
+ .text.__x86.get_pc_thunk.si
+                0x0000000000000000        0x4 build/util.o
+ .group         0x0000000000000000        0x8 build/ini.o
+ .group         0x0000000000000000        0x8 build/ini.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/ini.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/ini.o
+ .group         0x0000000000000000        0x8 build/pc.o
+ .group         0x0000000000000000        0x8 build/pc.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/pc.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/pc.o
+ .group         0x0000000000000000        0x8 build/bordel.o
+ .group         0x0000000000000000        0x8 build/bordel.o
+ .group         0x0000000000000000        0x8 build/bordel.o
+ .group         0x0000000000000000        0x8 build/bordel.o
+ .text.__x86.get_pc_thunk.ax
+                0x0000000000000000        0x4 build/bordel.o
+ .text.__x86.get_pc_thunk.cx
+                0x0000000000000000        0x4 build/bordel.o
+ .text.__x86.get_pc_thunk.bx
+                0x0000000000000000        0x4 build/bordel.o
+ .text.__x86.get_pc_thunk.si
+                0x0000000000000000        0x4 build/bordel.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x00000000c0000000                . = 0xc0000000
+
+.text           0x00000000c0000000    0x91b99
+ *(.text)
+ .text          0x00000000c0000000       0x61 build/entry.o
+                0x00000000c0000000                entry
+ .text          0x00000000c0000061      0x3cc build/trace.o
+                0x00000000c0000076                cpu_trace_flush
+                0x00000000c00000d5                cpu_trace_get_entry
+                0x00000000c0000122                cpu_get_trace
+ .text          0x00000000c000042d    0x17bea build/softfloat.o
+                0x00000000c0002966                int32_to_float32
+                0x00000000c00029d1                int32_to_float64
+                0x00000000c0002a6a                int64_to_float32
+                0x00000000c0002b8e                int64_to_float64
+                0x00000000c0002c43                uint32_to_float32
+                0x00000000c0002c98                uint32_to_float64
+                0x00000000c0002d11                uint64_to_float32
+                0x00000000c0002e06                uint64_to_float64
+                0x00000000c0002e91                float32_to_int32
+                0x00000000c0002f60                float32_to_int32_round_to_zero
+                0x00000000c000305d                float32_to_uint32_round_to_zero
+                0x00000000c000314b                float32_to_int64
+                0x00000000c0003249                float32_to_int64_round_to_zero
+                0x00000000c00033ad                float32_to_uint64_round_to_zero
+                0x00000000c00034fe                float32_to_uint64
+                0x00000000c000362b                float32_to_uint32
+                0x00000000c000366e                float32_to_float64
+                0x00000000c0003796                float32_round_to_int_with_scale
+                0x00000000c00039c7                float32_frc
+                0x00000000c0003b7e                float32_getexp
+                0x00000000c0003c36                float32_getmant
+                0x00000000c0003dfe                float32_scalef
+                0x00000000c00047e5                float32_add
+                0x00000000c0004845                float32_sub
+                0x00000000c00048a5                float32_mul
+                0x00000000c0004bdb                float32_div
+                0x00000000c0004f5e                float32_sqrt
+                0x00000000c00051b7                float32_class
+                0x00000000c0005250                float32_compare_internal
+                0x00000000c000537e                float32_min
+                0x00000000c00053dc                float32_max
+                0x00000000c000543a                float32_minmax
+                0x00000000c000563a                float64_to_int32
+                0x00000000c0005748                float64_to_int32_round_to_zero
+                0x00000000c00058f5                float64_to_uint32_round_to_zero
+                0x00000000c0005a77                float64_to_int64
+                0x00000000c0005bc1                float64_to_int64_round_to_zero
+                0x00000000c0005db5                float64_to_uint64_round_to_zero
+                0x00000000c0005f7d                float64_to_uint32
+                0x00000000c0005fcf                float64_to_uint64
+                0x00000000c000614d                float64_to_float32
+                0x00000000c00062c6                float64_round_to_int_with_scale
+                0x00000000c000668e                float64_frc
+                0x00000000c0006915                float64_getexp
+                0x00000000c0006a31                float64_getmant
+                0x00000000c0006c78                float64_scalef
+                0x00000000c0007dd0                float64_add
+                0x00000000c0007e60                float64_sub
+                0x00000000c0007ef0                float64_mul
+                0x00000000c00084c9                float64_div
+                0x00000000c0008b33                float64_sqrt
+                0x00000000c0008f7f                float64_class
+                0x00000000c000908f                float64_compare_internal
+                0x00000000c000924d                float64_min
+                0x00000000c00092db                float64_max
+                0x00000000c0009369                float64_minmax
+                0x00000000c0009643                int32_to_floatx80
+                0x00000000c00096f3                int64_to_floatx80
+                0x00000000c00097be                float32_to_floatx80
+                0x00000000c00098fa                float64_to_floatx80
+                0x00000000c0009a8a                floatx80_to_int32
+                0x00000000c0009b8f                floatx80_to_int32_round_to_zero
+                0x00000000c0009d27                floatx80_to_int64
+                0x00000000c0009e3c                floatx80_to_int64_round_to_zero
+                0x00000000c000a018                floatx80_to_float32
+                0x00000000c000a17e                floatx80_to_float64
+                0x00000000c000a2ed                floatx80_round_to_int
+                0x00000000c000b3af                floatx80_add
+                0x00000000c000b446                floatx80_sub
+                0x00000000c000b4dd                floatx80_mul
+                0x00000000c000b991                floatx80_div
+                0x00000000c000c180                floatx80_sqrt
+                0x00000000c000c9fe                floatx80_to_float128
+                0x00000000c000cb15                float128_to_floatx80
+                0x00000000c000cd4f                floatx80_mul_with_float128
+                0x00000000c000dfe5                float128_add
+                0x00000000c000e08e                float128_sub
+                0x00000000c000e137                float128_mul
+                0x00000000c000e88f                float128_div
+                0x00000000c000f3b8                int64_to_float128
+                0x00000000c000f4f7                floatx80_to_int16
+                0x00000000c000f572                floatx80_to_int16_round_to_zero
+                0x00000000c000f5ed                floatx80_extract
+                0x00000000c000f880                floatx80_scale
+                0x00000000c000fe52                floatx80_class
+                0x00000000c000ff8c                floatx80_compare_internal
+                0x00000000c001021f                propagateFloat32NaN_two_args
+                0x00000000c0010325                propagateFloat64NaN_two_args
+                0x00000000c00104fd                propagateFloatx80NaN_two_args
+                0x00000000c00106ed                propagateFloat128NaN
+                0x00000000c0010977                roundAndPackInt32
+                0x00000000c0010ae3                roundAndPackInt64
+                0x00000000c0010ce9                roundAndPackUint64
+                0x00000000c0010ee0                normalizeFloat16Subnormal
+                0x00000000c0010f36                roundAndPackFloat16
+                0x00000000c0011169                normalizeFloat32Subnormal
+                0x00000000c00111b0                roundAndPackFloat32
+                0x00000000c0011407                normalizeRoundAndPackFloat32
+                0x00000000c0011455                normalizeFloat64Subnormal
+                0x00000000c00114bb                roundAndPackFloat64
+                0x00000000c00117bd                normalizeRoundAndPackFloat64
+                0x00000000c0011831                normalizeFloatx80Subnormal
+                0x00000000c001188f                SoftFloatRoundAndPackFloatx80
+                0x00000000c001245e                roundAndPackFloatx80
+                0x00000000c0012609                normalizeRoundAndPackFloatx80
+                0x00000000c00126e3                normalizeFloat128Subnormal
+                0x00000000c001280f                roundAndPackFloat128
+                0x00000000c0012ac1                normalizeRoundAndPackFloat128
+                0x00000000c0012dc8                float32_muladd
+                0x00000000c0013550                float64_muladd
+                0x00000000c00144ba                EvalPoly
+                0x00000000c0014599                EvenPoly
+                0x00000000c00145fb                OddPoly
+                0x00000000c0014903                fyl2x
+                0x00000000c0015056                fyl2xp1
+                0x00000000c0015d32                fsincos
+                0x00000000c001609a                fsin
+                0x00000000c00160ca                fcos
+                0x00000000c00160fa                ftan
+                0x00000000c0016fba                floatx80_ieee754_remainder
+                0x00000000c0016ff4                floatx80_remainder
+                0x00000000c001706a                fpatan
+                0x00000000c0017c7f                f2xm1
+ .text          0x00000000c0018017      0xe7d build/access.o
+                0x00000000c0018017                cpu_access_read8
+                0x00000000c001811b                cpu_access_read16
+                0x00000000c00182d6                cpu_access_read32
+                0x00000000c001848d                cpu_access_write8
+                0x00000000c0018599                cpu_access_write16
+                0x00000000c0018732                cpu_access_write32
+                0x00000000c00188c8                cpu_access_verify
+                0x00000000c001897d                read8
+                0x00000000c0018a81                read16
+                0x00000000c0018b8a                read32
+                0x00000000c0018c8f                readmem
+                0x00000000c0018d25                readphys
+                0x00000000c0018dc2                lin2phys
+ .text          0x00000000c0018e94     0x1268 build/cpu.o
+                0x00000000c0018e94                cpu_set_a20
+                0x00000000c0018ef0                cpu_init_mem
+                0x00000000c0018fde                cpu_interrupts_masked
+                0x00000000c0018ffe                cpu_get_cycles
+                0x00000000c0019044                cpu_run
+                0x00000000c001929a                cpu_raise_intr_line
+                0x00000000c00192ba                cpu_lower_intr_line
+                0x00000000c00192da                cpu_request_fast_return
+                0x00000000c0019379                cpu_cancel_execution_cycle
+                0x00000000c001941c                cpu_get_ram_ptr
+                0x00000000c0019437                cpu_add_rom
+                0x00000000c00194c0                cpu_get_exit_reason
+                0x00000000c00194db                cpu_set_break
+                0x00000000c00194eb                cpu_reset
+                0x00000000c0019732                cpu_apic_connected
+                0x00000000c0019d9e                cpu_init
+                0x00000000c0019e10                cpu_init_dma
+                0x00000000c0019e37                cpu_write_mem
+                0x00000000c0019f01                cpu_debug
+ .text          0x00000000c001a0fc     0x156f build/eflags.o
+                0x00000000c001a0fc                cpu_get_sf
+                0x00000000c001a12c                cpu_set_sf
+                0x00000000c001a182                cpu_get_pf
+                0x00000000c001a1dd                cpu_set_pf
+                0x00000000c001a28b                cpu_get_of
+                0x00000000c001a9f2                cpu_set_of
+                0x00000000c001aa78                cpu_get_af
+                0x00000000c001ac54                cpu_set_af
+                0x00000000c001acda                cpu_get_cf
+                0x00000000c001b2b3                cpu_set_cf
+                0x00000000c001b334                cpu_set_zf
+                0x00000000c001b365                cpu_get_eflags
+                0x00000000c001b3ea                cpu_cond
+                0x00000000c001b4eb                cpu_set_eflags
+ .text          0x00000000c001b66b     0xa849 build/fpu.o
+                0x00000000c001bb6a                is_negative
+                0x00000000c001f36c                fpu_reg_op
+                0x00000000c0021701                fpu_mem_op
+                0x00000000c0023e11                fpu_fxsave
+                0x00000000c0024cdc                fpu_fxrstor
+                0x00000000c0025a71                fpu_fwait
+                0x00000000c0025ae5                fpu_init
+                0x00000000c0025b10                f80_to_double
+                0x00000000c0025bfb                fpu_debug
+                0x00000000c0025e31                printFloat80
+                0x00000000c0025e9f                fpu_get_st_ptr1
+ .text          0x00000000c0025eb4    0x1b3e0 build/opcodes.o
+                0x00000000c00260b1                cpu_execute
+                0x00000000c0026109                op_fatal_error
+                0x00000000c002616a                op_ud_exception
+                0x00000000c00261ac                op_trace_end
+                0x00000000c00261e0                op_nop
+                0x00000000c0026218                op_jmp_r16
+                0x00000000c00262db                op_jmp_r32
+                0x00000000c002639a                op_jmp_e16
+                0x00000000c00264ec                op_jmp_e32
+                0x00000000c002663d                op_call_r16
+                0x00000000c0026710                op_call_r32
+                0x00000000c00267df                op_call_e16
+                0x00000000c0026988                op_call_e32
+                0x00000000c0026b30                op_jmp_rel32
+                0x00000000c0026b78                op_jmp_rel16
+                0x00000000c0026bee                op_jmpf
+                0x00000000c0026c70                op_jmpf_e16
+                0x00000000c0026ecb                op_jmpf_e32
+                0x00000000c0027114                op_callf16_ap
+                0x00000000c00271a3                op_callf32_ap
+                0x00000000c002722e                op_callf_e16
+                0x00000000c0027488                op_callf_e32
+                0x00000000c00276d0                op_retf16
+                0x00000000c0027726                op_retf32
+                0x00000000c002777c                op_iret16
+                0x00000000c00277ed                op_iret32
+                0x00000000c002785e                op_loop_rel16
+                0x00000000c0027942                op_loop_rel32
+                0x00000000c00279f8                op_loopz_rel16
+                0x00000000c0027aee                op_loopz_rel32
+                0x00000000c0027bb6                op_loopnz_rel16
+                0x00000000c0027cac                op_loopnz_rel32
+                0x00000000c0027d74                op_jecxz_rel16
+                0x00000000c0027e2c                op_jecxz_rel32
+                0x00000000c0027eb6                op_jo16
+                0x00000000c0027f63                op_jo32
+                0x00000000c0027fe2                op_jno16
+                0x00000000c002808f                op_jno32
+                0x00000000c002810e                op_jb16
+                0x00000000c00281bb                op_jb32
+                0x00000000c002823a                op_jnb16
+                0x00000000c00282e7                op_jnb32
+                0x00000000c0028366                op_jz16
+                0x00000000c002841d                op_jz32
+                0x00000000c00284a6                op_jnz16
+                0x00000000c002855d                op_jnz32
+                0x00000000c00285e6                op_jbe16
+                0x00000000c00286a5                op_jbe32
+                0x00000000c0028736                op_jnbe16
+                0x00000000c00287f5                op_jnbe32
+                0x00000000c0028886                op_js16
+                0x00000000c0028933                op_js32
+                0x00000000c00289b2                op_jns16
+                0x00000000c0028a5f                op_jns32
+                0x00000000c0028ade                op_jp16
+                0x00000000c0028b8b                op_jp32
+                0x00000000c0028c0a                op_jnp16
+                0x00000000c0028cb7                op_jnp32
+                0x00000000c0028d36                op_jl16
+                0x00000000c0028ded                op_jl32
+                0x00000000c0028e76                op_jnl16
+                0x00000000c0028f2d                op_jnl32
+                0x00000000c0028fb6                op_jle16
+                0x00000000c002907f                op_jle32
+                0x00000000c002911a                op_jnle16
+                0x00000000c00291e3                op_jnle32
+                0x00000000c002927e                op_call_j16
+                0x00000000c0029329                op_call_j32
+                0x00000000c00293cc                op_ret16
+                0x00000000c0029464                op_ret32
+                0x00000000c00294f8                op_ret16_iw
+                0x00000000c00295e6                op_ret32_iw
+                0x00000000c00296d0                op_int
+                0x00000000c002974d                op_into
+                0x00000000c0029786                op_push_r16
+                0x00000000c0029817                op_push_i16
+                0x00000000c002989a                op_push_e16
+                0x00000000c0029a07                op_push_r32
+                0x00000000c0029a94                op_push_i32
+                0x00000000c0029b13                op_push_e32
+                0x00000000c0029c78                op_pop_r16
+                0x00000000c0029d15                op_pop_e16
+                0x00000000c0029eb6                op_pop_e32
+                0x00000000c002a052                op_pop_r32
+                0x00000000c002a0ed                op_push_s16
+                0x00000000c002a185                op_push_s32
+                0x00000000c002a30b                op_pop_s16
+                0x00000000c002a4f5                op_pop_s32
+                0x00000000c002a6df                op_pusha
+                0x00000000c002a74b                op_pushad
+                0x00000000c002a7b7                op_popa
+                0x00000000c002a823                op_popad
+                0x00000000c002a88f                op_arith_r8r8
+                0x00000000c002a91c                op_arith_r8i8
+                0x00000000c002a99b                op_arith_r8e8
+                0x00000000c002aafb                op_arith_e8r8
+                0x00000000c002ac9d                op_arith_e8i8
+                0x00000000c002ae23                op_arith_r16r16
+                0x00000000c002aeb2                op_arith_r16i16
+                0x00000000c002af33                op_arith_r16e16
+                0x00000000c002b09d                op_arith_e16r16
+                0x00000000c002b242                op_arith_e16i16
+                0x00000000c002b3cb                op_arith_r32r32
+                0x00000000c002b457                op_arith_r32i32
+                0x00000000c002b4d5                op_arith_r32e32
+                0x00000000c002b638                op_arith_e32r32
+                0x00000000c002b7d5                op_arith_e32i32
+                0x00000000c002b956                op_shift_r8cl
+                0x00000000c002b9da                op_shift_r8i8
+                0x00000000c002ba59                op_shift_e8cl
+                0x00000000c002bbe9                op_shift_e8i8
+                0x00000000c002bd6f                op_shift_r16cl
+                0x00000000c002bdf5                op_shift_r16i16
+                0x00000000c002be76                op_shift_e16cl
+                0x00000000c002c009                op_shift_e16i16
+                0x00000000c002c192                op_shift_r32cl
+                0x00000000c002c219                op_shift_r32i32
+                0x00000000c002c29b                op_shift_e32cl
+                0x00000000c002c42e                op_shift_e32i32
+                0x00000000c002c5b7                op_cmp_e8r8
+                0x00000000c002c747                op_cmp_r8r8
+                0x00000000c002c803                op_cmp_r8e8
+                0x00000000c002c981                op_cmp_r8i8
+                0x00000000c002ca2f                op_cmp_e8i8
+                0x00000000c002cbb1                op_cmp_e16r16
+                0x00000000c002cd46                op_cmp_r16r16
+                0x00000000c002ce02                op_cmp_r16e16
+                0x00000000c002cf86                op_cmp_r16i16
+                0x00000000c002d034                op_cmp_e16i16
+                0x00000000c002d1bb                op_cmp_e32r32
+                0x00000000c002d343                op_cmp_r32r32
+                0x00000000c002d3f3                op_cmp_r32e32
+                0x00000000c002d56c                op_cmp_r32i32
+                0x00000000c002d60c                op_cmp_e32i32
+                0x00000000c002d784                op_test_e8r8
+                0x00000000c002d8f0                op_test_r8r8
+                0x00000000c002d989                op_test_r8e8
+                0x00000000c002daf5                op_test_r8i8
+                0x00000000c002db7c                op_test_e8i8
+                0x00000000c002dcd7                op_test_e16r16
+                0x00000000c002de49                op_test_r16r16
+                0x00000000c002dee2                op_test_r16e16
+                0x00000000c002e054                op_test_r16i16
+                0x00000000c002e0db                op_test_e16i16
+                0x00000000c002e23f                op_test_e32r32
+                0x00000000c002e3a7                op_test_r32r32
+                0x00000000c002e439                op_test_r32e32
+                0x00000000c002e5a1                op_test_r32i32
+                0x00000000c002e625                op_test_e32i32
+                0x00000000c002e77c                op_inc_r8
+                0x00000000c002e7e6                op_inc_e8
+                0x00000000c002e941                op_inc_r16
+                0x00000000c002e9ad                op_inc_e16
+                0x00000000c002eb0b                op_inc_r32
+                0x00000000c002eb78                op_inc_e32
+                0x00000000c002ecd6                op_dec_r8
+                0x00000000c002ed40                op_dec_e8
+                0x00000000c002ee9b                op_dec_r16
+                0x00000000c002ef07                op_dec_e16
+                0x00000000c002f065                op_dec_r32
+                0x00000000c002f0d2                op_dec_e32
+                0x00000000c002f230                op_not_r8
+                0x00000000c002f2a5                op_not_e8
+                0x00000000c002f400                op_not_r16
+                0x00000000c002f476                op_not_e16
+                0x00000000c002f5d4                op_not_r32
+                0x00000000c002f648                op_not_e32
+                0x00000000c002f7a6                op_neg_r8
+                0x00000000c002f816                op_neg_e8
+                0x00000000c002f971                op_neg_r16
+                0x00000000c002f9e3                op_neg_e16
+                0x00000000c002fb41                op_neg_r32
+                0x00000000c002fbb4                op_neg_e32
+                0x00000000c002fd12                op_muldiv_r8
+                0x00000000c002fdad                op_muldiv_e8
+                0x00000000c002ff1e                op_muldiv_r16
+                0x00000000c002ffb9                op_muldiv_e16
+                0x00000000c003012f                op_muldiv_r32
+                0x00000000c00301c6                op_muldiv_e32
+                0x00000000c0030337                op_imul_r16r16i16
+                0x00000000c00303cd                op_imul_r16e16i16
+                0x00000000c003053b                op_imul_r32r32i32
+                0x00000000c00305c8                op_imul_r32e32i32
+                0x00000000c0030729                op_imul_r16r16
+                0x00000000c00307cd                op_imul_r32r32
+                0x00000000c0030868                op_imul_r16e16
+                0x00000000c00309e4                op_imul_r32e32
+                0x00000000c0030b56                op_shrd_r16r16i8
+                0x00000000c0030be9                op_shrd_r32r32i8
+                0x00000000c0030c79                op_shrd_r16r16cl
+                0x00000000c0030d11                op_shrd_r32r32cl
+                0x00000000c0030da6                op_shrd_e16r16i8
+                0x00000000c0030f4d                op_shrd_e32r32i8
+                0x00000000c00310ec                op_shrd_e16r16cl
+                0x00000000c003129d                op_shrd_e32r32cl
+                0x00000000c0031446                op_shld_r16r16i8
+                0x00000000c00314d9                op_shld_r32r32i8
+                0x00000000c0031569                op_shld_r16r16cl
+                0x00000000c0031601                op_shld_r32r32cl
+                0x00000000c0031696                op_shld_e16r16i8
+                0x00000000c003183d                op_shld_e32r32i8
+                0x00000000c00319dc                op_shld_e16r16cl
+                0x00000000c0031b8d                op_shld_e32r32cl
+                0x00000000c0031d36                op_out_i8al
+                0x00000000c0031dd9                op_out_i8ax
+                0x00000000c0031e7c                op_out_i8eax
+                0x00000000c0031f1b                op_in_i8al
+                0x00000000c0031fbb                op_in_i8ax
+                0x00000000c003205c                op_in_i8eax
+                0x00000000c00320fd                op_out_dxal
+                0x00000000c00321a5                op_out_dxax
+                0x00000000c003224d                op_out_dxeax
+                0x00000000c00322f1                op_in_dxal
+                0x00000000c0032396                op_in_dxax
+                0x00000000c003243c                op_in_dxeax
+                0x00000000c00324e2                op_mov_r8i8
+                0x00000000c0032547                op_mov_r16i16
+                0x00000000c00325ad                op_mov_r32i32
+                0x00000000c0032611                op_mov_r8e8
+                0x00000000c0032765                op_mov_r8r8
+                0x00000000c00327db                op_mov_e8r8
+                0x00000000c0032914                op_mov_e8i8
+                0x00000000c0032a3f                op_mov_r16e16
+                0x00000000c0032b98                op_mov_r16r16
+                0x00000000c0032c0f                op_mov_e16r16
+                0x00000000c0032d4c                op_mov_e16i16
+                0x00000000c0032e7b                op_mov_r32e32
+                0x00000000c0032fd1                op_mov_r32r32
+                0x00000000c0033046                op_mov_e32r32
+                0x00000000c003317e                op_mov_e32i32
+                0x00000000c00332a8                op_mov_s16r16
+                0x00000000c0033353                op_mov_s16e16
+                0x00000000c00334da                op_mov_e16s16
+                0x00000000c003361e                op_mov_r16s16
+                0x00000000c003369c                op_mov_r32s16
+                0x00000000c0033717                op_mov_eaxm32
+                0x00000000c0033865                op_mov_axm16
+                0x00000000c00339b6                op_mov_alm8
+                0x00000000c0033b02                op_mov_m32eax
+                0x00000000c0033c3c                op_mov_m16ax
+                0x00000000c0033d7b                op_mov_m8al
+                0x00000000c0033eb6                op_cmov_r16e16
+                0x00000000c0034023                op_cmov_r16r16
+                0x00000000c00340b6                op_cmov_r32e32
+                0x00000000c0034220                op_cmov_r32r32
+                0x00000000c00342b1                op_setcc_e8
+                0x00000000c00343e8                op_setcc_r8
+                0x00000000c003445e                op_lea_r16e16
+                0x00000000c00344ce                op_lea_r32e32
+                0x00000000c0034542                op_lds_r16e16
+                0x00000000c00347aa                op_lds_r32e32
+                0x00000000c0034a0f                op_les_r16e16
+                0x00000000c0034c77                op_les_r32e32
+                0x00000000c0034edc                op_lss_r16e16
+                0x00000000c0035144                op_lss_r32e32
+                0x00000000c00353a9                op_lfs_r16e16
+                0x00000000c0035611                op_lfs_r32e32
+                0x00000000c0035876                op_lgs_r16e16
+                0x00000000c0035ade                op_lgs_r32e32
+                0x00000000c0035d43                op_xchg_r8r8
+                0x00000000c0035deb                op_xchg_r16r16
+                0x00000000c0035e96                op_xchg_r32r32
+                0x00000000c0035f3b                op_xchg_r8e8
+                0x00000000c00360d6                op_xchg_r16e16
+                0x00000000c003628b                op_xchg_r32e32
+                0x00000000c0036435                op_cmpxchg_r8r8
+                0x00000000c00364b8                op_cmpxchg_e8r8
+                0x00000000c0036646                op_cmpxchg_r16r16
+                0x00000000c00366cb                op_cmpxchg_e16r16
+                0x00000000c003685c                op_cmpxchg_r32r32
+                0x00000000c00368de                op_cmpxchg_e32r32
+                0x00000000c0036a67                op_cmpxchg8b_e32
+                0x00000000c0036e80                op_xadd_r8r8
+                0x00000000c0036efe                op_xadd_r8e8
+                0x00000000c0037081                op_xadd_r16r16
+                0x00000000c0037103                op_xadd_r16e16
+                0x00000000c003728d                op_xadd_r32r32
+                0x00000000c0037311                op_xadd_r32e32
+                0x00000000c003749d                op_bound_r16e16
+                0x00000000c003770f                op_bound_r32e32
+                0x00000000c0037975                op_daa
+                0x00000000c0037a64                op_das
+                0x00000000c0037b5d                op_aaa
+                0x00000000c0037c49                op_aas
+                0x00000000c0037d54                op_aam
+                0x00000000c0037e3d                op_aad
+                0x00000000c0037eeb                op_bt_r16
+                0x00000000c0037f88                op_bts_r16
+                0x00000000c0038022                op_btc_r16
+                0x00000000c00380bc                op_btr_r16
+                0x00000000c0038156                op_bt_r32
+                0x00000000c00381ec                op_bts_r32
+                0x00000000c0038284                op_btc_r32
+                0x00000000c003831c                op_btr_r32
+                0x00000000c00383b4                op_bt_e16
+                0x00000000c0038540                op_bt_e32
+                0x00000000c00386c4                op_bts_e16
+                0x00000000c003886e                op_btc_e16
+                0x00000000c0038a18                op_btr_e16
+                0x00000000c0038bc2                op_bts_e32
+                0x00000000c0038d69                op_btc_e32
+                0x00000000c0038f10                op_btr_e32
+                0x00000000c00390b7                op_bsf_r16r16
+                0x00000000c003915b                op_bsf_r16e16
+                0x00000000c00392db                op_bsf_r32r32
+                0x00000000c0039376                op_bsf_r32e32
+                0x00000000c00394ea                op_bsr_r16r16
+                0x00000000c003958e                op_bsr_r16e16
+                0x00000000c003970e                op_bsr_r32r32
+                0x00000000c00397a9                op_bsr_r32e32
+                0x00000000c003991d                op_cli
+                0x00000000c0039a0d                op_sti
+                0x00000000c0039b1d                op_cld
+                0x00000000c0039b74                op_std
+                0x00000000c0039bcb                op_cmc
+                0x00000000c0039c1f                op_clc
+                0x00000000c0039c6c                op_stc
+                0x00000000c0039cb9                op_hlt
+                0x00000000c0039e2a                op_cpuid
+                0x00000000c0039e6f                op_rdmsr
+                0x00000000c0039eff                op_wrmsr
+                0x00000000c0039f8f                op_rdtsc
+                0x00000000c003a086                op_pushf
+                0x00000000c003a0ed                op_pushfd
+                0x00000000c003a154                op_popf
+                0x00000000c003a1bb                op_popfd
+                0x00000000c003a222                op_cbw
+                0x00000000c003a276                op_cwde
+                0x00000000c003a2c8                op_cwd
+                0x00000000c003a31d                op_cdq
+                0x00000000c003a36f                op_lahf
+                0x00000000c003a3c1                op_sahf
+                0x00000000c003a425                op_enter16
+                0x00000000c003a6cb                op_enter32
+                0x00000000c003a960                op_leave16
+                0x00000000c003ab04                op_leave32
+                0x00000000c003aca5                op_sgdt_e32
+                0x00000000c003aeb1                op_sidt_e32
+                0x00000000c003b0bd                op_str_sldt_e16
+                0x00000000c003b261                op_str_sldt_r16
+                0x00000000c003b36b                op_lgdt_e16
+                0x00000000c003b5ef                op_lgdt_e32
+                0x00000000c003b86c                op_lidt_e16
+                0x00000000c003baf0                op_lidt_e32
+                0x00000000c003bd6d                op_smsw_r16
+                0x00000000c003bdd8                op_smsw_r32
+                0x00000000c003be42                op_smsw_e16
+                0x00000000c003bf75                op_lmsw_r16
+                0x00000000c003c045                op_lmsw_e16
+                0x00000000c003c1f1                op_invlpg_e8
+                0x00000000c003c29b                op_mov_r32cr
+                0x00000000c003c339                op_mov_crr32
+                0x00000000c003c3cf                op_mov_r32dr
+                0x00000000c003c448                op_mov_drr32
+                0x00000000c003c4bd                op_ltr_e16
+                0x00000000c003c6cc                op_ltr_r16
+                0x00000000c003c7fa                op_lldt_e16
+                0x00000000c003ca09                op_lldt_r16
+                0x00000000c003cb37                op_lar_r16e16
+                0x00000000c003cd13                op_lar_r32e32
+                0x00000000c003cee8                op_lar_r16r16
+                0x00000000c003cfe3                op_lar_r32r32
+                0x00000000c003d0dd                op_lsl_r16e16
+                0x00000000c003d2b9                op_lsl_r32e32
+                0x00000000c003d48e                op_lsl_r16r16
+                0x00000000c003d589                op_lsl_r32r32
+                0x00000000c003d683                op_arpl_e16
+                0x00000000c003d873                op_arpl_r16
+                0x00000000c003d951                op_verr_e16
+                0x00000000c003dafc                op_verr_r16
+                0x00000000c003dbc6                op_verw_e16
+                0x00000000c003dd71                op_verw_r16
+                0x00000000c003de3b                op_clts
+                0x00000000c003dedc                op_wbinvd
+                0x00000000c003df5e                op_prefetchh
+                0x00000000c003df96                op_movzx_r16r8
+                0x00000000c003e00b                op_movzx_r32r8
+                0x00000000c003e07f                op_movzx_r32r16
+                0x00000000c003e0f2                op_movzx_r16e8
+                0x00000000c003e246                op_movzx_r32e8
+                0x00000000c003e39b                op_movzx_r32e16
+                0x00000000c003e4f3                op_movsx_r16r8
+                0x00000000c003e56f                op_movsx_r32r8
+                0x00000000c003e5e9                op_movsx_r32r16
+                0x00000000c003e663                op_movsx_r16e8
+                0x00000000c003e7ba                op_movsx_r32e8
+                0x00000000c003e90f                op_movsx_r32e16
+                0x00000000c003ea65                op_xlat16
+                0x00000000c003ebd7                op_xlat32
+                0x00000000c003ed40                op_bswap_r16
+                0x00000000c003ed9b                op_bswap_r32
+                0x00000000c003ee42                op_fpu_mem
+                0x00000000c003eedc                op_fpu_reg
+                0x00000000c003ef5d                op_fwait
+                0x00000000c003f006                op_sysenter
+                0x00000000c003f049                op_sysexit
+                0x00000000c003f08c                op_sse_10_17
+                0x00000000c003f101                op_sse_28_2F
+                0x00000000c003f176                op_sse_38
+                0x00000000c003f1eb                op_sse_6638
+                0x00000000c003f260                op_sse_50_57
+                0x00000000c003f2d5                op_sse_58_5F
+                0x00000000c003f34a                op_sse_60_67
+                0x00000000c003f3bf                op_sse_68_6F
+                0x00000000c003f434                op_sse_70_76
+                0x00000000c003f4a9                op_sse_7C_7D
+                0x00000000c003f51e                op_sse_7E_7F
+                0x00000000c003f593                op_sse_C2_C6
+                0x00000000c003f608                op_sse_D0_D7
+                0x00000000c003f67d                op_sse_D8_DF
+                0x00000000c003f6f2                op_sse_E0_E7
+                0x00000000c003f767                op_sse_E8_EF
+                0x00000000c003f7dc                op_sse_F1_F7
+                0x00000000c003f851                op_sse_F8_FE
+                0x00000000c003f8c6                op_ldmxcsr
+                0x00000000c003fa7b                op_stmxcsr
+                0x00000000c003fbda                op_mfence
+                0x00000000c003fc15                op_fxsave
+                0x00000000c003fca1                op_fxrstor
+                0x00000000c003fd2d                op_emms
+                0x00000000c003fd94                op_movsb16
+                0x00000000c003fe14                op_movsb32
+                0x00000000c003fe94                op_movsw16
+                0x00000000c003ff14                op_movsw32
+                0x00000000c003ff94                op_movsd16
+                0x00000000c0040014                op_movsd32
+                0x00000000c0040094                op_stosb16
+                0x00000000c0040114                op_stosb32
+                0x00000000c0040194                op_stosw16
+                0x00000000c0040214                op_stosw32
+                0x00000000c0040294                op_stosd16
+                0x00000000c0040314                op_stosd32
+                0x00000000c0040394                op_scasb16
+                0x00000000c0040414                op_scasb32
+                0x00000000c0040494                op_scasw16
+                0x00000000c0040514                op_scasw32
+                0x00000000c0040594                op_scasd16
+                0x00000000c0040614                op_scasd32
+                0x00000000c0040694                op_insb16
+                0x00000000c0040714                op_insb32
+                0x00000000c0040794                op_insw16
+                0x00000000c0040814                op_insw32
+                0x00000000c0040894                op_insd16
+                0x00000000c0040914                op_insd32
+                0x00000000c0040994                op_outsb16
+                0x00000000c0040a14                op_outsb32
+                0x00000000c0040a94                op_outsw16
+                0x00000000c0040b14                op_outsw32
+                0x00000000c0040b94                op_outsd16
+                0x00000000c0040c14                op_outsd32
+                0x00000000c0040c94                op_cmpsb16
+                0x00000000c0040d14                op_cmpsb32
+                0x00000000c0040d94                op_cmpsw16
+                0x00000000c0040e14                op_cmpsw32
+                0x00000000c0040e94                op_cmpsd16
+                0x00000000c0040f14                op_cmpsd32
+                0x00000000c0040f94                op_lodsb16
+                0x00000000c0041014                op_lodsb32
+                0x00000000c0041094                op_lodsw16
+                0x00000000c0041114                op_lodsw32
+                0x00000000c0041194                op_lodsd16
+                0x00000000c0041214                op_lodsd32
+ .text          0x00000000c0041294      0x544 build/smc.o
+                0x00000000c0041294                cpu_smc_page_has_code
+                0x00000000c00412d9                cpu_smc_has_code
+                0x00000000c004133f                cpu_smc_set_code
+                0x00000000c00413c0                cpu_smc_invalidate
+                0x00000000c0041624                cpu_smc_invalidate_page
+ .text          0x00000000c00417d8      0xe26 build/seg.o
+                0x00000000c004190d                cpu_load_csip_real
+                0x00000000c0041983                cpu_load_csip_virtual
+                0x00000000c00419f9                cpu_load_csip_protected
+                0x00000000c0041a81                cpu_seg_load_virtual
+                0x00000000c0041b4d                cpu_seg_load_real
+                0x00000000c0041c19                cpu_seg_load_protected
+                0x00000000c0041e72                cpu_seg_load_descriptor2
+                0x00000000c0042030                cpu_seg_load_descriptor
+                0x00000000c0042080                cpu_seg_get_dpl
+                0x00000000c00420a7                cpu_seg_get_base
+                0x00000000c00420e7                cpu_seg_get_limit
+                0x00000000c0042131                cpu_seg_gate_target_segment
+                0x00000000c0042148                cpu_seg_gate_target_offset
+                0x00000000c00421a2                cpu_seg_gate_parameter_count
+                0x00000000c00421ba                cpu_seg_descriptor_address
+                0x00000000c004223c                cpu_load_seg_value_mov
+ .text          0x00000000c00425fe     0x8049 build/decoder.o
+                0x00000000c004a1a4                cpu_decode
+ .text          0x00000000c004a647      0xe95 build/mmu.o
+                0x00000000c004a647                cpu_mmu_tlb_flush
+                0x00000000c004a712                cpu_mmu_tlb_flush_nonglobal
+                0x00000000c004aa06                cpu_read_phys
+                0x00000000c004aad6                cpu_mmu_translate
+                0x00000000c004b49a                cpu_mmu_tlb_invalidate
+ .text          0x00000000c004b4dc      0x219 build/prot.o
+                0x00000000c004b4dc                cpu_prot_set_cr
+                0x00000000c004b5b8                cpu_prot_set_dr
+                0x00000000c004b688                cpu_prot_update_cpl
+ .text          0x00000000c004b6f5     0xac85 build/ctrlflow.o
+                0x00000000c004d9e6                cpu_interrupt
+                0x00000000c005035e                cpu_exception
+                0x00000000c00504c3                jmpf
+                0x00000000c0050be6                callf
+                0x00000000c0052a21                iret
+                0x00000000c0054f99                retf
+                0x00000000c0055fd2                sysenter
+                0x00000000c00561a1                sysexit
+ .text          0x00000000c005637a     0xb02b build/string.o
+                0x00000000c005637a                movsb16
+                0x00000000c0056812                movsb32
+                0x00000000c0056c82                movsw16
+                0x00000000c0057128                movsw32
+                0x00000000c00575a6                movsd16
+                0x00000000c0057a42                movsd32
+                0x00000000c0057eb6                stosb16
+                0x00000000c005815d                stosb32
+                0x00000000c00583ec                stosw16
+                0x00000000c005869b                stosw32
+                0x00000000c0058932                stosd16
+                0x00000000c0058bdb                stosd32
+                0x00000000c0058e6c                scasb16
+                0x00000000c00593bc                scasb32
+                0x00000000c00598e8                scasw16
+                0x00000000c0059e4d                scasw32
+                0x00000000c005a38e                scasd16
+                0x00000000c005a8cc                scasd32
+                0x00000000c005ade6                insb16
+                0x00000000c005b0e3                insb32
+                0x00000000c005b3c8                insw16
+                0x00000000c005b6cd                insw32
+                0x00000000c005b9ba                insd16
+                0x00000000c005bcbd                insd32
+                0x00000000c005bfa8                outsb16
+                0x00000000c005c2d1                outsb32
+                0x00000000c005c5e2                outsw16
+                0x00000000c005c911                outsw32
+                0x00000000c005cc28                outsd16
+                0x00000000c005cf4f                outsd32
+                0x00000000c005d25e                cmpsb16
+                0x00000000c005da88                cmpsb32
+                0x00000000c005e276                cmpsw16
+                0x00000000c005eac3                cmpsw32
+                0x00000000c005f2d4                cmpsd16
+                0x00000000c005faf3                cmpsd32
+                0x00000000c00602d6                lodsb16
+                0x00000000c00605ac                lodsb32
+                0x00000000c0060867                lodsw16
+                0x00000000c0060b47                lodsw32
+                0x00000000c0060e0c                lodsd16
+                0x00000000c00610e6                lodsd32
+ .text          0x00000000c00613a5      0x3e3 build/bit.o
+                0x00000000c00613a5                bt16
+                0x00000000c00613e4                bt32
+                0x00000000c006141b                bts16
+                0x00000000c0061479                bts32
+                0x00000000c00614cd                btc16
+                0x00000000c006152b                btc32
+                0x00000000c006157f                btr16
+                0x00000000c00615df                btr32
+                0x00000000c0061635                bsf16
+                0x00000000c006168c                bsf32
+                0x00000000c00616e3                bsr16
+                0x00000000c006173f                bsr32
+ .text          0x00000000c0061788     0x2b37 build/arith.o
+                0x00000000c0061788                cpu_arith8
+                0x00000000c0061a15                cpu_arith16
+                0x00000000c0061cae                cpu_arith32
+                0x00000000c0061eee                cpu_shift8
+                0x00000000c00623d5                cpu_shift16
+                0x00000000c00628e2                cpu_shift32
+                0x00000000c0062d06                cpu_muldiv8
+                0x00000000c0062f58                cpu_muldiv16
+                0x00000000c00631ef                cpu_muldiv32
+                0x00000000c006353e                cpu_neg8
+                0x00000000c006359f                cpu_neg16
+                0x00000000c0063601                cpu_neg32
+                0x00000000c0063658                cpu_shrd16
+                0x00000000c0063752                cpu_shrd32
+                0x00000000c00637ed                cpu_shld16
+                0x00000000c00638e9                cpu_shld32
+                0x00000000c006398a                cpu_inc8
+                0x00000000c0063a23                cpu_inc16
+                0x00000000c0063abd                cpu_inc32
+                0x00000000c0063b4f                cpu_dec8
+                0x00000000c0063be8                cpu_dec16
+                0x00000000c0063c82                cpu_dec32
+                0x00000000c0063d14                cpu_not8
+                0x00000000c0063d33                cpu_not16
+                0x00000000c0063d53                cpu_not32
+                0x00000000c0063d71                cpu_imul8
+                0x00000000c0063e0c                cpu_imul16
+                0x00000000c0063ea5                cpu_imul32
+                0x00000000c0063f4e                cpu_cmpxchg8
+                0x00000000c0063ffb                cpu_cmpxchg16
+                0x00000000c00640ab                cpu_cmpxchg32
+                0x00000000c0064140                xadd8
+                0x00000000c00641c2                xadd16
+                0x00000000c0064246                xadd32
+ .text          0x00000000c00642bf      0xbc6 build/stack.o
+                0x00000000c00642bf                cpu_push16
+                0x00000000c00643e3                cpu_push32
+                0x00000000c0064506                cpu_pop16
+                0x00000000c0064642                cpu_pop16_dest32
+                0x00000000c006477d                cpu_pop32
+                0x00000000c00648b4                cpu_pusha
+                0x00000000c0064a09                cpu_pushad
+                0x00000000c0064b59                cpu_popa
+                0x00000000c0064cf4                cpu_popad
+ .text          0x00000000c0064e85      0x3f7 build/cpu_io.o
+                0x00000000c0064e85                cpu_io_check_access
+                0x00000000c006516f                cpu_outb
+                0x00000000c006519d                cpu_outw
+                0x00000000c00651cb                cpu_outd
+                0x00000000c00651f5                cpu_inb
+                0x00000000c0065222                cpu_inw
+                0x00000000c0065250                cpu_ind
+ .text          0x00000000c006527c     0x17f4 build/misc.o
+                0x00000000c006527c                cpu_set_cpuid
+                0x00000000c006529c                cpuid
+                0x00000000c0065871                rdmsr
+                0x00000000c0065af0                wrmsr
+                0x00000000c0065e17                pushf
+                0x00000000c0065eec                pushfd
+                0x00000000c0065f62                popf
+                0x00000000c006618d                popfd
+                0x00000000c0066358                ltr
+                0x00000000c0066544                lldt
+                0x00000000c00666b4                lar
+                0x00000000c00667a9                lsl
+                0x00000000c00668ea                verify_segment_access
+                0x00000000c00669fe                arpl
+ .text          0x00000000c0066a70     0xb35a build/simd.o
+                0x00000000c0066fd2                cpu_sse_exception
+                0x00000000c0067077                cpu_mmx_check
+                0x00000000c0067112                cpu_update_mxcsr
+                0x00000000c00671bd                cpu_sse_handle_exceptions
+                0x00000000c0069d80                execute_0F10_17
+                0x00000000c006a51a                execute_0F28_2F
+                0x00000000c006ae59                execute_0F50_57
+                0x00000000c006b6fc                execute_0F68_6F
+                0x00000000c006bdcd                execute_0FE8_EF
+                0x00000000c006c638                execute_0F70_76
+                0x00000000c006cbcc                execute_0F60_67
+                0x00000000c006d1cf                execute_0FD0_D7
+                0x00000000c006d91b                execute_0FD8_DF
+                0x00000000c006dfd2                execute_0F7E_7F
+                0x00000000c006e389                execute_0FF8_FE
+                0x00000000c006e96d                execute_0FC2_C6
+                0x00000000c006f0f8                execute_0F58_5F
+                0x00000000c0070546                execute_0FE0_E7
+                0x00000000c0070df5                execute_0FF1_F7
+                0x00000000c007161a                cpu_emms
+                0x00000000c0071652                execute_0F7C_7D
+                0x00000000c007194a                execute_0F38
+                0x00000000c0071b8c                execute_660F38
+ .text          0x00000000c0071dca     0x13e9 build/apic.o
+                0x00000000c0072282                apic_get_interrupt
+                0x00000000c007236b                apic_has_interrupt
+                0x00000000c0072380                apic_receive_bus_message
+                0x00000000c0072f33                apic_next
+                0x00000000c007314a                apic_init
+                0x00000000c007319e                apic_is_enabled
+ .text          0x00000000c00731b3      0xbef build/acpi.o
+                0x00000000c0073a73                acpi_next
+                0x00000000c0073cd3                acpi_init
+ .text          0x00000000c0073da2      0x8ba build/ioapic.o
+                0x00000000c007434f                ioapic_raise_irq
+                0x00000000c0074494                ioapic_remote_eoi
+                0x00000000c0074505                ioapic_lower_irq
+                0x00000000c00745ae                ioapic_init
+ .text          0x00000000c007465c     0x103a build/pic.o
+                0x00000000c0074e98                pic_get_interrupt
+                0x00000000c0074fc9                pic_raise_irq
+                0x00000000c0075048                pic_lower_irq
+                0x00000000c007559e                pic_init
+ .text          0x00000000c0075696     0x1191 build/dma.o
+                0x00000000c0076313                dma_raise_dreq
+                0x00000000c0076709                dma_init
+ .text          0x00000000c0076827     0x147f build/kbd.o
+                0x00000000c0077959                kbd_init
+                0x00000000c00779fd                kbd_add_key
+                0x00000000c0077b7a                kbd_mouse_down
+                0x00000000c0077c3d                kbd_send_mouse_move
+ .text          0x00000000c0077ca6     0x11a9 build/pit.o
+                0x00000000c0078c52                pit_next
+                0x00000000c0078dab                pit_init
+ .text          0x00000000c0078e4f     0x3e43 build/vga.o
+                0x00000000c007aff2                vga_update
+                0x00000000c007cb08                vga_init
+                0x00000000c007cc7d                vga_get_raw_vram
+ .text          0x00000000c007cc92      0xe36 build/cmos.o
+                0x00000000c007d722                cmos_clock
+                0x00000000c007d8e4                cmos_next
+                0x00000000c007d933                cmos_set
+                0x00000000c007d962                cmos_get
+                0x00000000c007d9b3                cmos_init
+ .text          0x00000000c007dac8     0x6f4a build/ide.o
+                0x00000000c0082f2b                drive_debug
+                0x00000000c00842e0                ide_write_prdt
+                0x00000000c00845dc                ide_read_prdt
+                0x00000000c0084689                ide_init
+ .text          0x00000000c0084a12     0x2743 build/fdc.o
+                0x00000000c00865aa                floppy_next
+                0x00000000c00865cd                fdc_dma_buf
+                0x00000000c00865e2                fdc_dma_complete
+                0x00000000c00868f8                fdc_replace_drive
+                0x00000000c0086936                fdc_init
+ .text          0x00000000c0087155     0x1560 build/pci.o
+                0x00000000c00875c2                pci_create_device
+                0x00000000c0087739                pci_copy_default_configuration
+                0x00000000c0087786                pci_get_configuration_ptr
+                0x00000000c0087bdd                pci_init_mem
+                0x00000000c00884f0                pci_init
+                0x00000000c0088599                pci_set_irq_line
+ .text          0x00000000c00886b5       0x38 build/net-none.o
+                0x00000000c00886b5                net_init
+                0x00000000c00886c9                net_send
+                0x00000000c00886dd                net_poll
+ .text          0x00000000c00886ed      0x6cd build/main.o
+                0x00000000c0088872                main
+ .text          0x00000000c0088dba      0x1c8 build/display_profan.o
+                0x00000000c0088dba                display_init
+                0x00000000c0088dea                display_get_pixels
+                0x00000000c0088dff                display_set_resolution
+                0x00000000c0088e8d                display_sleep
+                0x00000000c0088ed6                display_release_mouse
+                0x00000000c0088ee6                display_handle_events
+                0x00000000c0088ef6                display_update
+ .text          0x00000000c0088f82     0x28a1 build/drive.o
+                0x00000000c0088f82                drive_cancel_transfers
+                0x00000000c0088f9c                drive_read
+                0x00000000c0088fe1                drive_prefetch
+                0x00000000c0089023                drive_write
+                0x00000000c008aa4e                drive_check_complete
+                0x00000000c008aa91                drive_async_event_in_progress
+                0x00000000c008aaa6                drive_init
+                0x00000000c008abf5                drive_state
+                0x00000000c008b39c                drive_simple_init
+                0x00000000c008b69e                drive_destroy_simple
+                0x00000000c008b74b                drive_autodetect_type
+ .text          0x00000000c008b823     0x19c0 build/state.o
+                0x00000000c008bd27                state_register
+                0x00000000c008bdf9                state_get_mem
+                0x00000000c008be6e                state_get_object
+                0x00000000c008c0db                state_add_mem
+                0x00000000c008c120                state_add_object
+                0x00000000c008c157                state_create_bjson_object
+                0x00000000c008c1c9                state_init_bjson_mem
+                0x00000000c008c210                state_obj
+                0x00000000c008c274                state_field
+                0x00000000c008c373                state_string
+                0x00000000c008c962                state_file
+                0x00000000c008cca7                state_read_from_file
+                0x00000000c008cef6                state_store_to_file
+                0x00000000c008d138                state_get_path_base
+                0x00000000c008d14d                state_mkdir
+                0x00000000c008d1ce                state_is_reading
+ .text          0x00000000c008d1e3     0x1147 build/io.o
+                0x00000000c008d1e3                io_default_readb
+                0x00000000c008d22b                io_default_readw
+                0x00000000c008d274                io_default_readd
+                0x00000000c008d2eb                io_default_writeb
+                0x00000000c008d32f                io_default_writew
+                0x00000000c008d3a4                io_default_writed
+                0x00000000c008d451                io_register_read
+                0x00000000c008d517                io_register_write
+                0x00000000c008d5dd                io_unregister_read
+                0x00000000c008d670                io_unregister_write
+                0x00000000c008d703                io_register_reset
+                0x00000000c008d788                io_trigger_reset
+                0x00000000c008d7c5                io_readb
+                0x00000000c008d860                io_readw
+                0x00000000c008d8d9                io_readd
+                0x00000000c008d94e                io_writeb
+                0x00000000c008d9f7                io_writew
+                0x00000000c008da75                io_writed
+                0x00000000c008dcc5                io_register_mmio_read
+                0x00000000c008ddf3                io_register_mmio_write
+                0x00000000c008df21                io_remap_mmio_read
+                0x00000000c008dfd7                io_handle_mmio_write
+                0x00000000c008e072                io_handle_mmio_read
+                0x00000000c008e141                io_addr_mmio_read
+                0x00000000c008e1b8                io_init
+ .text          0x00000000c008e32a      0x445 build/util.o
+                0x00000000c008e37f                qmalloc_init
+                0x00000000c008e435                qmalloc
+                0x00000000c008e4eb                qfree
+                0x00000000c008e582                aalloc
+                0x00000000c008e5f8                afree
+                0x00000000c008e63a                set_ticks_per_second
+                0x00000000c008e653                util_state
+                0x00000000c008e69d                get_now
+                0x00000000c008e6c9                add_now
+                0x00000000c008e712                util_debug
+                0x00000000c008e731                util_abort
+ .text          0x00000000c008e76f     0x1668 build/ini.o
+                0x00000000c008f3db                parse_cfg
+ .text          0x00000000c008fdd7     0x1277 build/pc.o
+                0x00000000c00904f1                pc_set_a20
+                0x00000000c0090605                pc_init
+                0x00000000c0090ee6                pc_hlt_if_0
+                0x00000000c0090ef6                pc_execute
+ .text          0x00000000c009104e      0xb37 build/bordel.o
+                0x00000000c009104e                __udivdi3
+                0x00000000c009115b                __divdi3
+                0x00000000c0091209                __umoddi3
+                0x00000000c009129e                __moddi3
+                0x00000000c009130a                init_bordel
+                0x00000000c0091375                open
+                0x00000000c0091598                read
+                0x00000000c00916f2                write
+                0x00000000c009186c                close
+                0x00000000c009191b                lseek
+                0x00000000c0091a36                inflateInit_
+                0x00000000c0091a79                inflate
+                0x00000000c0091abc                inflateEnd
+                0x00000000c0091aff                fstat
+                0x00000000c0091b42                mkdir
+ *(.text.*)
+ .text.__x86.get_pc_thunk.bx
+                0x00000000c0091b85        0x4 build/entry.o
+                0x00000000c0091b85                __x86.get_pc_thunk.bx
+ .text.__x86.get_pc_thunk.ax
+                0x00000000c0091b89        0x4 build/trace.o
+                0x00000000c0091b89                __x86.get_pc_thunk.ax
+ .text.__x86.get_pc_thunk.dx
+                0x00000000c0091b8d        0x4 build/softfloat.o
+                0x00000000c0091b8d                __x86.get_pc_thunk.dx
+ .text.__x86.get_pc_thunk.cx
+                0x00000000c0091b91        0x4 build/softfloat.o
+                0x00000000c0091b91                __x86.get_pc_thunk.cx
+ .text.__x86.get_pc_thunk.si
+                0x00000000c0091b95        0x4 build/softfloat.o
+                0x00000000c0091b95                __x86.get_pc_thunk.si
+
+.iplt           0x00000000c0091b99        0x0
+ .iplt          0x00000000c0091b99        0x0 build/entry.o
+
+.rodata         0x00000000c0091ba0     0x9206
+ *(.rodata)
+ .rodata        0x00000000c0091ba0       0x62 build/trace.o
+ *fill*         0x00000000c0091c02       0x1e 
+ .rodata        0x00000000c0091c20      0x5a0 build/softfloat.o
+                0x00000000c0091c20                float_all_exceptions_mask
+                0x00000000c0092040                float16_default_nan
+                0x00000000c0092044                float32_negative_inf
+                0x00000000c0092048                float32_positive_inf
+                0x00000000c009204c                float32_negative_zero
+                0x00000000c0092050                float32_positive_zero
+                0x00000000c0092054                float32_negative_one
+                0x00000000c0092058                float32_positive_one
+                0x00000000c009205c                float32_max_float
+                0x00000000c0092060                float32_min_float
+                0x00000000c0092064                float32_default_nan
+                0x00000000c0092068                float64_negative_inf
+                0x00000000c0092070                float64_positive_inf
+                0x00000000c0092078                float64_negative_zero
+                0x00000000c0092080                float64_positive_zero
+                0x00000000c0092088                float64_negative_one
+                0x00000000c0092090                float64_positive_one
+                0x00000000c0092098                float64_max_float
+                0x00000000c00920a0                float64_min_float
+                0x00000000c00920a8                float64_default_nan
+                0x00000000c00920b0                floatx80_default_nan
+                0x00000000c00920bc                float128_default_nan
+ .rodata        0x00000000c00921c0       0x50 build/access.o
+ .rodata        0x00000000c0092210      0x3a9 build/cpu.o
+ *fill*         0x00000000c00925b9        0x3 
+ .rodata        0x00000000c00925bc      0x20c build/eflags.o
+ *fill*         0x00000000c00927c8        0x8 
+ .rodata        0x00000000c00927d0      0x52c build/fpu.o
+ .rodata        0x00000000c0092cfc       0x6d build/opcodes.o
+ *fill*         0x00000000c0092d69        0x3 
+ .rodata        0x00000000c0092d6c       0x2a build/seg.o
+ *fill*         0x00000000c0092d96        0xa 
+ .rodata        0x00000000c0092da0      0xbb8 build/decoder.o
+ .rodata        0x00000000c0093958      0x1bd build/mmu.o
+ *fill*         0x00000000c0093b15        0x3 
+ .rodata        0x00000000c0093b18      0x1c0 build/ctrlflow.o
+ .rodata        0x00000000c0093cd8       0x12 build/string.o
+ *fill*         0x00000000c0093cea        0x2 
+ .rodata        0x00000000c0093cec      0x114 build/arith.o
+ .rodata        0x00000000c0093e00      0x124 build/misc.o
+ .rodata        0x00000000c0093f24      0x43b build/simd.o
+ *fill*         0x00000000c009435f        0x1 
+ .rodata        0x00000000c0094360      0x5f1 build/apic.o
+ *fill*         0x00000000c0094951        0xf 
+ .rodata        0x00000000c0094960      0x4c8 build/acpi.o
+ .rodata        0x00000000c0094e28      0x1b7 build/ioapic.o
+ *fill*         0x00000000c0094fdf        0x1 
+ .rodata        0x00000000c0094fe0      0x389 build/pic.o
+ *fill*         0x00000000c0095369        0x3 
+ .rodata        0x00000000c009536c      0x264 build/dma.o
+ .rodata        0x00000000c00955d0      0x624 build/kbd.o
+ *fill*         0x00000000c0095bf4        0xc 
+ .rodata        0x00000000c0095c00      0x52c build/pit.o
+ .rodata        0x00000000c009612c      0xc1e build/vga.o
+ *fill*         0x00000000c0096d4a        0x2 
+ .rodata        0x00000000c0096d4c      0x170 build/cmos.o
+ .rodata        0x00000000c0096ebc     0x198e build/ide.o
+ *fill*         0x00000000c009884a        0x2 
+ .rodata        0x00000000c009884c      0xe90 build/fdc.o
+ *fill*         0x00000000c00996dc        0x4 
+ .rodata        0x00000000c00996e0      0x841 build/pci.o
+ *fill*         0x00000000c0099f21        0x3 
+ .rodata        0x00000000c0099f24      0x1ae build/main.o
+ *fill*         0x00000000c009a0d2        0x2 
+ .rodata        0x00000000c009a0d4      0x24a build/drive.o
+ *fill*         0x00000000c009a31e        0x2 
+ .rodata        0x00000000c009a320      0x22d build/state.o
+ *fill*         0x00000000c009a54d        0x3 
+ .rodata        0x00000000c009a550      0x2a7 build/io.o
+ *fill*         0x00000000c009a7f7        0x1 
+ .rodata        0x00000000c009a7f8       0x33 build/util.o
+ *fill*         0x00000000c009a82b        0x1 
+ .rodata        0x00000000c009a82c      0x3e5 build/ini.o
+ *fill*         0x00000000c009ac11        0x3 
+ .rodata        0x00000000c009ac14       0xf4 build/pc.o
+ .rodata        0x00000000c009ad08       0x9e build/bordel.o
+ *(.rodata.*)
+
+.eh_frame       0x00000000c009ada8     0xfd64
+ .eh_frame      0x00000000c009ada8       0x50 build/entry.o
+ .eh_frame      0x00000000c009adf8       0xa8 build/trace.o
+                                         0xd4 (size before relaxing)
+ .eh_frame      0x00000000c009aea0     0x2210 build/softfloat.o
+                                       0x2250 (size before relaxing)
+ .eh_frame      0x00000000c009d0b0      0x20c build/access.o
+                                        0x238 (size before relaxing)
+ .eh_frame      0x00000000c009d2bc      0x2f0 build/cpu.o
+                                        0x330 (size before relaxing)
+ .eh_frame      0x00000000c009d5ac      0x234 build/eflags.o
+                                        0x274 (size before relaxing)
+ .eh_frame      0x00000000c009d7e0      0x7b4 build/fpu.o
+                                        0x830 (size before relaxing)
+ .eh_frame      0x00000000c009df94     0x4774 build/opcodes.o
+                                       0x47c8 (size before relaxing)
+ .eh_frame      0x00000000c00a2708       0xcc build/smc.o
+                                        0x10c (size before relaxing)
+ .eh_frame      0x00000000c00a27d4      0x250 build/seg.o
+                                        0x290 (size before relaxing)
+ .eh_frame      0x00000000c00a2a24     0x1c50 build/decoder.o
+                                       0x1ca4 (size before relaxing)
+ .eh_frame      0x00000000c00a4674      0x100 build/mmu.o
+                                        0x140 (size before relaxing)
+ .eh_frame      0x00000000c00a4774       0x68 build/prot.o
+                                         0x94 (size before relaxing)
+ .eh_frame      0x00000000c00a47dc      0x29c build/ctrlflow.o
+                                        0x2dc (size before relaxing)
+ .eh_frame      0x00000000c00a4a78      0x738 build/string.o
+                                        0x764 (size before relaxing)
+ .eh_frame      0x00000000c00a51b0      0x1ac build/bit.o
+                                        0x1d8 (size before relaxing)
+ .eh_frame      0x00000000c00a535c      0x4dc build/arith.o
+                                        0x530 (size before relaxing)
+ .eh_frame      0x00000000c00a5838      0x18c build/stack.o
+                                        0x1b8 (size before relaxing)
+ .eh_frame      0x00000000c00a59c4       0xfc build/cpu_io.o
+                                        0x13c (size before relaxing)
+ .eh_frame      0x00000000c00a5ac0      0x218 build/misc.o
+                                        0x258 (size before relaxing)
+ .eh_frame      0x00000000c00a5cd8     0x1078 build/simd.o
+                                       0x10cc (size before relaxing)
+ .eh_frame      0x00000000c00a6d50      0x368 build/apic.o
+                                        0x3a8 (size before relaxing)
+ .eh_frame      0x00000000c00a70b8      0x1d4 build/acpi.o
+                                        0x214 (size before relaxing)
+ .eh_frame      0x00000000c00a728c      0x184 build/ioapic.o
+                                        0x1c4 (size before relaxing)
+ .eh_frame      0x00000000c00a7410      0x2d8 build/pic.o
+                                        0x318 (size before relaxing)
+ .eh_frame      0x00000000c00a76e8      0x1a4 build/dma.o
+                                        0x1e4 (size before relaxing)
+ .eh_frame      0x00000000c00a788c      0x290 build/kbd.o
+                                        0x2e4 (size before relaxing)
+ .eh_frame      0x00000000c00a7b1c      0x248 build/pit.o
+                                        0x29c (size before relaxing)
+ .eh_frame      0x00000000c00a7d64      0x40c build/vga.o
+                                        0x44c (size before relaxing)
+ .eh_frame      0x00000000c00a8170      0x258 build/cmos.o
+                                        0x2ac (size before relaxing)
+ .eh_frame      0x00000000c00a83c8      0x7e8 build/ide.o
+                                        0x83c (size before relaxing)
+ .eh_frame      0x00000000c00a8bb0      0x33c build/fdc.o
+                                        0x37c (size before relaxing)
+ .eh_frame      0x00000000c00a8eec      0x410 build/pci.o
+                                        0x464 (size before relaxing)
+ .eh_frame      0x00000000c00a92fc       0x60 build/net-none.o
+                                         0x8c (size before relaxing)
+ .eh_frame      0x00000000c00a935c       0x68 build/main.o
+                                         0x94 (size before relaxing)
+ .eh_frame      0x00000000c00a93c4       0xf0 build/display_profan.o
+                                        0x130 (size before relaxing)
+ .eh_frame      0x00000000c00a94b4      0x5ac build/drive.o
+                                        0x614 (size before relaxing)
+ .eh_frame      0x00000000c00a9a60      0x4ec build/state.o
+                                        0x52c (size before relaxing)
+ .eh_frame      0x00000000c00a9f4c      0x448 build/io.o
+                                        0x488 (size before relaxing)
+ .eh_frame      0x00000000c00aa394      0x1a8 build/util.o
+                                        0x1fc (size before relaxing)
+ .eh_frame      0x00000000c00aa53c      0x1a0 build/ini.o
+                                        0x1e0 (size before relaxing)
+ .eh_frame      0x00000000c00aa6dc      0x1e4 build/pc.o
+                                        0x224 (size before relaxing)
+ .eh_frame      0x00000000c00aa8c0      0x24c build/bordel.o
+                                        0x2b4 (size before relaxing)
+
+.rel.dyn        0x00000000c00aab0c        0x0
+ .rel.got       0x00000000c00aab0c        0x0 build/entry.o
+ .rel.iplt      0x00000000c00aab0c        0x0 build/entry.o
+
+.data           0x00000000c00aab20     0x1028
+ *(.data)
+ .data          0x00000000c00aab20        0x0 build/entry.o
+ .data          0x00000000c00aab20        0x0 build/trace.o
+ .data          0x00000000c00aab20      0x3d0 build/softfloat.o
+ .data          0x00000000c00aaef0        0x0 build/access.o
+ .data          0x00000000c00aaef0        0x0 build/cpu.o
+ .data          0x00000000c00aaef0        0x0 build/eflags.o
+ .data          0x00000000c00aaef0        0x0 build/fpu.o
+ .data          0x00000000c00aaef0        0x0 build/opcodes.o
+ .data          0x00000000c00aaef0        0x0 build/smc.o
+ .data          0x00000000c00aaef0        0x0 build/seg.o
+ *fill*         0x00000000c00aaef0       0x10 
+ .data          0x00000000c00aaf00      0x120 build/decoder.o
+ .data          0x00000000c00ab020        0x0 build/mmu.o
+ .data          0x00000000c00ab020        0x0 build/prot.o
+ .data          0x00000000c00ab020        0x4 build/ctrlflow.o
+ .data          0x00000000c00ab024        0x0 build/string.o
+ .data          0x00000000c00ab024        0x0 build/bit.o
+ .data          0x00000000c00ab024        0x0 build/arith.o
+ .data          0x00000000c00ab024        0x0 build/stack.o
+ .data          0x00000000c00ab024        0x0 build/cpu_io.o
+ .data          0x00000000c00ab024        0x0 build/misc.o
+ .data          0x00000000c00ab024        0x0 build/simd.o
+ .data          0x00000000c00ab024        0x0 build/apic.o
+ .data          0x00000000c00ab024        0x0 build/acpi.o
+ .data          0x00000000c00ab024        0x0 build/ioapic.o
+ .data          0x00000000c00ab024        0x0 build/pic.o
+ *fill*         0x00000000c00ab024       0x1c 
+ .data          0x00000000c00ab040       0x40 build/dma.o
+ .data          0x00000000c00ab080        0x0 build/kbd.o
+ .data          0x00000000c00ab080        0x0 build/pit.o
+ .data          0x00000000c00ab080       0x64 build/vga.o
+ .data          0x00000000c00ab0e4        0x0 build/cmos.o
+ .data          0x00000000c00ab0e4        0x0 build/ide.o
+ .data          0x00000000c00ab0e4        0x0 build/fdc.o
+ .data          0x00000000c00ab0e4        0x0 build/pci.o
+ .data          0x00000000c00ab0e4        0x0 build/net-none.o
+ .data          0x00000000c00ab0e4        0x0 build/main.o
+ .data          0x00000000c00ab0e4        0x0 build/display_profan.o
+ .data          0x00000000c00ab0e4        0x0 build/drive.o
+ .data          0x00000000c00ab0e4        0x0 build/state.o
+ .data          0x00000000c00ab0e4        0x0 build/io.o
+ .data          0x00000000c00ab0e4        0x4 build/util.o
+                0x00000000c00ab0e4                ticks_per_second
+ .data          0x00000000c00ab0e8        0x0 build/ini.o
+ .data          0x00000000c00ab0e8        0x4 build/pc.o
+ .data          0x00000000c00ab0ec        0x0 build/bordel.o
+ *(.data.*)
+ .data.rel      0x00000000c00ab0ec       0x10 build/trace.o
+ *fill*         0x00000000c00ab0fc        0x4 
+ .data.rel.local
+                0x00000000c00ab100       0x20 build/fpu.o
+ .data.rel.ro.local
+                0x00000000c00ab120      0x800 build/decoder.o
+ .data.rel.ro   0x00000000c00ab920       0xe0 build/decoder.o
+ .data.rel.local
+                0x00000000c00aba00        0x4 build/misc.o
+ *fill*         0x00000000c00aba04       0x1c 
+ .data.rel.ro.local
+                0x00000000c00aba20       0x50 build/main.o
+ *fill*         0x00000000c00aba70       0x10 
+ .data.rel.ro.local
+                0x00000000c00aba80       0xc8 build/ini.o
+
+.got            0x00000000c00abb48        0x0
+ .got           0x00000000c00abb48        0x0 build/entry.o
+
+.got.plt        0x00000000c00abb48        0xc
+ .got.plt       0x00000000c00abb48        0xc build/entry.o
+                0x00000000c00abb48                _GLOBAL_OFFSET_TABLE_
+
+.igot.plt       0x00000000c00abb54        0x0
+ .igot.plt      0x00000000c00abb54        0x0 build/entry.o
+
+.bss            0x00000000c00abb60     0xa3a8
+ *(.bss)
+ .bss           0x00000000c00abb60        0x0 build/entry.o
+ .bss           0x00000000c00abb60        0x0 build/trace.o
+ .bss           0x00000000c00abb60        0x0 build/softfloat.o
+ .bss           0x00000000c00abb60        0x0 build/access.o
+ .bss           0x00000000c00abb60        0x4 build/cpu.o
+                0x00000000c00abb60                cpu
+ .bss           0x00000000c00abb64        0x0 build/eflags.o
+ *fill*         0x00000000c00abb64       0x1c 
+ .bss           0x00000000c00abb80       0xa4 build/fpu.o
+                0x00000000c00abb80                fpu
+ .bss           0x00000000c00abc24        0x4 build/opcodes.o
+ .bss           0x00000000c00abc28        0x0 build/smc.o
+ .bss           0x00000000c00abc28        0x0 build/seg.o
+ .bss           0x00000000c00abc28       0x1c build/decoder.o
+ .bss           0x00000000c00abc44        0x0 build/mmu.o
+ .bss           0x00000000c00abc44        0x0 build/prot.o
+ .bss           0x00000000c00abc44       0x1c build/ctrlflow.o
+                0x00000000c00abc44                stack_info
+ .bss           0x00000000c00abc60        0x0 build/string.o
+ .bss           0x00000000c00abc60        0x0 build/bit.o
+ .bss           0x00000000c00abc60        0x0 build/arith.o
+ .bss           0x00000000c00abc60        0x0 build/stack.o
+ .bss           0x00000000c00abc60        0x0 build/cpu_io.o
+ .bss           0x00000000c00abc60        0x4 build/misc.o
+ *fill*         0x00000000c00abc64       0x1c 
+ .bss           0x00000000c00abc80       0x50 build/simd.o
+                0x00000000c00abc80                temp
+ *fill*         0x00000000c00abcd0       0x10 
+ .bss           0x00000000c00abce0       0xd0 build/apic.o
+ *fill*         0x00000000c00abdb0       0x10 
+ .bss           0x00000000c00abdc0       0x20 build/acpi.o
+                0x00000000c00abdc0                acpi
+ .bss           0x00000000c00abde0       0xe0 build/ioapic.o
+ .bss           0x00000000c00abec0       0x34 build/pic.o
+                0x00000000c00abec0                pic
+ *fill*         0x00000000c00abef4        0xc 
+ .bss           0x00000000c00abf00       0x74 build/dma.o
+ *fill*         0x00000000c00abf74        0xc 
+ .bss           0x00000000c00abf80      0x2b8 build/kbd.o
+                0x00000000c00abf80                kbd
+ *fill*         0x00000000c00ac238        0x8 
+ .bss           0x00000000c00ac240       0xe4 build/pit.o
+ *fill*         0x00000000c00ac324       0x1c 
+ .bss           0x00000000c00ac340      0xae0 build/vga.o
+ .bss           0x00000000c00ace20       0xb0 build/cmos.o
+ *fill*         0x00000000c00aced0       0x10 
+ .bss           0x00000000c00acee0     0x41a0 build/ide.o
+ .bss           0x00000000c00b1080     0x40e8 build/fdc.o
+                0x00000000c00b1080                fdc
+ *fill*         0x00000000c00b5168       0x18 
+ .bss           0x00000000c00b5180      0x81c build/pci.o
+ .bss           0x00000000c00b599c        0x0 build/net-none.o
+ *fill*         0x00000000c00b599c        0x4 
+ .bss           0x00000000c00b59a0      0x1d8 build/main.o
+ .bss           0x00000000c00b5b78        0xc build/display_profan.o
+                0x00000000c00b5b78                x
+                0x00000000c00b5b7c                y
+                0x00000000c00b5b80                screen
+ .bss           0x00000000c00b5b84        0xc build/drive.o
+ *fill*         0x00000000c00b5b90       0x10 
+ .bss           0x00000000c00b5ba0       0x50 build/state.o
+ *fill*         0x00000000c00b5bf0       0x10 
+ .bss           0x00000000c00b5c00      0x1cc build/io.o
+ *fill*         0x00000000c00b5dcc        0x4 
+ .bss           0x00000000c00b5dd0       0x20 build/util.o
+ .bss           0x00000000c00b5df0        0x0 build/ini.o
+ *fill*         0x00000000c00b5df0       0x10 
+ .bss           0x00000000c00b5e00      0x104 build/pc.o
+                0x00000000c00b5e00                p61_data
+ .bss           0x00000000c00b5f04        0x4 build/bordel.o
+                0x00000000c00b5f04                open_files
+ *(.bss.*)
+LOAD build/entry.o
+LOAD build/trace.o
+LOAD build/softfloat.o
+LOAD build/access.o
+LOAD build/cpu.o
+LOAD build/eflags.o
+LOAD build/fpu.o
+LOAD build/opcodes.o
+LOAD build/smc.o
+LOAD build/seg.o
+LOAD build/decoder.o
+LOAD build/mmu.o
+LOAD build/prot.o
+LOAD build/ctrlflow.o
+LOAD build/string.o
+LOAD build/bit.o
+LOAD build/arith.o
+LOAD build/stack.o
+LOAD build/cpu_io.o
+LOAD build/misc.o
+LOAD build/simd.o
+LOAD build/apic.o
+LOAD build/acpi.o
+LOAD build/ioapic.o
+LOAD build/pic.o
+LOAD build/dma.o
+LOAD build/kbd.o
+LOAD build/pit.o
+LOAD build/vga.o
+LOAD build/cmos.o
+LOAD build/ide.o
+LOAD build/fdc.o
+LOAD build/pci.o
+LOAD build/net-none.o
+LOAD build/main.o
+LOAD build/display_profan.o
+LOAD build/drive.o
+LOAD build/state.o
+LOAD build/io.o
+LOAD build/util.o
+LOAD build/ini.o
+LOAD build/pc.o
+LOAD build/bordel.o
+OUTPUT(halfix.pe elf32-i386)
+
+.comment        0x0000000000000000       0x2b
+ .comment       0x0000000000000000       0x2b build/entry.o
+                                         0x2c (size before relaxing)
+ .comment       0x000000000000002b       0x2c build/trace.o
+ .comment       0x000000000000002b       0x2c build/softfloat.o
+ .comment       0x000000000000002b       0x2c build/access.o
+ .comment       0x000000000000002b       0x2c build/cpu.o
+ .comment       0x000000000000002b       0x2c build/eflags.o
+ .comment       0x000000000000002b       0x2c build/fpu.o
+ .comment       0x000000000000002b       0x2c build/opcodes.o
+ .comment       0x000000000000002b       0x2c build/smc.o
+ .comment       0x000000000000002b       0x2c build/seg.o
+ .comment       0x000000000000002b       0x2c build/decoder.o
+ .comment       0x000000000000002b       0x2c build/mmu.o
+ .comment       0x000000000000002b       0x2c build/prot.o
+ .comment       0x000000000000002b       0x2c build/ctrlflow.o
+ .comment       0x000000000000002b       0x2c build/string.o
+ .comment       0x000000000000002b       0x2c build/bit.o
+ .comment       0x000000000000002b       0x2c build/arith.o
+ .comment       0x000000000000002b       0x2c build/stack.o
+ .comment       0x000000000000002b       0x2c build/cpu_io.o
+ .comment       0x000000000000002b       0x2c build/misc.o
+ .comment       0x000000000000002b       0x2c build/simd.o
+ .comment       0x000000000000002b       0x2c build/apic.o
+ .comment       0x000000000000002b       0x2c build/acpi.o
+ .comment       0x000000000000002b       0x2c build/ioapic.o
+ .comment       0x000000000000002b       0x2c build/pic.o
+ .comment       0x000000000000002b       0x2c build/dma.o
+ .comment       0x000000000000002b       0x2c build/kbd.o
+ .comment       0x000000000000002b       0x2c build/pit.o
+ .comment       0x000000000000002b       0x2c build/vga.o
+ .comment       0x000000000000002b       0x2c build/cmos.o
+ .comment       0x000000000000002b       0x2c build/ide.o
+ .comment       0x000000000000002b       0x2c build/fdc.o
+ .comment       0x000000000000002b       0x2c build/pci.o
+ .comment       0x000000000000002b       0x2c build/net-none.o
+ .comment       0x000000000000002b       0x2c build/main.o
+ .comment       0x000000000000002b       0x2c build/display_profan.o
+ .comment       0x000000000000002b       0x2c build/drive.o
+ .comment       0x000000000000002b       0x2c build/state.o
+ .comment       0x000000000000002b       0x2c build/io.o
+ .comment       0x000000000000002b       0x2c build/util.o
+ .comment       0x000000000000002b       0x2c build/ini.o
+ .comment       0x000000000000002b       0x2c build/pc.o
+ .comment       0x000000000000002b       0x2c build/bordel.o
+
+.note.GNU-stack
+                0x0000000000000000        0x0
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/entry.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/trace.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/softfloat.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/access.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/cpu.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/eflags.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/fpu.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/opcodes.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/smc.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/seg.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/decoder.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/mmu.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/prot.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/ctrlflow.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/string.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/bit.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/arith.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/stack.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/cpu_io.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/misc.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/simd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/apic.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/acpi.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/ioapic.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/pic.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/dma.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/kbd.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/pit.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/vga.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/cmos.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/ide.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/fdc.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/pci.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/net-none.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/main.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/display_profan.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/drive.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/state.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/io.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/util.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/ini.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/pc.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/bordel.o

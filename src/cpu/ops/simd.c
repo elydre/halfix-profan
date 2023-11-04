@@ -21,19 +21,19 @@ static float_status_t status;
 int cpu_sse_exception(void)
 {
     // https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol3/o_fe12b1e2a880e0ce-457.html
-    if ((cpu.cr[4] & CR4_OSFXSR) == 0)
+    if ((cpu->cr[4] & CR4_OSFXSR) == 0)
         EXCEPTION_UD();
-    if (cpu.cr[0] & CR0_EM)
+    if (cpu->cr[0] & CR0_EM)
         EXCEPTION_UD();
-    if (cpu.cr[0] & CR0_TS)
+    if (cpu->cr[0] & CR0_TS)
         EXCEPTION_NM();
     return 0;
 }
 int cpu_mmx_check(void)
 {
-    if (cpu.cr[0] & CR0_EM)
+    if (cpu->cr[0] & CR0_EM)
         EXCEPTION_UD();
-    if (cpu.cr[0] & CR0_TS)
+    if (cpu->cr[0] & CR0_TS)
         EXCEPTION_NM();
 
     if (fpu_fwait())
@@ -62,11 +62,11 @@ void cpu_update_mxcsr(void)
     // Regenerates the data inside of "status"
     status.float_exception_flags = 0;
     status.float_nan_handling_mode = float_first_operand_nan;
-    status.float_rounding_mode = cpu.mxcsr >> 13 & 3;
-    status.flush_underflow_to_zero = (cpu.mxcsr >> 15) & (cpu.mxcsr >> 11) & 1;
-    status.float_exception_masks = cpu.mxcsr >> 7 & 63;
+    status.float_rounding_mode = cpu->mxcsr >> 13 & 3;
+    status.flush_underflow_to_zero = (cpu->mxcsr >> 15) & (cpu->mxcsr >> 11) & 1;
+    status.float_exception_masks = cpu->mxcsr >> 7 & 63;
     status.float_suppress_exception = 0;
-    status.denormals_are_zeros = cpu.mxcsr >> 6 & 1;
+    status.denormals_are_zeros = cpu->mxcsr >> 6 & 1;
 }
 int cpu_sse_handle_exceptions(void)
 {
@@ -76,10 +76,10 @@ int cpu_sse_handle_exceptions(void)
     status.float_exception_flags = 0;
     if (unmasked & 7)
         flags &= 7;
-    cpu.mxcsr |= flags;
+    cpu->mxcsr |= flags;
     if (unmasked) {
         // https://wiki.osdev.org/Exceptions#SIMD_Floating-Point_Exception
-        if (cpu.cr[4] & CR4_OSXMMEXCPT)
+        if (cpu->cr[4] & CR4_OSXMMEXCPT)
             EXCEPTION(19);
         else
             EXCEPTION_UD(); // According to Bochs
@@ -92,10 +92,10 @@ int cpu_sse_handle_exceptions(void)
 #define FAST_BRANCHLESS_MASK(addr, i) (addr & ((i << 12 & 65536) - 1))
 static inline uint32_t cpu_get_linaddr(uint32_t i, struct decoded_instruction* j)
 {
-    uint32_t addr = cpu.reg32[I_BASE(i)];
-    addr += cpu.reg32[I_INDEX(i)] << (I_SCALE(i));
+    uint32_t addr = cpu->reg32[I_BASE(i)];
+    addr += cpu->reg32[I_INDEX(i)] << (I_SCALE(i));
     addr += j->disp32;
-    return FAST_BRANCHLESS_MASK(addr, i) + cpu.seg_base[I_SEG_BASE(i)];
+    return FAST_BRANCHLESS_MASK(addr, i) + cpu->seg_base[I_SEG_BASE(i)];
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ static int write_back, write_back_dwords, write_back_linaddr;
 static int write_back_handler(void)
 {
     for (int i = 0; i < write_back_dwords; i++)
-        cpu_write32(write_back_linaddr + (i * 4), temp.d128[i], cpu.tlb_shift_write);
+        cpu_write32(write_back_linaddr + (i * 4), temp.d128[i], cpu->tlb_shift_write);
     return 0;
 }
 #define WRITE_BACK()                        \
@@ -130,21 +130,21 @@ static int get_read_ptr(uint32_t flags, struct decoded_instruction* i, int dword
         if (unaligned_exception)
             EXCEPTION_GP(0);
         for (int i = 0, j = 0; i < dwords; i++, j += 4)
-            cpu_read32(linaddr + j, temp.d128[i], cpu.tlb_shift_read);
+            cpu_read32(linaddr + j, temp.d128[i], cpu->tlb_shift_read);
         result_ptr = temp.d128;
         write_back_dwords = dwords;
         write_back_linaddr = linaddr;
         return 0;
     }
-    uint8_t tag = cpu.tlb_tags[linaddr >> 12] >> cpu.tlb_shift_read;
+    uint8_t tag = cpu->tlb_tags[linaddr >> 12] >> cpu->tlb_shift_read;
     if (tag & 2) {
-        if (cpu_mmu_translate(linaddr, cpu.tlb_shift_read))
+        if (cpu_mmu_translate(linaddr, cpu->tlb_shift_read))
             return 1;
     }
 
-    uint32_t* host_ptr = cpu.tlb[linaddr >> 12] + linaddr;
+    uint32_t* host_ptr = cpu->tlb[linaddr >> 12] + linaddr;
     uint32_t phys = PTR_TO_PHYS(host_ptr);
-    if ((phys >= 0xA0000 && phys < 0xC0000) || (phys >= cpu.memory_size)) {
+    if ((phys >= 0xA0000 && phys < 0xC0000) || (phys >= cpu->memory_size)) {
         for (int i = 0, j = 0; i < dwords; i++, j += 4)
             temp.d128[i] = io_handle_mmio_read(phys + j, 2);
         result_ptr = temp.d128;
@@ -168,15 +168,15 @@ static int get_write_ptr(uint32_t flags, struct decoded_instruction* i, int dwor
         write_back_linaddr = linaddr;
         return 0;
     }
-    uint8_t tag = cpu.tlb_tags[linaddr >> 12] >> cpu.tlb_shift_write;
+    uint8_t tag = cpu->tlb_tags[linaddr >> 12] >> cpu->tlb_shift_write;
     if (tag & 2) {
-        if (cpu_mmu_translate(linaddr, cpu.tlb_shift_write))
+        if (cpu_mmu_translate(linaddr, cpu->tlb_shift_write))
             return 1;
     }
 
-    uint32_t* host_ptr = cpu.tlb[linaddr >> 12] + linaddr;
+    uint32_t* host_ptr = cpu->tlb[linaddr >> 12] + linaddr;
     uint32_t phys = PTR_TO_PHYS(host_ptr);
-    if ((phys >= 0xA0000 && phys < 0xC0000) || (phys >= cpu.memory_size)) {
+    if ((phys >= 0xA0000 && phys < 0xC0000) || (phys >= cpu->memory_size)) {
         write_back = 1;
         result_ptr = temp.d128;
         write_back_dwords = dwords;
@@ -226,7 +226,7 @@ static int get_mmx_write_ptr(uint32_t flags, struct decoded_instruction* i, int 
 static int get_reg_read_ptr(uint32_t flags, struct decoded_instruction* i)
 {
     if (I_OP2(flags)) {
-        result_ptr = &cpu.reg32[I_RM(flags)];
+        result_ptr = &cpu->reg32[I_RM(flags)];
         return 0;
     } else
         return get_read_ptr(flags, i, 1, 0);
@@ -234,7 +234,7 @@ static int get_reg_read_ptr(uint32_t flags, struct decoded_instruction* i)
 static int get_reg_write_ptr(uint32_t flags, struct decoded_instruction* i)
 {
     if (I_OP2(flags)) {
-        result_ptr = &cpu.reg32[I_RM(flags)];
+        result_ptr = &cpu->reg32[I_RM(flags)];
         write_back = 0;
         return 0;
     } else
@@ -255,7 +255,7 @@ static void* get_sse_reg_dest(int x)
 }
 static void* get_reg_dest(int x)
 {
-    return &cpu.reg32[x];
+    return &cpu->reg32[x];
 }
 
 static void punpckh(void* dst, void* src, int size, int copysize)
@@ -1171,7 +1171,7 @@ int execute_0F28_2F(struct decoded_instruction* i)
             eflags = EFLAGS_ZF;
             break;
         }
-        cpu_set_eflags(eflags | (cpu.eflags & ~arith_flag_mask));
+        cpu_set_eflags(eflags | (cpu->eflags & ~arith_flag_mask));
         fp_exception = cpu_sse_handle_exceptions();
         break;
     }
@@ -1198,7 +1198,7 @@ int execute_0F28_2F(struct decoded_instruction* i)
             eflags = EFLAGS_ZF;
             break;
         }
-        cpu_set_eflags(eflags | (cpu.eflags & ~arith_flag_mask));
+        cpu_set_eflags(eflags | (cpu->eflags & ~arith_flag_mask));
         fp_exception = cpu_sse_handle_exceptions();
         break;
     }
@@ -1232,7 +1232,7 @@ int execute_0F50_57(struct decoded_instruction* i)
         result |= src32[1] >> 30 & 2;
         result |= src32[2] >> 29 & 4;
         result |= src32[3] >> 28 & 8;
-        cpu.reg32[I_REG(flags)] = result;
+        cpu->reg32[I_REG(flags)] = result;
         break;
     case MOVMSKPD_GdXEo:
         EX(get_sse_read_ptr(flags, i, 4, 1));
@@ -1240,7 +1240,7 @@ int execute_0F50_57(struct decoded_instruction* i)
         result = 0;
         result = src32[1] >> 31;
         result |= src32[3] >> 30 & 2;
-        cpu.reg32[I_REG(flags)] = result;
+        cpu->reg32[I_REG(flags)] = result;
         break;
     case SQRTPS_XGoXEo:
         EX(get_sse_read_ptr(flags, i, 4, 1));
@@ -1912,12 +1912,12 @@ int execute_0FD0_D7(struct decoded_instruction* i)
     case PMOVMSKB_GdMEq:
         CHECK_MMX;
         EX(get_mmx_read_ptr(flags, i, 2));
-        cpu.reg32[I_REG(flags)] = pmovmskb(result_ptr, 8);
+        cpu->reg32[I_REG(flags)] = pmovmskb(result_ptr, 8);
         break;
     case PMOVMSKB_GdXEo:
         CHECK_SSE;
         EX(get_sse_read_ptr(flags, i, 4, 1));
-        cpu.reg32[I_REG(flags)] = pmovmskb(result_ptr, 16);
+        cpu->reg32[I_REG(flags)] = pmovmskb(result_ptr, 16);
         break;
     }
     return 0;
@@ -2221,30 +2221,30 @@ int execute_0FC2_C6(struct decoded_instruction* i)
     case PINSRW_MGqEdIb:
         CHECK_SSE;
         if (I_OP2(flags))
-            op = cpu.reg32[I_RM(flags)];
+            op = cpu->reg32[I_RM(flags)];
         else
-            cpu_read16(cpu_get_linaddr(flags, i), op, cpu.tlb_shift_read);
+            cpu_read16(cpu_get_linaddr(flags, i), op, cpu->tlb_shift_read);
         dest16 = get_mmx_reg_dest(I_REG(flags));
         dest16[imm & 3] = op;
         break;
     case PINSRW_XGoEdIb:
         CHECK_SSE;
         if (I_OP2(flags))
-            op = cpu.reg32[I_RM(flags)];
+            op = cpu->reg32[I_RM(flags)];
         else
-            cpu_read16(cpu_get_linaddr(flags, i), op, cpu.tlb_shift_read);
+            cpu_read16(cpu_get_linaddr(flags, i), op, cpu->tlb_shift_read);
         dest16 = get_sse_reg_dest(I_REG(flags));
         dest16[imm & 7] = op;
         break;
     case PEXTRW_GdMEqIb:
         CHECK_MMX;
         dest16 = get_mmx_reg_dest(I_RM(flags));
-        cpu.reg32[I_REG(flags)] = dest16[imm & 3]; // Zero-extend to 32-bits
+        cpu->reg32[I_REG(flags)] = dest16[imm & 3]; // Zero-extend to 32-bits
         break;
     case PEXTRW_GdXEoIb:
         CHECK_SSE;
         dest16 = get_sse_reg_dest(I_RM(flags));
-        cpu.reg32[I_REG(flags)] = dest16[imm & 7]; // Zero-extend to 32-bits
+        cpu->reg32[I_REG(flags)] = dest16[imm & 7]; // Zero-extend to 32-bits
         break;
     case SHUFPS_XGoXEoIb:
         CHECK_SSE;
@@ -2704,22 +2704,22 @@ int execute_0FF1_F7(struct decoded_instruction* i)
         break;
     case MASKMOVQ_MEqMGq:
         CHECK_MMX;
-        linaddr = cpu.reg32[EDI] + cpu.seg_base[I_SEG_BASE(flags)];
+        linaddr = cpu->reg32[EDI] + cpu->seg_base[I_SEG_BASE(flags)];
         src8 = get_mmx_reg_src(I_REG(flags));
         mask = get_mmx_reg_src(I_RM(flags));
         for (int i = 0; i < 8; i++) {
             if (mask[i] & 0x80)
-                cpu_write8(linaddr + i, src8[i], cpu.tlb_shift_write);
+                cpu_write8(linaddr + i, src8[i], cpu->tlb_shift_write);
         }
         break;
     case MASKMOVDQ_XEoXGo:
         CHECK_SSE;
-        linaddr = cpu.reg32[EDI] + cpu.seg_base[I_SEG_BASE(flags)];
+        linaddr = cpu->reg32[EDI] + cpu->seg_base[I_SEG_BASE(flags)];
         src8 = get_sse_reg_dest(I_REG(flags));
         mask = get_sse_reg_dest(I_RM(flags));
         for (int i = 0; i < 16; i++) {
             if (mask[i] & 0x80)
-                cpu_write8(linaddr + i, src8[i], cpu.tlb_shift_write);
+                cpu_write8(linaddr + i, src8[i], cpu->tlb_shift_write);
         }
         break;
     }

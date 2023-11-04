@@ -14,8 +14,8 @@ uint32_t ioport_in;
 #define IO_LOG(x, ...) LOG("I/O", x, ##__VA_ARGS__)
 //#define IO_LOG(x, ...) printf(x, ##__VA_ARGS__)
 
-static io_read read[0x10000][3];
-static io_write write[0x10000][3];
+static io_read **read;
+static io_write **write;
 
 // Default I/O handlers
 uint32_t io_default_readb(uint32_t port)
@@ -312,6 +312,14 @@ int io_addr_mmio_read(uint32_t addr){
 
 void io_init(void)
 {
+    read = malloc(0x10000 * sizeof(io_read*) + (0x10000 * 3 * sizeof(io_read)));
+    write = malloc(0x10000 * sizeof(io_write*) + (0x10000 * 3 * sizeof(io_write)));
+
+    for (int i = 0; i < 0x10000; i++) {
+        read[i] = (io_read*)(read + 0x10000 + (i * 3 * sizeof(io_read)));
+        write[i] = (io_write*)(write + 0x10000 + (i * 3 * sizeof(io_write)));
+    }
+
     io_register_read(0, 65536, NULL, NULL, NULL);
     io_register_write(0, 65536, NULL, NULL, NULL);
     tf = 0;

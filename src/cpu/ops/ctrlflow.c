@@ -29,7 +29,7 @@ struct
 {
     uint32_t esp; // The value of ESP itself
     int esp_aligned; // Is ESP aligned to 2/4-byte boundary?
-    uint32_t ss_base, esp_mask; // Note: cannot use cpu.esp_mask and cpu.seg_base[SS] in all cases since some instructions use a different stack
+    uint32_t ss_base, esp_mask; // Note: cannot use cpu->esp_mask and cpu->seg_base[SS] in all cases since some instructions use a different stack
     int mask; // To pass to cpu_access_* functions
     void* phys_ptr;
 
@@ -69,7 +69,7 @@ struct
     } while (0)
 #define modify_esp(a) STACK_esp = (STACK_esp + a) & STACK_esp_mask
 
-#define set_esp() cpu.reg32[ESP] = (STACK_esp_mask & STACK_esp) | (STACK_original_esp & ~STACK_esp_mask)
+#define set_esp() cpu->reg32[ESP] = (STACK_esp_mask & STACK_esp) | (STACK_original_esp & ~STACK_esp_mask)
 
 // The following are the types of task gate jumps
 enum {
@@ -113,19 +113,19 @@ static int get_tss_esp(int level, int* dest)
 {
     int temp;
     // If this is a 16-bit TSS, then load only SP
-    if (tss_is_16(ACCESS_TYPE(cpu.seg_access[SEG_TR]))) {
+    if (tss_is_16(ACCESS_TYPE(cpu->seg_access[SEG_TR]))) {
         int addr = 2 + (level * 4);
         // Must be within TSS limits
-        if ((unsigned int)(addr + 2) >= cpu.seg_limit[SEG_TR])
-            EXCEPTION_TS(cpu.seg[SEG_TR] & 0xFFFC);
+        if ((unsigned int)(addr + 2) >= cpu->seg_limit[SEG_TR])
+            EXCEPTION_TS(cpu->seg[SEG_TR] & 0xFFFC);
 
         // Read from kernel memory
-        cpu_read16(addr + cpu.seg_base[SEG_TR], temp, TLB_SYSTEM_READ);
+        cpu_read16(addr + cpu->seg_base[SEG_TR], temp, TLB_SYSTEM_READ);
     } else {
         int addr = 4 + (level * 8);
-        if ((unsigned int)(addr + 4) >= cpu.seg_limit[SEG_TR])
-            EXCEPTION_TS(cpu.seg[SEG_TR] & 0xFFFC);
-        cpu_read32(addr + cpu.seg_base[SEG_TR], temp, TLB_SYSTEM_READ);
+        if ((unsigned int)(addr + 4) >= cpu->seg_limit[SEG_TR])
+            EXCEPTION_TS(cpu->seg[SEG_TR] & 0xFFFC);
+        cpu_read32(addr + cpu->seg_base[SEG_TR], temp, TLB_SYSTEM_READ);
     }
     *dest = temp;
     return 0;
@@ -136,19 +136,19 @@ static int get_tss_ss(int level, int* dest)
 {
     int temp;
     // If this is a 16-bit TSS, then load only SP
-    if (tss_is_16(ACCESS_TYPE(cpu.seg_access[SEG_TR]))) {
+    if (tss_is_16(ACCESS_TYPE(cpu->seg_access[SEG_TR]))) {
         int addr = 2 + (level * 4) + 2;
         // Must be within TSS limits
-        if ((unsigned int)(addr + 2) >= cpu.seg_limit[SEG_TR])
-            EXCEPTION_TS(cpu.seg[SEG_TR] & 0xFFFC);
+        if ((unsigned int)(addr + 2) >= cpu->seg_limit[SEG_TR])
+            EXCEPTION_TS(cpu->seg[SEG_TR] & 0xFFFC);
 
         // Read from kernel memory
-        cpu_read16(addr + cpu.seg_base[SEG_TR], temp, TLB_SYSTEM_READ);
+        cpu_read16(addr + cpu->seg_base[SEG_TR], temp, TLB_SYSTEM_READ);
     } else {
         int addr = 4 + (level * 8) + 4;
-        if ((unsigned int)(addr + 4) >= cpu.seg_limit[SEG_TR])
-            EXCEPTION_TS(cpu.seg[SEG_TR] & 0xFFFC);
-        cpu_read32(addr + cpu.seg_base[SEG_TR], temp, TLB_SYSTEM_READ);
+        if ((unsigned int)(addr + 4) >= cpu->seg_limit[SEG_TR])
+            EXCEPTION_TS(cpu->seg[SEG_TR] & 0xFFFC);
+        cpu_read32(addr + cpu->seg_base[SEG_TR], temp, TLB_SYSTEM_READ);
     }
     *dest = temp & 0xFFFF;
     return 0;
@@ -171,9 +171,9 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
     if (limit <= tss_limits[type >> 3 & 1])
         EXCEPTION_TS(offset);
 
-    int old_tr_type = ACCESS_TYPE(cpu.seg_access[SEG_TR]),
+    int old_tr_type = ACCESS_TYPE(cpu->seg_access[SEG_TR]),
         old_tr_limit = tss_limits[old_tr_type >> 3 & 1];
-    uint32_t tr_base = cpu.seg_base[SEG_TR],
+    uint32_t tr_base = cpu->seg_base[SEG_TR],
              desc_tbl,
              old_eflags = cpu_get_eflags();
     // Pre-translate these addresses to prevent ourselves from faulting
@@ -187,7 +187,7 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
             ABORT(); // should not be invalid
 
         uint32_t segid = SELECTOR_LDT(sel) ? SEG_LDTR : SEG_GDTR,
-                 addr = cpu.seg_base[segid] + ((cpu.seg[SEG_TR] & ~7)) + 5;
+                 addr = cpu->seg_base[segid] + ((cpu->seg[SEG_TR] & ~7)) + 5;
         cpu_read8(addr, desc_tbl, TLB_SYSTEM_READ);
         desc_tbl &= ~2;
         cpu_write8(addr, desc_tbl, TLB_SYSTEM_WRITE);
@@ -200,21 +200,21 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
         cpu_write32(tr_base + 0x20, eip, TLB_SYSTEM_WRITE);
         cpu_write32(tr_base + 0x24, old_eflags, TLB_SYSTEM_WRITE);
         for (int i = 0; i < 8; i++)
-            cpu_write32(tr_base + 0x28 + (i * 4), cpu.reg32[i], TLB_SYSTEM_WRITE);
+            cpu_write32(tr_base + 0x28 + (i * 4), cpu->reg32[i], TLB_SYSTEM_WRITE);
         for (int i = 0; i < 6; i++)
-            cpu_write32(tr_base + 0x48 + (i * 4), cpu.seg[i], TLB_SYSTEM_WRITE);
+            cpu_write32(tr_base + 0x48 + (i * 4), cpu->seg[i], TLB_SYSTEM_WRITE);
     } else {
         cpu_write16(tr_base + 0x0E, eip, TLB_SYSTEM_WRITE);
         cpu_write16(tr_base + 0x10, old_eflags, TLB_SYSTEM_WRITE);
         for (int i = 0; i < 8; i++)
-            cpu_write16(tr_base + 0x12 + (i * 2), cpu.reg32[i], TLB_SYSTEM_WRITE);
+            cpu_write16(tr_base + 0x12 + (i * 2), cpu->reg32[i], TLB_SYSTEM_WRITE);
         for (int i = 0; i < 4; i++)
-            cpu_write16(tr_base + 0x22 + (i * 2), cpu.seg[i], TLB_SYSTEM_WRITE);
+            cpu_write16(tr_base + 0x22 + (i * 2), cpu->seg[i], TLB_SYSTEM_WRITE);
     }
 
     // Write back task link, if needed
     if (type == TASK_INT || type == TASK_CALL)
-        cpu_write16(tr_base, cpu.seg[SEG_TR], TLB_SYSTEM_WRITE);
+        cpu_write16(tr_base, cpu->seg[SEG_TR], TLB_SYSTEM_WRITE);
 
     // Read state from new selector
     uint32_t cr3 = 0, /*eip, */ eflags, reg32[8], seg[6], ldt;
@@ -248,43 +248,43 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
         if (tr_base == RESULT_INVALID)
             ABORT(); // should not be invalid
         uint32_t segid = SELECTOR_LDT(sel) ? SEG_LDTR : SEG_GDTR,
-                 addr = cpu.seg_base[segid] + ((sel & ~7)) + 5;
+                 addr = cpu->seg_base[segid] + ((sel & ~7)) + 5;
         cpu_read8(addr, desc_tbl, TLB_SYSTEM_READ);
         desc_tbl |= 2;
         cpu_write8(addr, desc_tbl, TLB_SYSTEM_WRITE);
     }
 
     // Write back state
-    cpu.cr[0] |= CR0_TS;
-    cpu.seg[SEG_TR] = sel;
-    cpu.seg_base[SEG_TR] = base;
-    cpu.seg_limit[SEG_TR] = limit;
-    cpu.seg_access[SEG_TR] = access & ~2; // Mark as busy
-    cpu.seg_valid[SEG_TR] = SEG_VALID_READABLE | SEG_VALID_WRITABLE;
+    cpu->cr[0] |= CR0_TS;
+    cpu->seg[SEG_TR] = sel;
+    cpu->seg_base[SEG_TR] = base;
+    cpu->seg_limit[SEG_TR] = limit;
+    cpu->seg_access[SEG_TR] = access & ~2; // Mark as busy
+    cpu->seg_valid[SEG_TR] = SEG_VALID_READABLE | SEG_VALID_WRITABLE;
 
     // Update CR3 if it has changed
     if (tss_type == AVAILABLE_TSS_386 || tss_type == BUSY_TSS_386) {
-        if (cr3 != cpu.cr[3]) {
+        if (cr3 != cpu->cr[3]) {
             cpu_prot_set_cr(3, cr3);
         }
     }
 
     SET_VIRT_EIP(eip);
     int eflags_mask = (tss_type == AVAILABLE_TSS_386 || tss_type == BUSY_TSS_386) ? -1 : 0xFFFF;
-    cpu_set_eflags((eflags & eflags_mask) | (cpu.eflags & ~eflags_mask));
+    cpu_set_eflags((eflags & eflags_mask) | (cpu->eflags & ~eflags_mask));
     for (int i = 0; i < 8; i++)
-        cpu.reg32[i] = reg32[i];
+        cpu->reg32[i] = reg32[i];
     if (eflags & EFLAGS_VM) {
         for (int i = 0; i < 6; i++)
             cpu_seg_load_virtual(i, seg[i]);
-        cpu.cpl = 3;
+        cpu->cpl = 3;
     } else {
         for (int i = 0; i < 6; i++)
-            cpu.seg[i] = seg[i];
-        cpu.cpl = seg[CS] & 3;
+            cpu->seg[i] = seg[i];
+        cpu->cpl = seg[CS] & 3;
     }
     for (int i = 0; i < 8; i++)
-        cpu.reg32[i] = reg32[i];
+        cpu->reg32[i] = reg32[i];
 
     // LDT cannot refer to itself
     if (SELECTOR_LDT(ldt))
@@ -300,10 +300,10 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
         if ((ldt_access & ACCESS_P) == 0)
             EXCEPTION_TS(ldt_offset);
         // Reload LDT cache
-        cpu.seg[SEG_LDTR] = ldt;
-        cpu.seg_base[SEG_LDTR] = cpu_seg_get_base(&ldt_info);
-        cpu.seg_limit[SEG_LDTR] = cpu_seg_get_limit(&ldt_info);
-        cpu.seg_access[SEG_LDTR] = ldt_access;
+        cpu->seg[SEG_LDTR] = ldt;
+        cpu->seg_base[SEG_LDTR] = cpu_seg_get_base(&ldt_info);
+        cpu->seg_limit[SEG_LDTR] = cpu_seg_get_limit(&ldt_info);
+        cpu->seg_access[SEG_LDTR] = ldt_access;
     }
 
     // Load segments
@@ -335,7 +335,7 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
                 if (i != SS)
                     goto error;
                 // RPL and DPL = CPL
-                if (cpu.cpl != SELECTOR_RPL(sel) && cpu.cpl != ACCESS_DPL(seg_access))
+                if (cpu->cpl != SELECTOR_RPL(sel) && cpu->cpl != ACCESS_DPL(seg_access))
                     EXCEPTION_TS(sel_offs);
                 break;
             case 0x18 ... 0x1B:
@@ -362,9 +362,9 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
         default:
             if (!sel_offs) {
                 // If selector is null, then ignore and invalidate
-                cpu.seg_base[i] = 0;
-                cpu.seg_limit[i] = 0;
-                cpu.seg_access[i] = 0;
+                cpu->seg_base[i] = 0;
+                cpu->seg_limit[i] = 0;
+                cpu->seg_access[i] = 0;
                 continue;
             }
             if (cpu_seg_load_descriptor(sel, &seg_info, EX_TS, sel_offs))
@@ -379,7 +379,7 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
             case 0x1B: { // Readable Code Segment, non-conforming
                 // RPL and CPL must be less than or equal to DPL
                 int dpl = ACCESS_DPL(seg_access);
-                if (dpl < SELECTOR_RPL(sel) || dpl < cpu.cpl)
+                if (dpl < SELECTOR_RPL(sel) || dpl < cpu->cpl)
                     EXCEPTION_TS(sel_offs);
                 break;
             }
@@ -400,22 +400,22 @@ static int do_task_switch(int sel, struct seg_desc* info, int type, int eip)
 int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
 {
     FAST_STACK_INIT;
-    if (cpu.cr[0] & CR0_PE) {
-        if (cpu.eflags & EFLAGS_VM && type == INTERRUPT_TYPE_SOFTWARE) {
+    if (cpu->cr[0] & CR0_PE) {
+        if (cpu->eflags & EFLAGS_VM && type == INTERRUPT_TYPE_SOFTWARE) {
             // Vrtual 8086 Mode interrupt
-            if (cpu.cr[4] & CR4_VME) {
+            if (cpu->cr[4] & CR4_VME) {
                 // VME enabled - check interrupt redirection bit in TSS
                 uint16_t redirection_map_index, new_eip, new_cs;
                 uint8_t redirection_map_entry;
                 uint32_t idt_entry;
 
                 // Check if TSS is large enough
-                if (cpu.seg_limit[SEG_TR] < 0x67)
+                if (cpu->seg_limit[SEG_TR] < 0x67)
                     EXCEPTION_GP(0);
 
                 // Read redirection map index, and get the byte containing the redirection map entry
-                cpu_read16(cpu.seg_base[SEG_TR] + 0x66, redirection_map_index, TLB_SYSTEM_READ);
-                cpu_read8(redirection_map_index - 1 - ((~vector & 0xFF) >> 3) + cpu.seg_base[SEG_TR], redirection_map_entry, TLB_SYSTEM_READ);
+                cpu_read16(cpu->seg_base[SEG_TR] + 0x66, redirection_map_index, TLB_SYSTEM_READ);
+                cpu_read8(redirection_map_index - 1 - ((~vector & 0xFF) >> 3) + cpu->seg_base[SEG_TR], redirection_map_entry, TLB_SYSTEM_READ);
 
                 if (!(redirection_map_entry & (1 << (vector & 7)))) {
                     uint32_t flags_image = cpu_get_eflags();
@@ -435,13 +435,13 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
                     new_cs = idt_entry >> 16 & 0xFFFF;
 
                     // Since we are in VM8086 mode, CPL is always 3 (user mode)
-                    init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, TLB_USER_WRITE, 0);
+                    init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, TLB_USER_WRITE, 0);
                     push16(flags_image);
-                    push16(cpu.seg[CS]);
+                    push16(cpu->seg[CS]);
                     push16(eip_to_push);
 
                     int bit_to_mask_out = get_iopl() == 3 ? EFLAGS_IF : EFLAGS_VIF;
-                    cpu.eflags &= ~(bit_to_mask_out | EFLAGS_TF);
+                    cpu->eflags &= ~(bit_to_mask_out | EFLAGS_TF);
                     cpu_load_csip_virtual(new_cs, new_eip);
                     set_esp();
                     return 0;
@@ -498,7 +498,7 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
                 return 1;
             if (error_code & EXCEPTION_HAS_ERROR_CODE) {
                 error_code &= 0xFFFF;
-                init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, TLB_SYSTEM_WRITE, -1); // XXX: Is it TLB system write?
+                init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, TLB_SYSTEM_WRITE, -1); // XXX: Is it TLB system write?
                 if (ACCESS_TYPE(tss_access) == AVAILABLE_TSS_286 || ACCESS_TYPE(tss_access) == BUSY_TSS_286)
                     push16(error_code);
                 else
@@ -513,7 +513,7 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
             int dpl = ACCESS_DPL(idt_access);
 
             // If "int n," then idt.dpl >= cpl or else #GP
-            if (type == INTERRUPT_TYPE_SOFTWARE && dpl < cpu.cpl)
+            if (type == INTERRUPT_TYPE_SOFTWARE && dpl < cpu->cpl)
                 EXCEPTION_GP(error_code(offset, 1));
 
             // Check if it's present
@@ -544,7 +544,7 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
             dpl = ACCESS_DPL(cs_access);
 
             // dpl <= cpl or #GP
-            if (dpl > cpu.cpl)
+            if (dpl > cpu->cpl)
                 EXCEPTION_GP(error_code(cs_offset, 0));
 
             // Check if it's present
@@ -554,16 +554,16 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
             int esp, ss, ss_offset;
             struct seg_desc ss_info;
 
-            uint32_t old_esp = cpu.reg32[ESP], old_ss = cpu.seg[SS], esp_mask, ss_base;
+            uint32_t old_esp = cpu->reg32[ESP], old_ss = cpu->seg[SS], esp_mask, ss_base;
 
             int changed_privilege_level = 0;
             switch (type) {
             case 0x18 ... 0x1B: // Non-conforming
-                if (dpl == cpu.cpl)
+                if (dpl == cpu->cpl)
                     goto conforming; // whoopsie
 
                 // If code segment is non-conforming, then dpl >= cpl or else #GP
-                if (!(dpl < cpu.cpl))
+                if (!(dpl < cpu->cpl))
                     goto error;
 
                 // ============================
@@ -571,7 +571,7 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
                 // ============================
 
                 // DPL must be zero in v8086 mode
-                if (dpl != 0 && cpu.eflags & EFLAGS_VM)
+                if (dpl != 0 && cpu->eflags & EFLAGS_VM)
                     EXCEPTION_GP(error_code(cs_offset, 0));
 
                 // Read stack stuff from TSS
@@ -610,76 +610,76 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
                 ss_base = cpu_seg_get_base(&ss_info);
 
                 // Hack to get OS/2 to work
-                esp = (esp & esp_mask) | (cpu.reg32[ESP] & ~esp_mask);
+                esp = (esp & esp_mask) | (cpu->reg32[ESP] & ~esp_mask);
 
                 init_fast_push(esp, ss_base, esp_mask, cpl_to_TLB_write[dpl], -1); // Note: dpl is from cs_info
 
                 // Push some important information onto the stack
                 if (idt_entry_type & 8) {
                     // 32-bit gate
-                    if (cpu.eflags & EFLAGS_VM) {
-                        push32(cpu.seg[GS]);
-                        push32(cpu.seg[FS]);
-                        push32(cpu.seg[DS]);
-                        push32(cpu.seg[ES]);
+                    if (cpu->eflags & EFLAGS_VM) {
+                        push32(cpu->seg[GS]);
+                        push32(cpu->seg[FS]);
+                        push32(cpu->seg[DS]);
+                        push32(cpu->seg[ES]);
 
                         //cpu_invalidate_seg(GS);
                         //cpu_invalidate_seg(FS);
                         //cpu_invalidate_seg(DS);
                         //cpu_invalidate_seg(ES);
-                        cpu.seg[GS] = 0;
-                        cpu.seg_limit[GS] = 0;
-                        cpu.seg_base[GS] = 0;
-                        cpu.seg_access[GS] = 0;
+                        cpu->seg[GS] = 0;
+                        cpu->seg_limit[GS] = 0;
+                        cpu->seg_base[GS] = 0;
+                        cpu->seg_access[GS] = 0;
 
-                        cpu.seg[FS] = 0;
-                        cpu.seg_limit[FS] = 0;
-                        cpu.seg_base[FS] = 0;
-                        cpu.seg_access[FS] = 0;
+                        cpu->seg[FS] = 0;
+                        cpu->seg_limit[FS] = 0;
+                        cpu->seg_base[FS] = 0;
+                        cpu->seg_access[FS] = 0;
 
-                        cpu.seg[DS] = 0;
-                        cpu.seg_limit[DS] = 0;
-                        cpu.seg_base[DS] = 0;
-                        cpu.seg_access[DS] = 0;
+                        cpu->seg[DS] = 0;
+                        cpu->seg_limit[DS] = 0;
+                        cpu->seg_base[DS] = 0;
+                        cpu->seg_access[DS] = 0;
 
-                        cpu.seg[ES] = 0;
-                        cpu.seg_limit[ES] = 0;
-                        cpu.seg_base[ES] = 0;
-                        cpu.seg_access[ES] = 0;
+                        cpu->seg[ES] = 0;
+                        cpu->seg_limit[ES] = 0;
+                        cpu->seg_base[ES] = 0;
+                        cpu->seg_access[ES] = 0;
                     }
                     push32(old_ss);
                     push32(old_esp);
                 } else {
                     // 16-bit gate
-                    if (cpu.eflags & EFLAGS_VM) {
-                        push16(cpu.seg[GS]);
-                        push16(cpu.seg[FS]);
-                        push16(cpu.seg[DS]);
-                        push16(cpu.seg[ES]);
+                    if (cpu->eflags & EFLAGS_VM) {
+                        push16(cpu->seg[GS]);
+                        push16(cpu->seg[FS]);
+                        push16(cpu->seg[DS]);
+                        push16(cpu->seg[ES]);
 
                         //cpu_invalidate_seg(GS);
                         //cpu_invalidate_seg(FS);
                         //cpu_invalidate_seg(DS);
                         //cpu_invalidate_seg(ES);
-                        cpu.seg[GS] = 0;
-                        cpu.seg_limit[GS] = 0;
-                        cpu.seg_base[GS] = 0;
-                        cpu.seg_access[GS] = 0;
+                        cpu->seg[GS] = 0;
+                        cpu->seg_limit[GS] = 0;
+                        cpu->seg_base[GS] = 0;
+                        cpu->seg_access[GS] = 0;
 
-                        cpu.seg[FS] = 0;
-                        cpu.seg_limit[FS] = 0;
-                        cpu.seg_base[FS] = 0;
-                        cpu.seg_access[FS] = 0;
+                        cpu->seg[FS] = 0;
+                        cpu->seg_limit[FS] = 0;
+                        cpu->seg_base[FS] = 0;
+                        cpu->seg_access[FS] = 0;
 
-                        cpu.seg[DS] = 0;
-                        cpu.seg_limit[DS] = 0;
-                        cpu.seg_base[DS] = 0;
-                        cpu.seg_access[DS] = 0;
+                        cpu->seg[DS] = 0;
+                        cpu->seg_limit[DS] = 0;
+                        cpu->seg_base[DS] = 0;
+                        cpu->seg_access[DS] = 0;
 
-                        cpu.seg[ES] = 0;
-                        cpu.seg_limit[ES] = 0;
-                        cpu.seg_base[ES] = 0;
-                        cpu.seg_access[ES] = 0;
+                        cpu->seg[ES] = 0;
+                        cpu->seg_limit[ES] = 0;
+                        cpu->seg_base[ES] = 0;
+                        cpu->seg_access[ES] = 0;
                     }
                     push16(old_ss);
                     push16(old_esp);
@@ -688,12 +688,12 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
             case 0x1C ... 0x1F: // Conforming code segment
             conforming:
                 // DPL must equal CPL
-                if (dpl != cpu.cpl && cpu.eflags & EFLAGS_VM)
+                if (dpl != cpu->cpl && cpu->eflags & EFLAGS_VM)
                     goto error;
-                ss = cpu.seg[SS];
-                ss_base = cpu.seg_base[SS];
-                esp = cpu.reg32[ESP];
-                esp_mask = cpu.esp_mask;
+                ss = cpu->seg[SS];
+                ss_base = cpu->seg_base[SS];
+                esp = cpu->reg32[ESP];
+                esp_mask = cpu->esp_mask;
                 init_fast_push(esp, ss_base, esp_mask, cpl_to_TLB_write[dpl], -1);
                 break;
             default:
@@ -705,13 +705,13 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
             // Push the important things to the stack
             if (idt_entry_type & 8) { // 32-bit interrupt gate
                 push32(cpu_get_eflags());
-                push32(cpu.seg[CS]);
+                push32(cpu->seg[CS]);
                 push32(eip_to_push);
                 if (error_code & EXCEPTION_HAS_ERROR_CODE)
                     push32(error_code & 0xFFFF);
             } else { // 16-bit interrupt gate
                 push16(cpu_get_eflags());
-                push16(cpu.seg[CS]);
+                push16(cpu->seg[CS]);
                 push16(eip_to_push);
                 if (error_code & EXCEPTION_HAS_ERROR_CODE)
                     push16(error_code & 0xFFFF);
@@ -726,14 +726,14 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
                 if (cpu_load_csip_protected((cs & ~3) | dpl, &cs_info, eip))
                     return 1;
             } else // Only CS was modified
-                if (cpu_load_csip_protected((cs & ~3) | cpu.cpl, &cs_info, eip))
+                if (cpu_load_csip_protected((cs & ~3) | cpu->cpl, &cs_info, eip))
                 return 1;
 
-            cpu.eflags &= ~(EFLAGS_TF | EFLAGS_VM | EFLAGS_RF | EFLAGS_NT);
+            cpu->eflags &= ~(EFLAGS_TF | EFLAGS_VM | EFLAGS_RF | EFLAGS_NT);
             cpu_prot_update_cpl();
 
             if (!(idt_entry_type & 1))
-                cpu.eflags &= ~EFLAGS_IF;
+                cpu->eflags &= ~EFLAGS_IF;
             break;
         }
         default:
@@ -742,18 +742,18 @@ int cpu_interrupt(int vector, int error_code, int type, int eip_to_push)
 
         return 0;
     } else {
-        init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, TLB_SYSTEM_WRITE, 0);
+        init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, TLB_SYSTEM_WRITE, 0);
         push16(cpu_get_eflags() & 0xFFFF);
-        push16(cpu.seg[CS]);
+        push16(cpu->seg[CS]);
         push16(eip_to_push);
         set_esp();
 
         // Now read CS/EIP from IDT
         vector <<= 2;
-        uint16_t cs = *(uint16_t *)(cpu.mem + vector + 2),
-                 eip = *(uint16_t *)(cpu.mem + vector);
+        uint16_t cs = *(uint16_t *)(cpu->mem + vector + 2),
+                 eip = *(uint16_t *)(cpu->mem + vector);
         cpu_load_csip_real(cs, eip);
-        cpu.eflags &= ~(EFLAGS_IF | EFLAGS_TF | EFLAGS_AC);
+        cpu->eflags &= ~(EFLAGS_IF | EFLAGS_TF | EFLAGS_AC);
         return 0;
     }
 }
@@ -787,7 +787,7 @@ void cpu_exception(int vec, int code)
 
 int jmpf(uint32_t eip, uint32_t cs, uint32_t eip_after)
 {
-    if ((cpu.cr[0] & CR0_PE) == 0 || cpu.eflags & EFLAGS_VM) {
+    if ((cpu->cr[0] & CR0_PE) == 0 || cpu->eflags & EFLAGS_VM) {
         // ==========================
         // Real/Virtual mode far jump
         // ==========================
@@ -818,24 +818,24 @@ int jmpf(uint32_t eip, uint32_t cs, uint32_t eip_after)
 
         dpl = ACCESS_DPL(access);
         type = ACCESS_TYPE(access);
-        //printf("%08x %d %x %08x%08x\n", cpu.phys_eip, cpu.state_hash, type, info.raw[1], info.raw[0]);
+        //printf("%08x %d %x %08x%08x\n", cpu->phys_eip, cpu->state_hash, type, info.raw[1], info.raw[0]);
         switch (type) {
         case 0x18 ... 0x1B: // Non-conforming code segment
             // RPL <= CPL and DPL == CPL, or else #GP
-            if (rpl > cpu.cpl || dpl != cpu.cpl)
+            if (rpl > cpu->cpl || dpl != cpu->cpl)
                 EXCEPTION_GP(offset);
 
             // Jump succeded, load in CS (same privilege) and EIP
-            if (cpu_load_csip_protected(offset | cpu.cpl, &info, eip))
+            if (cpu_load_csip_protected(offset | cpu->cpl, &info, eip))
                 return 1;
             break;
         case 0x1C ... 0x1F: // Conforming code segment
             // DPL <= CPL or else #GP
-            if (dpl > cpu.cpl)
+            if (dpl > cpu->cpl)
                 EXCEPTION_GP(offset);
 
             // Jump succeded, load in CS (same privilege) and EIP
-            if (cpu_load_csip_protected(offset | cpu.cpl, &info, eip))
+            if (cpu_load_csip_protected(offset | cpu->cpl, &info, eip))
                 return 1;
             break;
         case CALL_GATE_286:
@@ -844,7 +844,7 @@ int jmpf(uint32_t eip, uint32_t cs, uint32_t eip_after)
             struct seg_desc gate_info;
 
             // DPL >= CPL and DPL >= RPL, or else #GP
-            if (dpl < cpu.cpl || dpl < rpl)
+            if (dpl < cpu->cpl || dpl < rpl)
                 EXCEPTION_GP(offset);
 
             // Read gate selector/offset from the descriptor.
@@ -861,12 +861,12 @@ int jmpf(uint32_t eip, uint32_t cs, uint32_t eip_after)
             switch (ACCESS_TYPE(access)) {
             case 0x1C ... 0x1F: // Conforming code segment
                 // DPL <= CPL or else #GP
-                if (dpl > cpu.cpl)
+                if (dpl > cpu->cpl)
                     EXCEPTION_GP(gate_cs_offset);
                 break;
             case 0x18 ... 0x1B: // Non-conforming code segment
                 // DPL == CPL or else #GP
-                if (dpl != cpu.cpl)
+                if (dpl != cpu->cpl)
                     EXCEPTION_GP(gate_cs_offset);
                 break;
             default:
@@ -884,14 +884,14 @@ int jmpf(uint32_t eip, uint32_t cs, uint32_t eip_after)
             //printf("Gate EIP: %08x\n", gate_eip);
 
             // Jump succeded, load in CS (same privilege) and EIP
-            if (cpu_load_csip_protected(gate_cs_offset | cpu.cpl, &gate_info, gate_eip))
+            if (cpu_load_csip_protected(gate_cs_offset | cpu->cpl, &gate_info, gate_eip))
                 return 1;
             break;
         }
         case AVAILABLE_TSS_286:
         case AVAILABLE_TSS_386:
             // DPL >= CPL and DPL > RPL or else #GP
-            if (dpl < cpu.cpl || dpl < rpl)
+            if (dpl < cpu->cpl || dpl < rpl)
                 EXCEPTION_GP(offset);
 
             // Must be present
@@ -903,7 +903,7 @@ int jmpf(uint32_t eip, uint32_t cs, uint32_t eip_after)
             break;
         case TASK_GATE: {
             // DPL >= CPL and DPL > RPL or else #GP
-            if (dpl < cpu.cpl || dpl < rpl)
+            if (dpl < cpu->cpl || dpl < rpl)
                 EXCEPTION_GP(offset);
 
             // Load the TSS from the task gate
@@ -920,23 +920,23 @@ int jmpf(uint32_t eip, uint32_t cs, uint32_t eip_after)
 
 static uint32_t call_gate_read_param32(uint32_t addr, uint32_t* dest, int mask)
 {
-    if ((addr + 3) > cpu.seg_limit[SS])
+    if ((addr + 3) > cpu->seg_limit[SS])
         EXCEPTION_SS(0);
-    cpu_read32(addr + cpu.seg_base[SS], *dest, mask);
+    cpu_read32(addr + cpu->seg_base[SS], *dest, mask);
     return 0;
 }
 static uint16_t call_gate_read_param16(uint32_t addr, uint32_t* dest, int mask)
 {
-    if ((addr + 1) > cpu.seg_limit[SS])
+    if ((addr + 1) > cpu->seg_limit[SS])
         EXCEPTION_SS(0);
-    cpu_read16(addr + cpu.seg_base[SS], *dest, mask);
+    cpu_read16(addr + cpu->seg_base[SS], *dest, mask);
     return 0;
 }
 
 int callf(uint32_t eip, uint32_t cs, uint32_t oldeip, int is32)
 {
     FAST_STACK_INIT;
-    if ((cpu.cr[0] & CR0_PE) && !(cpu.eflags & EFLAGS_VM)) {
+    if ((cpu->cr[0] & CR0_PE) && !(cpu->eflags & EFLAGS_VM)) {
         cs &= 0xFFFF;
         int cs_offset = cs & 0xFFFC, cs_access, cs_type, cs_dpl, cs_rpl;
 
@@ -961,18 +961,18 @@ int callf(uint32_t eip, uint32_t cs, uint32_t oldeip, int is32)
         switch (cs_type) {
         case 0x1C ... 0x1F: // Conforming code segment
             // CS.dpl must be <= cpl
-            if (cs_dpl > cpu.cpl)
+            if (cs_dpl > cpu->cpl)
                 EXCEPTION_GP(cs_offset);
             break;
         case 0x18 ... 0x1B: // Conforming code segment
             // RPL must be <= CPL and CPL must be equal to dpl
-            if (cs_rpl > cpu.cpl || cs_dpl != cpu.cpl)
+            if (cs_rpl > cpu->cpl || cs_dpl != cpu->cpl)
                 EXCEPTION_GP(cs_offset);
             break;
         case CALL_GATE_286:
         case CALL_GATE_386: { // Call gate
             // DPL must be >= CPL and >= RPL
-            if (cs_dpl < cpu.cpl || cs_dpl < cs_rpl)
+            if (cs_dpl < cpu->cpl || cs_dpl < cs_rpl)
                 EXCEPTION_GP(cs_offset);
 
             uint32_t gate_cs = cpu_seg_gate_target_segment(&cs_info), gate_cs_offset = gate_cs & 0xFFFC,
@@ -991,7 +991,7 @@ int callf(uint32_t eip, uint32_t cs, uint32_t oldeip, int is32)
             gate_access = DESC_ACCESS(&gate_info);
             gate_dpl = ACCESS_DPL(gate_access);
             gate_type = ACCESS_TYPE(gate_access);
-            dpldiff = gate_dpl - cpu.cpl; // Will be < 0 if DPL<CPL, =0 if DPL=CPL, or >0 if DPL>CPL
+            dpldiff = gate_dpl - cpu->cpl; // Will be < 0 if DPL<CPL, =0 if DPL=CPL, or >0 if DPL>CPL
             switch (gate_type) {
             case 0x18 ... 0x1B: // Non-conforming code segment
                 if (dpldiff < 0) {
@@ -1028,7 +1028,7 @@ int callf(uint32_t eip, uint32_t cs, uint32_t oldeip, int is32)
 
                     // Finished validating SS, all ok
                     // Now push all required values to new stack
-                    // We need to be careful here because gate_dpl might be different than cpu.cpl (OS/2 uses this feature)
+                    // We need to be careful here because gate_dpl might be different than cpu->cpl (OS/2 uses this feature)
                     int parameter_count = cpu_seg_gate_parameter_count(&cs_info);
                     uint32_t* params = alloca(parameter_count * 4);
 
@@ -1036,15 +1036,15 @@ int callf(uint32_t eip, uint32_t cs, uint32_t oldeip, int is32)
                     ss_mask = ss_access & ACCESS_B ? -1 : 0xFFFF;
 
                     // ESP must be masked according to the stack mask, or else OS/2 doesn't boot.
-                    uint32_t old_esp = cpu.reg32[ESP] & cpu.esp_mask;
+                    uint32_t old_esp = cpu->reg32[ESP] & cpu->esp_mask;
 
                     // Load params
                     for (int i = parameter_count - 1, j = 0; i >= 0; i--, j++) {
                         if (cs_type == CALL_GATE_386) {
-                            if (call_gate_read_param32(((old_esp + (i << 2)) & cpu.esp_mask), &params[j], gate_dpl))
+                            if (call_gate_read_param32(((old_esp + (i << 2)) & cpu->esp_mask), &params[j], gate_dpl))
                                 return 1;
                         } else {
-                            if (call_gate_read_param16(((old_esp + (i << 1)) & cpu.esp_mask), &params[j], gate_dpl))
+                            if (call_gate_read_param16(((old_esp + (i << 1)) & cpu->esp_mask), &params[j], gate_dpl))
                                 return 1;
                         }
                     }
@@ -1052,24 +1052,24 @@ int callf(uint32_t eip, uint32_t cs, uint32_t oldeip, int is32)
                     // Push old SS, old ESP, parameters, old CS, and old EIP
 
                     // Hack to get OS/2 to work
-                    esp = (esp & ss_mask) | (cpu.reg32[ESP] & ~ss_mask);
+                    esp = (esp & ss_mask) | (cpu->reg32[ESP] & ~ss_mask);
 
                     init_fast_push(esp, ss_base, ss_mask, cpl_to_TLB_write[gate_dpl], is32);
                     if (cs_type == CALL_GATE_386) {
-                        push32(cpu.seg[SS]);
+                        push32(cpu->seg[SS]);
                         push32(old_esp);
                         for (int i = 0; i < parameter_count; i++) {
                             push32(params[i]);
                         }
-                        push32(cpu.seg[CS]);
+                        push32(cpu->seg[CS]);
                         push32(oldeip);
                     } else {
-                        push16(cpu.seg[SS]);
+                        push16(cpu->seg[SS]);
                         push16(old_esp);
                         for (int i = 0; i < parameter_count; i++) {
                             push16(params[i]);
                         }
-                        push16(cpu.seg[CS]);
+                        push16(cpu->seg[CS]);
                         push16(oldeip);
                     }
                     // Load segments and set EIP
@@ -1086,15 +1086,15 @@ int callf(uint32_t eip, uint32_t cs, uint32_t oldeip, int is32)
             // Otherwise, DPL == CPL -- fallthrough to conforming code segment
             case 0x1C ... 0x1F: // Conforming code segment
 __workaround_gcc:
-                init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, cpu.tlb_shift_write, is32);
+                init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, cpu->tlb_shift_write, is32);
                 if (cs_type == CALL_GATE_386) {
-                    push32(cpu.seg[CS]);
+                    push32(cpu->seg[CS]);
                     push32(oldeip);
                 } else {
-                    push16(cpu.seg[CS]);
+                    push16(cpu->seg[CS]);
                     push16(oldeip);
                 }
-                if (cpu_load_csip_protected((gate_cs & ~3) | cpu.cpl, &gate_info, gate_eip))
+                if (cpu_load_csip_protected((gate_cs & ~3) | cpu->cpl, &gate_info, gate_eip))
                     return 1;
                 set_esp();
                 return 0;
@@ -1107,13 +1107,13 @@ __workaround_gcc:
         case AVAILABLE_TSS_286:
         case AVAILABLE_TSS_386:
             // dpl must be >= cpl and rpl
-            if (cs_dpl < cpu.cpl || cs_dpl < cs_rpl)
+            if (cs_dpl < cpu->cpl || cs_dpl < cs_rpl)
                 EXCEPTION_GP(cs_offset);
             do_task_switch(cs, &cs_info, TASK_CALL, eip);
             return 0;
         case TASK_GATE:
             // DPL >= CPL and DPL > RPL or else #GP
-            if (cs_dpl < cpu.cpl || cs_dpl < cs_rpl)
+            if (cs_dpl < cpu->cpl || cs_dpl < cs_rpl)
                 EXCEPTION_GP(cs_offset);
 
             // Load the TSS from the task gate
@@ -1126,31 +1126,31 @@ __workaround_gcc:
             EXCEPTION_GP(cs_offset);
         }
         // Conforming/non conforming code segment handled here
-        init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, cpu.tlb_shift_write, is32);
+        init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, cpu->tlb_shift_write, is32);
         if (is32) {
-            push32(cpu.seg[CS]);
+            push32(cpu->seg[CS]);
             push32(oldeip);
         } else {
-            push16(cpu.seg[CS]);
+            push16(cpu->seg[CS]);
             push16(oldeip);
         }
-        if (cpu_load_csip_protected((cs & ~3) | cpu.cpl, &cs_info, eip))
+        if (cpu_load_csip_protected((cs & ~3) | cpu->cpl, &cs_info, eip))
             return 1;
         set_esp();
         return 0;
     } else {
         // Real mode far call
-        init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, cpu.tlb_shift_write, is32);
+        init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, cpu->tlb_shift_write, is32);
         // Push CS and EIP
         if (is32) {
-            push32(cpu.seg[CS]);
+            push32(cpu->seg[CS]);
             push32(oldeip);
         } else {
-            push16(cpu.seg[CS]);
+            push16(cpu->seg[CS]);
             push16(oldeip);
         }
         set_esp();
-        if (cpu.cr[0] & CR0_PE) // VM86 mode
+        if (cpu->cr[0] & CR0_PE) // VM86 mode
             cpu_load_csip_virtual(cs, eip);
         else // Real mode
             cpu_load_csip_real(cs, eip);
@@ -1160,11 +1160,11 @@ __workaround_gcc:
 
 static void iret_handle_seg(int x)
 {
-    uint16_t access = cpu.seg_access[x];
+    uint16_t access = cpu->seg_access[x];
     int invalid = 0, type = ACCESS_TYPE(access);
-    if ((cpu.seg[x] & 0xFFFC) == 0)
+    if ((cpu->seg[x] & 0xFFFC) == 0)
         invalid = 1;
-    else if (cpu.cpl > ACCESS_DPL(access)) {
+    else if (cpu->cpl > ACCESS_DPL(access)) {
         switch (type) {
         case 0x1C ... 0x1F: // Conforming code
         case 0x10 ... 0x17: // Data
@@ -1174,11 +1174,11 @@ static void iret_handle_seg(int x)
     }
     if (invalid) {
         // Mark as NULL and invalid
-        cpu.seg[x] = 0;
-        cpu.seg_access[x] = 0;
-        cpu.seg_base[x] = 0;
-        cpu.seg_limit[x] = 0;
-        cpu.seg_valid[x] = 0;
+        cpu->seg[x] = 0;
+        cpu->seg_access[x] = 0;
+        cpu->seg_base[x] = 0;
+        cpu->seg_limit[x] = 0;
+        cpu->seg_valid[x] = 0;
     }
 }
 
@@ -1188,9 +1188,9 @@ int iret(uint32_t tss_eip, int is32)
     FAST_STACK_INIT;
     uint32_t eip = 0, cs = 0, eflags = 0;
 
-    if (cpu.cr[0] & CR0_PE) {
-        init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, cpu.tlb_shift_write, is32);
-        if (cpu.eflags & EFLAGS_VM) {
+    if (cpu->cr[0] & CR0_PE) {
+        init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, cpu->tlb_shift_write, is32);
+        if (cpu->eflags & EFLAGS_VM) {
             // Virtual 8086 Mode iret
             if (get_iopl() == 3) {
                 // All of the EFLAGS bits that won't be modified.
@@ -1209,15 +1209,15 @@ int iret(uint32_t tss_eip, int is32)
                 set_esp();
 
                 cpu_load_csip_virtual(cs, eip);
-                cpu_set_eflags((eflags & ~eflags_mask) | (cpu.eflags & eflags_mask));
+                cpu_set_eflags((eflags & ~eflags_mask) | (cpu->eflags & eflags_mask));
             } else { // iopl < 3
-                if (cpu.cr[4] & CR4_VME) {
+                if (cpu->cr[4] & CR4_VME) {
                     if (is32)
                         CPU_FATAL("TOFO: 32-bit VME IRET\n");
                     pop16(eip);
                     pop16(cs);
                     pop16(eflags);
-                    if ((cpu.eflags & EFLAGS_VIP && eflags & (1 << 9)) || eflags & (1 << 8))
+                    if ((cpu->eflags & EFLAGS_VIP && eflags & (1 << 9)) || eflags & (1 << 8))
                         EXCEPTION_GP(0);
 
                     set_esp();
@@ -1225,21 +1225,21 @@ int iret(uint32_t tss_eip, int is32)
 
                     const uint32_t mask = 0xFFFF ^ (EFLAGS_IOPL | EFLAGS_IF);
                     if (eflags & EFLAGS_IF) // Replace IF with VIF
-                        cpu.eflags |= EFLAGS_VIF;
+                        cpu->eflags |= EFLAGS_VIF;
                     else
-                        cpu.eflags &= ~EFLAGS_VIF;
-                    cpu_set_eflags((eflags & mask) | (cpu.eflags & ~mask));
+                        cpu->eflags &= ~EFLAGS_VIF;
+                    cpu_set_eflags((eflags & mask) | (cpu->eflags & ~mask));
                 } else // VME disabled
                     EXCEPTION_GP(0);
             }
         } else {
-            if (cpu.eflags & EFLAGS_NT) { // Nested task bit set in EFLAGS
+            if (cpu->eflags & EFLAGS_NT) { // Nested task bit set in EFLAGS
                 // Read back-link to TSS and use that to switch TSS
                 uint16_t tss_back_link, tss_offset;
                 struct seg_desc tss_info;
 
                 // Read back link from TSS
-                cpu_read16(cpu.seg_base[SEG_TR], tss_back_link, TLB_SYSTEM_READ);
+                cpu_read16(cpu->seg_base[SEG_TR], tss_back_link, TLB_SYSTEM_READ);
                 tss_offset = tss_back_link & 0xFFFC;
 
                 // Must be in GDT
@@ -1258,20 +1258,20 @@ int iret(uint32_t tss_eip, int is32)
 
                 return do_task_switch(tss_offset, &tss_info, TASK_IRET, tss_eip);
             } else {
-                int old_cpl = cpu.cpl; // We use the old CPL to determine which flags to load.
+                int old_cpl = cpu->cpl; // We use the old CPL to determine which flags to load.
 
                 uint32_t cs_offset;
                 struct seg_desc cs_info;
                 uint32_t eflags_mask = is32 ? -1 : 0xFFFF;
 
-                init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, cpu.tlb_shift_write, is32);
+                init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, cpu->tlb_shift_write, is32);
                 if (is32) {
                     pop32(eip);
                     pop32(cs);
                     pop32(eflags);
                     cs &= 0xFFFF;
 
-                    if (eflags & EFLAGS_VM && cpu.cpl == 0) {
+                    if (eflags & EFLAGS_VM && cpu->cpl == 0) {
                         // IRET to Virtual 8086 Mode
                         uint32_t esp, ss, es, ds, fs, gs;
                         pop32(esp);
@@ -1289,12 +1289,12 @@ int iret(uint32_t tss_eip, int is32)
                         //cpu_seg_load_virtual(CS, cs);
                         cpu_seg_load_virtual(SS, ss);
                         cpu_load_csip_virtual(cs, eip & 0xFFFF);
-                        cpu.reg32[ESP] = esp;
+                        cpu->reg32[ESP] = esp;
 
                         // Modify VM flag
-                        cpu_set_eflags((eflags & eflags_mask) | (cpu.eflags & ~eflags_mask)); // ??? is this right ???
+                        cpu_set_eflags((eflags & eflags_mask) | (cpu->eflags & ~eflags_mask)); // ??? is this right ???
 
-                        cpu.cpl = 3;
+                        cpu->cpl = 3;
                         cpu_prot_update_cpl();
                         return 0;
                     }
@@ -1315,7 +1315,7 @@ int iret(uint32_t tss_eip, int is32)
                 int access = DESC_ACCESS(&cs_info), dpl = ACCESS_DPL(access), rpl = SELECTOR_RPL(cs);
 
                 // RPL >= CPL
-                if (rpl < cpu.cpl)
+                if (rpl < cpu->cpl)
                     EXCEPTION_GP(cs_offset);
 
                 switch (ACCESS_TYPE(access)) {
@@ -1335,7 +1335,7 @@ int iret(uint32_t tss_eip, int is32)
                 if ((access & ACCESS_P) == 0)
                     EXCEPTION_NP(cs_offset);
 
-                if (rpl != cpu.cpl) {
+                if (rpl != cpu->cpl) {
                     // IRET to outer level
                     uint32_t esp = 0, ss = 0, ss_offset, esp_mask;
                     int ss_access, ss_type, ss_dpl;
@@ -1384,7 +1384,7 @@ int iret(uint32_t tss_eip, int is32)
                         return 1;
                     if (cpu_load_csip_protected(cs, &cs_info, eip))
                         return 1;
-                    cpu.reg32[ESP] = (esp & esp_mask) | (cpu.reg32[ESP] & ~esp_mask);
+                    cpu->reg32[ESP] = (esp & esp_mask) | (cpu->reg32[ESP] & ~esp_mask);
 
                     iret_handle_seg(ES);
                     iret_handle_seg(FS);
@@ -1403,16 +1403,16 @@ int iret(uint32_t tss_eip, int is32)
                     flag_mask |= EFLAGS_IF;
                 if (old_cpl == 0)
                     flag_mask |= EFLAGS_IOPL | EFLAGS_VIF | EFLAGS_VIP;
-                //printf("%d v %d [new flags: %08x current: %08x mask: %08x]\n", cpu.cpl, cpu.seg[CS], eflags, cpu.eflags, flag_mask);
+                //printf("%d v %d [new flags: %08x current: %08x mask: %08x]\n", cpu->cpl, cpu->seg[CS], eflags, cpu->eflags, flag_mask);
 
                 if (!is32)
                     flag_mask &= 0xFFFF; // Limit to 16 bits
-                cpu_set_eflags((eflags & flag_mask) | (cpu.eflags & ~flag_mask));
+                cpu_set_eflags((eflags & flag_mask) | (cpu->eflags & ~flag_mask));
             }
         }
         return 0;
     } else { // Real mode
-        init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, cpu.tlb_shift_write, is32);
+        init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, cpu->tlb_shift_write, is32);
         if (is32) {
             pop32(eip);
             pop32(cs);
@@ -1426,9 +1426,9 @@ int iret(uint32_t tss_eip, int is32)
 
         cpu_load_csip_real(cs, eip);
         if (is32)
-            cpu_set_eflags((eflags & 0x257FD5) | (cpu.eflags & 0x1A0000));
+            cpu_set_eflags((eflags & 0x257FD5) | (cpu->eflags & 0x1A0000));
         else
-            cpu_set_eflags(eflags | (cpu.eflags & ~0xFFFF));
+            cpu_set_eflags(eflags | (cpu->eflags & ~0xFFFF));
         return 0;
     }
 }
@@ -1438,9 +1438,9 @@ int retf(int adjust, int is32)
 {
     FAST_STACK_INIT;
     uint32_t eip = 0, cs = 0;
-    if ((cpu.cr[0] & CR0_PE) == 0 || (cpu.eflags & EFLAGS_VM)) {
+    if ((cpu->cr[0] & CR0_PE) == 0 || (cpu->eflags & EFLAGS_VM)) {
         // Real mode far return
-        init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, cpu.tlb_shift_write, is32);
+        init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, cpu->tlb_shift_write, is32);
         // Pop CS and EIP
         if (is32) {
             pop32(eip);
@@ -1449,18 +1449,18 @@ int retf(int adjust, int is32)
             pop16(eip);
             pop16(cs);
         }
-        if (VIRT_EIP() >= cpu.seg_limit[CS])
+        if (VIRT_EIP() >= cpu->seg_limit[CS])
             EXCEPTION_GP(0);
         modify_esp(adjust);
         set_esp();
         //if(cs == 0xa82) __asm__("int3");
-        if (cpu.cr[0] & CR0_PE) // VM86 mode
+        if (cpu->cr[0] & CR0_PE) // VM86 mode
             cpu_load_csip_virtual(cs, eip);
         else // Real mode
             cpu_load_csip_real(cs, eip);
         return 0;
     } else {
-        init_fast_push(cpu.reg32[ESP], cpu.seg_base[SS], cpu.esp_mask, cpu.tlb_shift_write, is32);
+        init_fast_push(cpu->reg32[ESP], cpu->seg_base[SS], cpu->esp_mask, cpu->tlb_shift_write, is32);
         if (is32) {
             pop32(eip);
             pop32(cs);
@@ -1485,7 +1485,7 @@ int retf(int adjust, int is32)
         dpl = ACCESS_DPL(access);
 
         // CS.rpl must be >= CPL
-        if (rpl < cpu.cpl)
+        if (rpl < cpu->cpl)
             EXCEPTION_GP(cs_offset);
 
         switch (ACCESS_TYPE(access)) {
@@ -1504,7 +1504,7 @@ int retf(int adjust, int is32)
         // Must be present
         if ((access & ACCESS_P) == 0)
             EXCEPTION_NP(cs_offset);
-        if (rpl > cpu.cpl) {
+        if (rpl > cpu->cpl) {
             int ss_access, ss_rpl, ss_dpl, ss_type;
             // Return to outer privilege level
             uint32_t new_ss = 0, new_esp = 0, new_ss_offset, esp_mask;
@@ -1554,7 +1554,7 @@ int retf(int adjust, int is32)
             esp_mask = ss_access & ACCESS_B ? -1 : 0xFFFF;
             //modify_esp(adjust);
             //set_esp();
-            cpu.reg32[ESP] = ((new_esp + adjust) & esp_mask) | (cpu.reg32[ESP] & ~esp_mask);
+            cpu->reg32[ESP] = ((new_esp + adjust) & esp_mask) | (cpu->reg32[ESP] & ~esp_mask);
         } else {
             // Return to same privilege
             if (cpu_load_csip_protected(cs, &cs_info, eip))
@@ -1575,42 +1575,42 @@ static void reload_cs_base(void)
     // For sysenter/sysexit, virt_eip == lin_eip
     uint32_t virt_eip = VIRT_EIP();
     uint32_t lin_page = virt_eip >> 12,
-             shift = cpu.tlb_shift_read,
-             tag = cpu.tlb_tags[virt_eip >> 12] >> shift;
+             shift = cpu->tlb_shift_read,
+             tag = cpu->tlb_tags[virt_eip >> 12] >> shift;
     if (tag & 2) {
-        cpu.last_phys_eip = cpu.phys_eip + 0x1000;
+        cpu->last_phys_eip = cpu->phys_eip + 0x1000;
         return;
     }
-    cpu.phys_eip = PTR_TO_PHYS(cpu.tlb[lin_page] + virt_eip);
-    cpu.last_phys_eip = cpu.phys_eip & ~0xFFF;
-    cpu.eip_phys_bias = virt_eip - cpu.phys_eip;
+    cpu->phys_eip = PTR_TO_PHYS(cpu->tlb[lin_page] + virt_eip);
+    cpu->last_phys_eip = cpu->phys_eip & ~0xFFF;
+    cpu->eip_phys_bias = virt_eip - cpu->phys_eip;
 }
 
 // Sysenter
 int sysenter(void)
 {
-    uint32_t cs = cpu.sysenter[SYSENTER_CS],
+    uint32_t cs = cpu->sysenter[SYSENTER_CS],
              cs_offset = cs & 0xFFFC;
-    if ((cpu.cr[0] & CR0_PE) == 0 || cs_offset == 0)
+    if ((cpu->cr[0] & CR0_PE) == 0 || cs_offset == 0)
         EXCEPTION_GP(0);
 
-    cpu.eflags &= ~(EFLAGS_IF | EFLAGS_VM);
+    cpu->eflags &= ~(EFLAGS_IF | EFLAGS_VM);
 
-    SET_VIRT_EIP(cpu.sysenter[SYSENTER_EIP]);
-    cpu.reg32[ESP] = cpu.sysenter[SYSENTER_ESP];
-    cpu.seg[CS] = cs_offset;
-    cpu.seg_base[CS] = 0;
-    cpu.seg_limit[CS] = -1;
-    cpu.seg_access[CS] = ACCESS_S | 0x0B | ACCESS_P | ACCESS_G; // 32-bit, r/x code, accessed, present, 4kb granularity
-    cpu.cpl = 0;
+    SET_VIRT_EIP(cpu->sysenter[SYSENTER_EIP]);
+    cpu->reg32[ESP] = cpu->sysenter[SYSENTER_ESP];
+    cpu->seg[CS] = cs_offset;
+    cpu->seg_base[CS] = 0;
+    cpu->seg_limit[CS] = -1;
+    cpu->seg_access[CS] = ACCESS_S | 0x0B | ACCESS_P | ACCESS_G; // 32-bit, r/x code, accessed, present, 4kb granularity
+    cpu->cpl = 0;
     cpu_prot_update_cpl();
-    cpu.state_hash = 0; // 32-bit code/data
+    cpu->state_hash = 0; // 32-bit code/data
 
-    cpu.seg[SS] = (cs_offset + 8) & 0xFFFC;
-    cpu.seg_base[SS] = 0;
-    cpu.seg_limit[SS] = -1;
-    cpu.seg_access[SS] = ACCESS_S | 0x03 | ACCESS_P | ACCESS_G | ACCESS_B; // 32-bit, r/x data, accessed, present, 4kb granularity, 32-bit
-    cpu.esp_mask = -1;
+    cpu->seg[SS] = (cs_offset + 8) & 0xFFFC;
+    cpu->seg_base[SS] = 0;
+    cpu->seg_limit[SS] = -1;
+    cpu->seg_access[SS] = ACCESS_S | 0x03 | ACCESS_P | ACCESS_G | ACCESS_B; // 32-bit, r/x data, accessed, present, 4kb granularity, 32-bit
+    cpu->esp_mask = -1;
 
     reload_cs_base();
     return 0;
@@ -1618,26 +1618,26 @@ int sysenter(void)
 
 int sysexit(void)
 {
-    uint32_t cs = cpu.sysenter[SYSENTER_CS],
+    uint32_t cs = cpu->sysenter[SYSENTER_CS],
              cs_offset = cs & 0xFFFC;
-    if ((cpu.cr[0] & CR0_PE) == 0 || cs_offset == 0 || cpu.cpl != 0)
+    if ((cpu->cr[0] & CR0_PE) == 0 || cs_offset == 0 || cpu->cpl != 0)
         EXCEPTION_GP(0);
 
-    SET_VIRT_EIP(cpu.reg32[EDX]);
-    cpu.reg32[ESP] = cpu.reg32[ECX];
-    cpu.seg[CS] = (cpu.sysenter[SYSENTER_CS] | 3) + 16;
-    cpu.seg_base[CS] = 0;
-    cpu.seg_limit[CS] = -1;
-    cpu.seg_access[CS] = ACCESS_S | 0x0B | ACCESS_P | ACCESS_G | ACCESS_DPL_MASK; // 32-bit, r/x code, accessed, present, 4kb granularity, dpl=3
-    cpu.cpl = 3;
+    SET_VIRT_EIP(cpu->reg32[EDX]);
+    cpu->reg32[ESP] = cpu->reg32[ECX];
+    cpu->seg[CS] = (cpu->sysenter[SYSENTER_CS] | 3) + 16;
+    cpu->seg_base[CS] = 0;
+    cpu->seg_limit[CS] = -1;
+    cpu->seg_access[CS] = ACCESS_S | 0x0B | ACCESS_P | ACCESS_G | ACCESS_DPL_MASK; // 32-bit, r/x code, accessed, present, 4kb granularity, dpl=3
+    cpu->cpl = 3;
     cpu_prot_update_cpl();
-    cpu.state_hash = 0; // 32-bit code/data
+    cpu->state_hash = 0; // 32-bit code/data
 
-    cpu.seg[SS] = (cpu.sysenter[SYSENTER_CS] | 3) + 24;
-    cpu.seg_base[SS] = 0;
-    cpu.seg_limit[SS] = -1;
-    cpu.seg_access[SS] = ACCESS_S | 0x03 | ACCESS_P | ACCESS_G | ACCESS_B | ACCESS_DPL_MASK; // 32-bit, r/x data, accessed, present, 4kb granularity, 32-bit, dpl=3
-    cpu.esp_mask = -1;
+    cpu->seg[SS] = (cpu->sysenter[SYSENTER_CS] | 3) + 24;
+    cpu->seg_base[SS] = 0;
+    cpu->seg_limit[SS] = -1;
+    cpu->seg_access[SS] = ACCESS_S | 0x03 | ACCESS_P | ACCESS_G | ACCESS_B | ACCESS_DPL_MASK; // 32-bit, r/x data, accessed, present, 4kb granularity, 32-bit, dpl=3
+    cpu->esp_mask = -1;
 
     reload_cs_base();
     return 0;

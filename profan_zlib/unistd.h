@@ -30,7 +30,6 @@ extern int    optind, opterr, optopt;
 #define alarm ((unsigned int (*)(unsigned int)) get_func_addr(UNISTD_ID, 3))
 #define chdir ((int (*)(const char *)) get_func_addr(UNISTD_ID, 4))
 #define chown ((int (*)(const char *, uid_t, gid_t)) get_func_addr(UNISTD_ID, 5))
-#define close ((int (*)(int)) get_func_addr(UNISTD_ID, 6))
 #define confstr ((size_t (*)(int, char *, size_t)) get_func_addr(UNISTD_ID, 7))
 #define crypt ((char *(*)(char *, const char *)) get_func_addr(UNISTD_ID, 8))
 #define ctermid ((char *(*)(char *)) get_func_addr(UNISTD_ID, 9))
@@ -72,7 +71,6 @@ extern int    optind, opterr, optopt;
 #define lchown ((int (*)(const char *, uid_t, gid_t)) get_func_addr(UNISTD_ID, 45))
 #define link ((int (*)(const char *, const char *)) get_func_addr(UNISTD_ID, 46))
 #define lockf ((int (*)(int, int, off_t)) get_func_addr(UNISTD_ID, 47))
-#define lseek ((off_t (*)(int, off_t, int)) get_func_addr(UNISTD_ID, 48))
 #define nice ((int (*)(int)) get_func_addr(UNISTD_ID, 49))
 #define pathconf ((long (*)(const char *, int)) get_func_addr(UNISTD_ID, 50))
 #define pause ((int (*)(void)) get_func_addr(UNISTD_ID, 51))
@@ -109,5 +107,7 @@ extern int    optind, opterr, optopt;
 
 ssize_t read(int fd, void *buf, size_t count);
 ssize_t write(int fd, const void *buf, size_t count);
+off_t lseek(int fd, off_t offset, int whence);
+int close(int fd);
 
 #endif

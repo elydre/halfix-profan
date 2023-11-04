@@ -9,8 +9,8 @@
 
 int cpu_io_check_access(uint32_t port, int size)
 {
-    if ((cpu.cr[0] & CR0_PE) && ((cpu.eflags & EFLAGS_VM) || (unsigned int)cpu.cpl > get_iopl())) {
-        uint16_t tss = cpu.seg[SEG_TR];
+    if ((cpu->cr[0] & CR0_PE) && ((cpu->eflags & EFLAGS_VM) || (unsigned int)cpu->cpl > get_iopl())) {
+        uint16_t tss = cpu->seg[SEG_TR];
         struct seg_desc tss_info;
         int tss_access, tss_type;
         if (cpu_seg_load_descriptor(tss, &tss_info, EX_GP, 0))
@@ -24,7 +24,7 @@ int cpu_io_check_access(uint32_t port, int size)
             EXCEPTION_GP(0);
 
         // Find base/limit of TR and find the I/O offset
-        uint32_t base = cpu.seg_base[SEG_TR], limit = cpu.seg_limit[SEG_TR];
+        uint32_t base = cpu->seg_base[SEG_TR], limit = cpu->seg_limit[SEG_TR];
         if (limit < 0x67)
             EXCEPTION_GP(0); // Cannot access IO permissions bitmap
 

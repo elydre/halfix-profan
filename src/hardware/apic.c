@@ -182,7 +182,7 @@ static void apic_send_highest_priority_interrupt(void)
 
 int apic_get_interrupt(void)
 {
-    // Acknowledges the interrupt, lowers the INTR line, modifies appropriate bits, and sends interrupt vector back to CPU.
+    // Acknowledges the interrupt, lowers the INTR line, modifies appropriate bits, and sends interrupt vector back to cpu->
 
     int highest_irr = highest_set_bit(apic.irr);
     if (highest_irr == -1) {

@@ -49,9 +49,9 @@
 #define BH 13
 #define ZR8 32
 
-#define XMM32(n) cpu.xmm32[(n) << 2]
-#define XMM16(n) cpu.xmm16[(n) << 3]
-#define XMM8(n) cpu.xmm8[(n) << 4]
+#define XMM32(n) cpu->xmm32[(n) << 2]
+#define XMM16(n) cpu->xmm16[(n) << 3]
+#define XMM8(n) cpu->xmm8[(n) << 4]
 
 #define RESULT_INVALID (uint32_t) - 1
 
@@ -107,12 +107,12 @@
 #define EFLAGS_ID 0x200000
 #define valid_flag_mask (EFLAGS_ID | EFLAGS_VIP | EFLAGS_VIF | EFLAGS_AC | EFLAGS_VM | EFLAGS_RF | EFLAGS_NT | EFLAGS_IOPL | EFLAGS_OF | EFLAGS_DF | EFLAGS_IF | EFLAGS_TF | EFLAGS_SF | EFLAGS_ZF | EFLAGS_AF | EFLAGS_PF | EFLAGS_CF)
 #define arith_flag_mask (EFLAGS_OF | EFLAGS_SF | EFLAGS_ZF | EFLAGS_AF | EFLAGS_PF | EFLAGS_CF)
-#define get_iopl() (cpu.eflags >> 12 & 3)
+#define get_iopl() (cpu->eflags >> 12 & 3)
 
 #define STATE_CODE16 0x0001
 #define STATE_ADDR16 0x0002
 
-#define IS_USER_MODE() cpu.cpl == 3
+#define IS_USER_MODE() cpu->cpl == 3
 
 #define CPU_LOG(x, ...) LOG("CPU", x, ##__VA_ARGS__)
 #define CPU_DEBUG(x, ...) LOG("CPU", x, ##__VA_ARGS__)
@@ -279,7 +279,7 @@ struct cpu {
     uint32_t cr[8], dr[8];
     // Current privilege level
     //  - Real mode: Should be zero
-    //  - Protected mode: Should be equal to cpu.seg[CS] & 3
+    //  - Protected mode: Should be equal to cpu->seg[CS] & 3
     //  - Virtual 8086 mode: Should be three
     int cpl;
 
@@ -371,16 +371,16 @@ struct cpu {
     struct decoded_instruction trace_cache[TRACE_CACHE_SIZE];
     struct trace_info trace_info[TRACE_INFO_ENTRIES];
 };
-extern struct cpu cpu;
+extern struct cpu *cpu;
 
-#define MEM32(e) *(uint32_t*)(cpu.mem + e)
-#define MEM16(e) *(uint16_t*)(cpu.mem + e)
+#define MEM32(e) *(uint32_t*)(cpu->mem + e)
+#define MEM16(e) *(uint16_t*)(cpu->mem + e)
 #ifdef LIBCPU
 uint32_t cpulib_ptr_to_phys(void*);
 #define PTR_TO_PHYS(ptr) cpulib_ptr_to_phys(ptr)
 #else
 // Converts pointer to a physical address
-#define PTR_TO_PHYS(ptr) (uint32_t)(uintptr_t)((void*)ptr - cpu.mem)
+#define PTR_TO_PHYS(ptr) (uint32_t)(uintptr_t)((void*)ptr - cpu->mem)
 #endif
 
 // Based on the linear address, the TLB tag for this entry, and the shift for the current mode
@@ -394,12 +394,12 @@ uint32_t cpulib_ptr_to_phys(void*);
 #define TLB_USER_WRITE 6
 
 // Macros to get various views of EIP
-#define PHYS_EIP() cpu.phys_eip
-#define VIRT_EIP() (cpu.phys_eip + cpu.eip_phys_bias)
-#define LIN_EIP() (cpu.phys_eip + cpu.eip_phys_bias + cpu.seg_base[CS])
+#define PHYS_EIP() cpu->phys_eip
+#define VIRT_EIP() (cpu->phys_eip + cpu->eip_phys_bias)
+#define LIN_EIP() (cpu->phys_eip + cpu->eip_phys_bias + cpu->seg_base[CS])
 // Modifys phys_eip accordingly
 #define SET_VIRT_EIP(eip) \
-    cpu.phys_eip += (eip)-VIRT_EIP();
+    cpu->phys_eip += (eip)-VIRT_EIP();
 
 // Exception handling helpers
 #define EXCEPTION_HAS_ERROR_CODE 0x10000
@@ -434,74 +434,74 @@ uint32_t cpulib_ptr_to_phys(void*);
 
 #define INTERNAL_CPU_LOOP_EXIT()                     \
     do {                                             \
-        cpu.cycles += cpu_get_cycles() - cpu.cycles; \
-        cpu.refill_counter = cpu.cycles_to_run - 1;  \
-        cpu.cycles_to_run = 1;                       \
-        cpu.cycle_offset = 1;                        \
+        cpu->cycles += cpu_get_cycles() - cpu->cycles; \
+        cpu->refill_counter = cpu->cycles_to_run - 1;  \
+        cpu->cycles_to_run = 1;                       \
+        cpu->cycle_offset = 1;                        \
     } while (0)
 
 #define cpu_read8(linaddr, dest, shift)                                            \
     do {                                                                           \
-        uint32_t addr_ = linaddr, shift_ = shift, tag = cpu.tlb_tags[addr_ >> 12]; \
+        uint32_t addr_ = linaddr, shift_ = shift, tag = cpu->tlb_tags[addr_ >> 12]; \
         if (TLB_ENTRY_INVALID8(addr_, tag, shift_)) {                              \
             if (!cpu_access_read8(addr_, tag >> shift, shift))                     \
-                dest = cpu.read_result;                                            \
+                dest = cpu->read_result;                                            \
             else                                                                   \
                 EXCEPTION_HANDLER;                                                 \
         } else                                                                     \
-            dest = *(uint8_t*)(cpu.tlb[addr_ >> 12] + addr_);                      \
+            dest = *(uint8_t*)(cpu->tlb[addr_ >> 12] + addr_);                      \
     } while (0)
 #define cpu_read16(linaddr, dest, shift)                                           \
     do {                                                                           \
-        uint32_t addr_ = linaddr, shift_ = shift, tag = cpu.tlb_tags[addr_ >> 12]; \
+        uint32_t addr_ = linaddr, shift_ = shift, tag = cpu->tlb_tags[addr_ >> 12]; \
         if (TLB_ENTRY_INVALID16(addr_, tag, shift_)) {                             \
             if (!cpu_access_read16(addr_, tag >> shift, shift))                    \
-                dest = cpu.read_result;                                            \
+                dest = cpu->read_result;                                            \
             else                                                                   \
                 EXCEPTION_HANDLER;                                                 \
         } else                                                                     \
-            dest = *(uint16_t*)(cpu.tlb[addr_ >> 12] + addr_);                     \
+            dest = *(uint16_t*)(cpu->tlb[addr_ >> 12] + addr_);                     \
     } while (0)
 #define cpu_read32(linaddr, dest, shift)                                           \
     do {                                                                           \
-        uint32_t addr_ = linaddr, shift_ = shift, tag = cpu.tlb_tags[addr_ >> 12]; \
+        uint32_t addr_ = linaddr, shift_ = shift, tag = cpu->tlb_tags[addr_ >> 12]; \
         if (TLB_ENTRY_INVALID32(addr_, tag, shift_)) {                             \
             if (!cpu_access_read32(addr_, tag >> shift, shift))                    \
-                dest = cpu.read_result;                                            \
+                dest = cpu->read_result;                                            \
             else                                                                   \
                 EXCEPTION_HANDLER;                                                 \
         } else                                                                     \
-            dest = *(uint32_t*)(cpu.tlb[addr_ >> 12] + addr_);                     \
+            dest = *(uint32_t*)(cpu->tlb[addr_ >> 12] + addr_);                     \
     } while (0)
 #define cpu_write8(linaddr, data, shift)                              \
     do {                                                              \
         uint32_t addr_ = linaddr, shift_ = shift, data_ = data,       \
-                 tag = cpu.tlb_tags[addr_ >> 12];                     \
+                 tag = cpu->tlb_tags[addr_ >> 12];                     \
         if (TLB_ENTRY_INVALID8(addr_, tag, shift_)) {                 \
             if (cpu_access_write8(addr_, data_, tag >> shift, shift)) \
                 EXCEPTION_HANDLER;                                    \
         } else                                                        \
-            *(uint8_t*)(cpu.tlb[addr_ >> 12] + addr_) = data_;        \
+            *(uint8_t*)(cpu->tlb[addr_ >> 12] + addr_) = data_;        \
     } while (0)
 #define cpu_write16(linaddr, data, shift)                              \
     do {                                                               \
         uint32_t addr_ = linaddr, shift_ = shift, data_ = data,        \
-                 tag = cpu.tlb_tags[addr_ >> 12];                      \
+                 tag = cpu->tlb_tags[addr_ >> 12];                      \
         if (TLB_ENTRY_INVALID16(addr_, tag, shift_)) {                 \
             if (cpu_access_write16(addr_, data_, tag >> shift, shift)) \
                 EXCEPTION_HANDLER;                                     \
         } else                                                         \
-            *(uint16_t*)(cpu.tlb[addr_ >> 12] + addr_) = data_;        \
+            *(uint16_t*)(cpu->tlb[addr_ >> 12] + addr_) = data_;        \
     } while (0)
 #define cpu_write32(linaddr, data, shift)                              \
     do {                                                               \
         uint32_t addr_ = linaddr, shift_ = shift, data_ = data,        \
-                 tag = cpu.tlb_tags[addr_ >> 12];                      \
+                 tag = cpu->tlb_tags[addr_ >> 12];                      \
         if (TLB_ENTRY_INVALID32(addr_, tag, shift_)) {                 \
             if (cpu_access_write32(addr_, data_, tag >> shift, shift)) \
                 EXCEPTION_HANDLER;                                     \
         } else                                                         \
-            *(uint32_t*)(cpu.tlb[addr_ >> 12] + addr_) = data_;        \
+            *(uint32_t*)(cpu->tlb[addr_ >> 12] + addr_) = data_;        \
     } while (0)
 
 // Macros to help with segmentation
@@ -585,7 +585,7 @@ void cpu_trace_flush(void);
 // eflags.c
 int cpu_get_of(void);
 int cpu_get_sf(void);
-#define cpu_get_zf() (cpu.lr == 0)
+#define cpu_get_zf() (cpu->lr == 0)
 int cpu_get_af(void);
 int cpu_get_pf(void);
 int cpu_get_cf(void);

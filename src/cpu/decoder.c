@@ -7,7 +7,7 @@
 #ifdef LIBCPU
 void* get_phys_ram_ptr(uint32_t addr, int write);
 #else
-#define get_phys_ram_ptr(a, b) (cpu.mem + (a))
+#define get_phys_ram_ptr(a, b) (cpu->mem + (a))
 #endif
 
 // ============================================================================
@@ -117,7 +117,7 @@ static const uint8_t optable0F[0x100] = {
 // Returns 0 if instruction is longer than max_bytes
 static int find_instruction_length(int max_bytes)
 {
-    int opcode, state_hash = cpu.state_hash, initial_max_bytes = max_bytes, opcode_info;
+    int opcode, state_hash = cpu->state_hash, initial_max_bytes = max_bytes, opcode_info;
     const uint8_t* tbl = optable;
 
 #define OPCODE_TOO_LONG() \
@@ -133,11 +133,11 @@ top:
         OPCODE_TOO_LONG();
         goto done;
     case 0x66: // Operand size prefix
-        if (!((state_hash ^ cpu.state_hash) & STATE_CODE16))
+        if (!((state_hash ^ cpu->state_hash) & STATE_CODE16))
             state_hash ^= STATE_CODE16;
         break;
     case 0x67: // Address size prefix
-        if (!((state_hash ^ cpu.state_hash) & STATE_ADDR16))
+        if (!((state_hash ^ cpu->state_hash) & STATE_ADDR16))
             state_hash ^= STATE_ADDR16;
         break;
     case 0x26:
@@ -603,7 +603,7 @@ done:
         // Reset all state
         seg_prefix[0] = DS;
         seg_prefix[1] = SS;
-        state_hash = cpu.state_hash;
+        state_hash = cpu->state_hash;
     }
     sse_prefix = 0;
     return return_value;
@@ -968,7 +968,7 @@ static int decode_62(struct decoded_instruction* i)
 static int decode_63(struct decoded_instruction* i)
 {
     uint8_t modrm = rb();
-    int old_state_hash = cpu.state_hash;
+    int old_state_hash = cpu->state_hash;
     state_hash |= STATE_CODE16;
     i->flags = parse_modrm(i, modrm, 0);
     state_hash = old_state_hash;
@@ -1202,7 +1202,7 @@ static int decode_8D(struct decoded_instruction* i)
 static int decode_8E(struct decoded_instruction* i)
 {
     uint8_t modrm = rb();
-    int old_state_hash = cpu.state_hash;
+    int old_state_hash = cpu->state_hash;
     state_hash |= STATE_CODE16;
     i->flags = parse_modrm(i, modrm, 2);
     state_hash = old_state_hash;
@@ -2042,7 +2042,7 @@ static int decode_0F00(struct decoded_instruction* i)
     uint8_t modrm = rb(), reg = modrm >> 3 & 7;
     if ((modrm & 48) == 32) {
         // Handle VERR/VERW
-        int old_state_hash = cpu.state_hash;
+        int old_state_hash = cpu->state_hash;
         state_hash |= STATE_CODE16;
         i->flags = parse_modrm(i, modrm, 0);
         state_hash = old_state_hash;
@@ -3429,21 +3429,21 @@ static int decode_sseF8_FE(struct decoded_instruction* i){
 
 static void set_smc(int length, uint32_t lin)
 {
-    cpu.tlb_tags[lin >> 12] |= 0x44; // Mark both user and supervisor write TLBs as SMC
-    int b128 = ((cpu.phys_eip + length) >> 7) - (cpu.phys_eip >> 7) + 1;
+    cpu->tlb_tags[lin >> 12] |= 0x44; // Mark both user and supervisor write TLBs as SMC
+    int b128 = ((cpu->phys_eip + length) >> 7) - (cpu->phys_eip >> 7) + 1;
     for (int i = 0; i < b128; i++)
-        cpu_smc_set_code(cpu.phys_eip + (i << 7));
+        cpu_smc_set_code(cpu->phys_eip + (i << 7));
 }
 
 // Returns number of instructions translated that should be cached.
 int cpu_decode(struct trace_info* info, struct decoded_instruction* i)
 {
-    state_hash = cpu.state_hash;
-    rawp = get_phys_ram_ptr(cpu.phys_eip, 0);
+    state_hash = cpu->state_hash;
+    rawp = get_phys_ram_ptr(cpu->phys_eip, 0);
     uint8_t* rawp_base = rawp;
-    uintptr_t high_mark = (uintptr_t)(get_phys_ram_ptr ((cpu.phys_eip & ~0xFFF) + 0xFF0, 0));
+    uintptr_t high_mark = (uintptr_t)(get_phys_ram_ptr ((cpu->phys_eip & ~0xFFF) + 0xFF0, 0));
     void* original = i;
-    //if(cpu.phys_eip == 0x1102b8) __asm__("int3");
+    //if(cpu->phys_eip == 0x1102b8) __asm__("int3");
 
     int instructions_translated = 0, instructions_mask = -1;
     while (1) {
@@ -3462,8 +3462,8 @@ int cpu_decode(struct trace_info* info, struct decoded_instruction* i)
                     instructions_translated++;
                     int length = (uintptr_t)rawp - (uintptr_t)rawp_base;
                     if(instructions_mask != 0){ 
-                    info->phys = cpu.phys_eip;
-                    info->state_hash = cpu.state_hash;
+                    info->phys = cpu->phys_eip;
+                    info->state_hash = cpu->state_hash;
                     info->flags = length;
                     info->ptr = original;
                     set_smc(length, LIN_EIP());
@@ -3478,14 +3478,14 @@ int cpu_decode(struct trace_info* info, struct decoded_instruction* i)
         return 0;                  \
     } while (0)
                     uint32_t next_page = (lin_eip + 15) & ~0xFFF;
-                    uint8_t tlb_tag = cpu.tlb_tags[next_page >> 12];
-                    if (TLB_ENTRY_INVALID8(next_page, tlb_tag, cpu.tlb_shift_read) || cpu.tlb_attrs[next_page >> 12] & TLB_ATTR_NX) {
-                        if (cpu_mmu_translate(next_page, cpu.tlb_shift_read | 8)) 
+                    uint8_t tlb_tag = cpu->tlb_tags[next_page >> 12];
+                    if (TLB_ENTRY_INVALID8(next_page, tlb_tag, cpu->tlb_shift_read) || cpu->tlb_attrs[next_page >> 12] & TLB_ATTR_NX) {
+                        if (cpu_mmu_translate(next_page, cpu->tlb_shift_read | 8)) 
                             EXCEPTION_HANDLER;
                     }
                 // This is the only point at which an exception can be raised.
                 for (int j = 0; j < 15; j++)
-                    cpu_read8(lin_eip + j, prefetch[j], cpu.tlb_shift_read);
+                    cpu_read8(lin_eip + j, prefetch[j], cpu->tlb_shift_read);
 
                 rawp = prefetch;
                 instructions_translated = 1000; // Set this to an absurdly high value
@@ -3517,8 +3517,8 @@ int cpu_decode(struct trace_info* info, struct decoded_instruction* i)
             }
             int length = (uintptr_t)rawp - (uintptr_t)rawp_base;
             if (instructions_mask != 0) { // Don't commit page split traces
-                info->phys = cpu.phys_eip;
-                info->state_hash = cpu.state_hash;
+                info->phys = cpu->phys_eip;
+                info->state_hash = cpu->state_hash;
                 info->flags = length;
                 info->ptr = original;
                 set_smc(length, LIN_EIP());

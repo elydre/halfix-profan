@@ -1,29 +1,29 @@
 // Self-modifying code support
-// Note that writes to address beyond cpu.memory_size can be ignored because the translation system forbids translation from MMIO pages.
+// Note that writes to address beyond cpu->memory_size can be ignored because the translation system forbids translation from MMIO pages.
 // Also, this subsystem cannot handle cross 128-byte accesses on its own. All unaligned accesses will be split up in access.c
 #include "cpu/cpu.h"
 int cpu_smc_page_has_code(uint32_t phys)
 {
     phys >>= 12;
-    if (phys >= cpu.smc_has_code_length)
+    if (phys >= cpu->smc_has_code_length)
         return 0;
-    return cpu.smc_has_code[phys];
+    return cpu->smc_has_code[phys];
 }
 
 int cpu_smc_has_code(uint32_t phys)
 {
     phys >>= 7;
-    if ((phys >> 5) >= cpu.smc_has_code_length)
+    if ((phys >> 5) >= cpu->smc_has_code_length)
         return 0;
-    return cpu.smc_has_code[phys >> 5] & (1 << (phys & 31));
+    return cpu->smc_has_code[phys >> 5] & (1 << (phys & 31));
 }
 
 void cpu_smc_set_code(uint32_t phys)
 {
     phys >>= 7;
-    if ((phys >> 5) >= cpu.smc_has_code_length)
+    if ((phys >> 5) >= cpu->smc_has_code_length)
         return;
-    cpu.smc_has_code[phys >> 5] |= 1 << (phys & 31);
+    cpu->smc_has_code[phys >> 5] |= 1 << (phys & 31);
 }
 
 // The maximum trace length is 32 instructions, and instructions are a maximum of 15 bytes long. 32 * 15 = 480, and that rounds up to 512 bytes.
@@ -32,13 +32,13 @@ void cpu_smc_set_code(uint32_t phys)
 
 void cpu_smc_invalidate(uint32_t lin, uint32_t phys)
 {
-    //printf("%08x %08x %08x %08x\n", lin, phys, cpu.smc_has_code_length, cpu.smc_has_code[phys >> 12]);
+    //printf("%08x %08x %08x %08x\n", lin, phys, cpu->smc_has_code_length, cpu->smc_has_code[phys >> 12]);
     uint32_t pageid = phys >> 12, page_info, p128, invmask, pagebase = phys & ~0xFFF;
     int start, end, quit = 0;
 
-    if (pageid >= cpu.smc_has_code_length)
+    if (pageid >= cpu->smc_has_code_length)
         return;
-    page_info = cpu.smc_has_code[pageid];
+    page_info = cpu->smc_has_code[pageid];
     p128 = phys >> 7 & 31;
 #if REMOVE_ALL_CODE_TRACES == 0
     start = p128 - 4; // Backtrack four 128-byte cache lines.
@@ -80,7 +80,7 @@ void cpu_smc_invalidate(uint32_t lin, uint32_t phys)
     }
 
     page_info &= ~invmask;
-    cpu.smc_has_code[pageid] = page_info;
+    cpu->smc_has_code[pageid] = page_info;
     if (!page_info)
         cpu_mmu_tlb_invalidate(lin); // Retranslate the address so that there's no more code remaining
 
@@ -89,7 +89,7 @@ void cpu_smc_invalidate(uint32_t lin, uint32_t phys)
 }
 void cpu_smc_invalidate_page(uint32_t phys){
     uint32_t pageid = phys >> 12,
-    page_info = cpu.smc_has_code[pageid], pagebase = phys & ~0xFFF, quit = 1;
+    page_info = cpu->smc_has_code[pageid], pagebase = phys & ~0xFFF, quit = 1;
     for (int i = 0; i < 31; i++) {
         uint32_t mask = 1 << i;
         if (page_info & mask) {
@@ -106,7 +106,7 @@ void cpu_smc_invalidate_page(uint32_t phys){
         }
     }
 
-    cpu.smc_has_code[pageid] = page_info;
+    cpu->smc_has_code[pageid] = page_info;
     // TODO: invalidate TLB
     if (quit)
         INTERNAL_CPU_LOOP_EXIT();

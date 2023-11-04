@@ -9,43 +9,43 @@
 void* get_phys_ram_ptr(uint32_t addr, int write);
 void* get_lin_ram_ptr(uint32_t addr, int flags, int* fault);
 #else
-#define get_phys_ram_ptr(a, b) (cpu.mem + a)
+#define get_phys_ram_ptr(a, b) (cpu->mem + a)
 #define get_lin_ram_ptr(a, b) NULL
 #endif
 
 void cpu_mmu_tlb_flush(void)
 {
-    for (unsigned int i = 0; i < cpu.tlb_entry_count; i++) {
-        uint32_t entry = cpu.tlb_entry_indexes[i];
+    for (unsigned int i = 0; i < cpu->tlb_entry_count; i++) {
+        uint32_t entry = cpu->tlb_entry_indexes[i];
         if (entry == (uint32_t)-1)
             continue; // Don't flush entries we have already flushed
-        cpu.tlb[entry] = NULL;
-        cpu.tlb_tags[entry] = 0xFF;
-        cpu.tlb_entry_indexes[i] = -1;
-        cpu.tlb_attrs[entry] = 0xFF;
+        cpu->tlb[entry] = NULL;
+        cpu->tlb_tags[entry] = 0xFF;
+        cpu->tlb_entry_indexes[i] = -1;
+        cpu->tlb_attrs[entry] = 0xFF;
     }
-    cpu.tlb_entry_count = 0;
+    cpu->tlb_entry_count = 0;
 }
 void cpu_mmu_tlb_flush_nonglobal(void)
 {
-    for (unsigned int i = 0; i < cpu.tlb_entry_count; i++) {
-        uint32_t entry = cpu.tlb_entry_indexes[i];
+    for (unsigned int i = 0; i < cpu->tlb_entry_count; i++) {
+        uint32_t entry = cpu->tlb_entry_indexes[i];
         if (entry == (uint32_t)-1)
             continue; // Don't flush entries we have already flushed
-        if ((cpu.tlb_attrs[entry] & TLB_ATTR_NON_GLOBAL) == 0)
+        if ((cpu->tlb_attrs[entry] & TLB_ATTR_NON_GLOBAL) == 0)
             continue;
-        cpu.tlb[entry] = NULL;
-        cpu.tlb_tags[entry] = 0xFF;
-        cpu.tlb_entry_indexes[i] = -1;
-        cpu.tlb_attrs[entry] = 0xFF;
+        cpu->tlb[entry] = NULL;
+        cpu->tlb_tags[entry] = 0xFF;
+        cpu->tlb_entry_indexes[i] = -1;
+        cpu->tlb_attrs[entry] = 0xFF;
     }
-    cpu.tlb_entry_count = cpu.tlb_entry_count; // We may still have global entries.
+    cpu->tlb_entry_count = cpu->tlb_entry_count; // We may still have global entries.
 }
 
 static void cpu_set_tlb_entry(uint32_t lin, uint32_t phys, void* ptr, int user, int write, int global, int nx)
 {
     // Mask out the A20 gate line here so that we don't have to do it after every access
-    phys &= cpu.a20_mask;
+    phys &= cpu->a20_mask;
 
     if (phys >= 0xFFF00000)
         phys &= 0xFFFFF;
@@ -56,7 +56,7 @@ static void cpu_set_tlb_entry(uint32_t lin, uint32_t phys, void* ptr, int user, 
         tag = (phys & 0x40000) == 0;
         tag_write = 1;
     }
-    if (phys >= cpu.memory_size) {
+    if (phys >= cpu->memory_size) {
         tag = 1;
         tag_write = 1;
     }
@@ -66,7 +66,7 @@ static void cpu_set_tlb_entry(uint32_t lin, uint32_t phys, void* ptr, int user, 
         tag_write = 1;
     }
 
-    if (cpu.tlb_entry_count >= MAX_TLB_ENTRIES) { // Flush TLB
+    if (cpu->tlb_entry_count >= MAX_TLB_ENTRIES) { // Flush TLB
         cpu_mmu_tlb_flush();
 #ifdef INSTRUMENT
         cpu_instrument_tlb_full();
@@ -79,24 +79,24 @@ static void cpu_set_tlb_entry(uint32_t lin, uint32_t phys, void* ptr, int user, 
         user_write = (tag_write | ((!user | !write) ? 3 : 0)) << TLB_USER_WRITE;
 
     uint32_t entry = lin >> 12;
-    cpu.tlb_entry_indexes[cpu.tlb_entry_count++] = entry;
-    cpu.tlb_attrs[entry] = (nx ? TLB_ATTR_NX : 0) | (global ? 0 : TLB_ATTR_NON_GLOBAL);
+    cpu->tlb_entry_indexes[cpu->tlb_entry_count++] = entry;
+    cpu->tlb_attrs[entry] = (nx ? TLB_ATTR_NX : 0) | (global ? 0 : TLB_ATTR_NON_GLOBAL);
     if (!ptr)
         ptr = get_phys_ram_ptr(phys, write);
-    cpu.tlb[entry] = (void*)(((uintptr_t)ptr) - lin);
-    cpu.tlb_tags[entry] = system_read | system_write | user_read | user_write;
+    cpu->tlb[entry] = (void*)(((uintptr_t)ptr) - lin);
+    cpu->tlb_tags[entry] = system_read | system_write | user_read | user_write;
 }
 
 uint32_t cpu_read_phys(uint32_t addr)
 {
-    if (addr >= cpu.memory_size || (addr >= 0xA0000 && addr < 0xC0000))
+    if (addr >= cpu->memory_size || (addr >= 0xA0000 && addr < 0xC0000))
         return io_handle_mmio_read(addr, 2);
     else
         return MEM32(addr);
 }
 static void cpu_write_phys(uint32_t addr, uint32_t data)
 {
-    if (addr >= cpu.memory_size || (addr >= 0xA0000 && addr < 0xC0000))
+    if (addr >= cpu->memory_size || (addr >= 0xA0000 && addr < 0xC0000))
         io_handle_mmio_write(addr, data, 2);
     else
         MEM32(addr) = data;
@@ -122,7 +122,7 @@ int cpu_mmu_translate(uint32_t lin, int shift)
         return 0;
     }
 #endif
-    if (!(cpu.cr[0] & CR0_PG)) {
+    if (!(cpu->cr[0] & CR0_PG)) {
         cpu_set_tlb_entry(lin & ~0xFFF, lin & ~0xFFF, NULL, 1, 1, 0, 0);
         return 0; // No page faults at all!
     } else {
@@ -135,12 +135,12 @@ int cpu_mmu_translate(uint32_t lin, int shift)
         // 6: User write
         int write = shift >> 1 & 1, user = shift >> 2 & 1;
 
-        if (!(cpu.cr[4] & CR4_PAE)) {
+        if (!(cpu->cr[4] & CR4_PAE)) {
             // https://wiki.osdev.org/Paging
             // If we do end up page faulting, #PF will push an error code to stack
             int error_code = 0;
 
-            uint32_t page_directory_entry_addr = cpu.cr[3] + (lin >> 20 & 0xFFC),
+            uint32_t page_directory_entry_addr = cpu->cr[3] + (lin >> 20 & 0xFFC),
                      page_directory_entry = -1, page_table_entry_addr = -1, page_table_entry = -1;
 
             page_directory_entry = cpu_read_phys(page_directory_entry_addr);
@@ -157,7 +157,7 @@ int cpu_mmu_translate(uint32_t lin, int shift)
             page_table_entry = -1;
 
             // If PSE, then return a single large page
-            if (page_directory_entry & 0x80 && cpu.cr[4] & CR4_PSE) {
+            if (page_directory_entry & 0x80 && cpu->cr[4] & CR4_PSE) {
                 uint32_t new_page_dierctory_entry = page_directory_entry | 0x20 | (write << 6);
                 if (new_page_dierctory_entry != page_directory_entry) {
                     cpu_write_phys(page_directory_entry_addr, new_page_dierctory_entry);
@@ -189,7 +189,7 @@ int cpu_mmu_translate(uint32_t lin, int shift)
                     //  - Write is set (because write_mask != 0)
 
                     // Supervisor can write to read-only pages if and only if CR0.WP is clear
-                    if (user || (cpu.cr[0] & CR0_WP)) {
+                    if (user || (cpu->cr[0] & CR0_WP)) {
                         CPU_LOG("#PF: Illegal write\n");
                         error_code = 1;
                         goto page_fault;
@@ -228,15 +228,15 @@ int cpu_mmu_translate(uint32_t lin, int shift)
             return 0;
         // A page fault has occurred
         page_fault:
-            cpu.cr[2] = lin;
+            cpu->cr[2] = lin;
             error_code |= (write << 1) | (user << 2);
             CPU_LOG(" ---- Page fault information dump ----\n");
             CPU_LOG("PDE Entry addr: %08x PDE Entry: %08x\n", page_directory_entry_addr, page_directory_entry);
             CPU_LOG("PTE Entry addr: %08x PTE Entry: %08x\n", page_table_entry_addr, page_table_entry);
             CPU_LOG("Address to translate: %08x [%s %sing]\n", lin, user ? "user" : "kernel", write ? "writ" : "read");
-            CPU_LOG("CR3: %08x CPL: %d\n", cpu.cr[3], cpu.cpl);
-            CPU_LOG("EIP: %08x ESP: %08x\n", VIRT_EIP(), cpu.reg32[ESP]);
-            //if(cpu.cpl == 3 && !user) __asm__("int3");
+            CPU_LOG("CR3: %08x CPL: %d\n", cpu->cr[3], cpu->cpl);
+            CPU_LOG("EIP: %08x ESP: %08x\n", VIRT_EIP(), cpu->reg32[ESP]);
+            //if(cpu->cpl == 3 && !user) __asm__("int3");
             EXCEPTION_PF(error_code);
             return -1; // Never reached
         } else {
@@ -244,7 +244,7 @@ int cpu_mmu_translate(uint32_t lin, int shift)
             // http://www.rcollins.org/ddj/Jul96/
             // https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf (page 117)
             // Note that we only support 3 GB of RAM at max, so we're OK with ignoring the top bits
-            uint32_t pdp_addr = (cpu.cr[3] & ~31) | (lin >> 27 & 0x18),
+            uint32_t pdp_addr = (cpu->cr[3] & ~31) | (lin >> 27 & 0x18),
                      pdpte = cpu_read_phys(pdp_addr);
             int fail = (write << 1) | (user << 2);
             if ((pdpte & 1) == 0)
@@ -259,7 +259,7 @@ int cpu_mmu_translate(uint32_t lin, int shift)
                      pde = cpu_read_phys(pde_addr), pde2 = cpu_read_phys(pde_addr + 4);
 
             // XXX yucky yucky
-            uint32_t nx_mask = -1 ^ (cpu.ia32_efer << 20 & 0x80000000);
+            uint32_t nx_mask = -1 ^ (cpu->ia32_efer << 20 & 0x80000000);
 
             // Check if our address is too
             if (cpu_read_phys(pdp_addr + 4) & ~15 & nx_mask)
@@ -269,7 +269,7 @@ int cpu_mmu_translate(uint32_t lin, int shift)
                 EXCEPTION_GP(0);
 #endif
 
-            int nx_enabled = cpu.ia32_efer >> 11 & 1, nx = (pde2 >> 31) & nx_enabled;
+            int nx_enabled = cpu->ia32_efer >> 11 & 1, nx = (pde2 >> 31) & nx_enabled;
             fail |= (execute && nx_enabled) << 4;
 
             if ((pde & 1) == 0) {
@@ -279,7 +279,7 @@ int cpu_mmu_translate(uint32_t lin, int shift)
 
             uint32_t flags = ~pde;
             if ((write << 1) & flags) {
-                if (user || (cpu.cr[0] & CR0_WP)) {
+                if (user || (cpu->cr[0] & CR0_WP)) {
                     CPU_LOG("#PF: [PAE] Illegal write\n");
                     fail |= 1;
                     goto pae_page_fault;
@@ -313,7 +313,7 @@ int cpu_mmu_translate(uint32_t lin, int shift)
 
                 flags = ~pte;
                 if ((write << 1) & flags) {
-                    if (user || (cpu.cr[0] & CR0_WP)) {
+                    if (user || (cpu->cr[0] & CR0_WP)) {
                         CPU_LOG("#PF: [PAE] Illegal write\n");
                         fail |= 1;
                         goto pae_page_fault;
@@ -348,9 +348,9 @@ int cpu_mmu_translate(uint32_t lin, int shift)
             }
             return 0;
         pae_page_fault:
-            cpu.cr[2] = lin;
+            cpu->cr[2] = lin;
             //if(lin == 0xbfd8efff) __asm__("int3");
-            CPU_LOG("CR2: %08x\n", cpu.cr[2]);
+            CPU_LOG("CR2: %08x\n", cpu->cr[2]);
             //if((lin & ~0xFFF) == 0x01058000) __asm__("int3");
             // i have no idea if this is right
             EXCEPTION_PF(fail);
@@ -362,15 +362,15 @@ void cpu_mmu_tlb_invalidate(uint32_t lin)
 {
     lin >>= 12;
 #if 0
-    if(cpu.cr[4] & CR4_PSE){
+    if(cpu->cr[4] & CR4_PSE){
         uint32_t linbase = lin & ~1023;
         for(int i=0;i<1024;i++){
-            cpu.tlb[i + linbase] = NULL;
-            cpu.tlb_tags[i + linbase] = 0xFF;
+            cpu->tlb[i + linbase] = NULL;
+            cpu->tlb_tags[i + linbase] = 0xFF;
         }
         return;
     }
 #endif
-    cpu.tlb[lin] = NULL;
-    cpu.tlb_tags[lin] = 0xFF;
+    cpu->tlb[lin] = NULL;
+    cpu->tlb_tags[lin] = 0xFF;
 }
