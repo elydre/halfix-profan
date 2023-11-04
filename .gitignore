@@ -2,3 +2,6 @@
 *.o
 *.a
 halfix
+halfix.bin
+*.iso
+build/
