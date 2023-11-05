@@ -118,7 +118,6 @@ ssize_t read(int fd, void *buf, size_t count) {
         return -1;
     }
 
-    printf("read called\n");
     sid_t sid = open_files[fd]->sid;
     uint32_t filesize = fu_get_file_size(sid);
     uint32_t offset = open_files[fd]->offset;
@@ -126,7 +125,7 @@ ssize_t read(int fd, void *buf, size_t count) {
     if (offset >= filesize) {
         return 0;
     }
-    
+
     uint32_t read_size = count;
     
     if (offset + count > filesize) {
@@ -135,6 +134,7 @@ ssize_t read(int fd, void *buf, size_t count) {
     
     fu_file_read(sid, buf, offset, read_size);
     open_files[fd]->offset += read_size;
+    printf("read %d bytes\n", read_size);
     return read_size;
 }
 
