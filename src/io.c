@@ -312,12 +312,12 @@ int io_addr_mmio_read(uint32_t addr){
 
 void io_init(void)
 {
-    read = malloc(0x10000 * sizeof(io_read*) + (0x10000 * 3 * sizeof(io_read)));
-    write = malloc(0x10000 * sizeof(io_write*) + (0x10000 * 3 * sizeof(io_write)));
+    read = malloc((0x10000 * sizeof(io_read*)) + (0x10000 * 3 * sizeof(io_read)));
+    write = malloc((0x10000 * sizeof(io_write*)) + (0x10000 * 3 * sizeof(io_write)));
 
     for (int i = 0; i < 0x10000; i++) {
-        read[i] = (io_read*)(read + 0x10000 + (i * 3 * sizeof(io_read)));
-        write[i] = (io_write*)(write + 0x10000 + (i * 3 * sizeof(io_write)));
+        read[i] = (io_read*)(((void *) read + 0x10000 * sizeof(io_read*)) + (i * 3 * sizeof(io_read)));
+        write[i] = (io_write*)(((void *) write + 0x10000 * sizeof(io_write*)) + (i * 3 * sizeof(io_write)));
     }
 
     io_register_read(0, 65536, NULL, NULL, NULL);

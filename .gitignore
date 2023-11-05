@@ -1,6 +1,7 @@
 # Don't include build files
 *.o
 *.a
+*.out
 halfix
 halfix.bin
 *.iso
