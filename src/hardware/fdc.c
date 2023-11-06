@@ -269,6 +269,7 @@ static uint32_t fdc_read(uint32_t port)
     }
     default:
         FLOPPY_FATAL("Unknown port read: %04x\n", port);
+        return 0;
     }
 }
 
@@ -721,7 +722,7 @@ static void fdc_handle_format(void* a, int b)
         fdc.format_dma_pos += 4;
         
         // Fill sector
-        memset(sector, fdc.format_byte, 512);
+        hset(sector, fdc.format_byte, 512);
 
         // Seek to right location
         if(fdc_seek(fdc.selected_drive, track, head, sector_number) == -1)

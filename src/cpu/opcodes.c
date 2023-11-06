@@ -622,7 +622,7 @@ OPTYPE op_int(struct decoded_instruction* i)
 OPTYPE op_into(struct decoded_instruction* i)
 {
 #if 1
-#ifndef EMSCRIPTEN
+#if !defined(EMSCRIPTEN) && !defined(ASM_DISABLED)
     __asm__("int3");
     NEXT2(i->flags);
 #endif

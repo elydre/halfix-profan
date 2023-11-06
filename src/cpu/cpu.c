@@ -24,12 +24,12 @@ void cpu_set_a20(int a20_enabled)
 
 int cpu_init_mem(int size)
 {
-    cpu.mem = calloc(1, size);
-    memset(cpu.mem + 0xC0000, -1, 0x40000);
+    cpu.mem = halloc(size);
+    hset(cpu.mem + 0xC0000, -1, 0x40000);
     cpu.memory_size = size;
 
     cpu.smc_has_code_length = (size + 4095) >> 12;
-    cpu.smc_has_code = calloc(4, cpu.smc_has_code_length);
+    cpu.smc_has_code = challoc(4, cpu.smc_has_code_length);
 
 // It's possible that instrumentation callbacks will need a physical pointer to RAM
 #ifdef INSTRUMENT
@@ -72,9 +72,11 @@ int cpu_run(int cycles)
             }
         }
 
+#ifndef NO_AUTO_QUIT
         // Don't continue executing if we are in a hlt state
         if (cpu.exit_reason == EXIT_STATUS_HLT)
             return 0;
+#endif
 
         if (cpu.interrupts_blocked) {
             // Run one instruction
@@ -147,7 +149,7 @@ int cpu_add_rom(int addr, int size, void* data)
 {
     if ((uint32_t)addr > cpu.memory_size || (uint32_t)(addr + size) > cpu.memory_size)
         return 0;
-    memcpy(cpu.mem + addr, data, size);
+    hcpy(cpu.mem + addr, data, size);
     return 0;
 }
 
@@ -205,9 +207,9 @@ void cpu_reset(void)
     cpu_update_mxcsr();
 
     // Reset TLB
-    memset(cpu.tlb, 0, sizeof(void*) * (1 << 20));
-    memset(cpu.tlb_tags, 0xFF, 1 << 20);
-    memset(cpu.tlb_attrs, 0xFF, 1 << 20);
+    hset(cpu.tlb, 0, sizeof(void*) * (1 << 20));
+    hset(cpu.tlb_tags, 0xFF, 1 << 20);
+    hset(cpu.tlb_attrs, 0xFF, 1 << 20);
     cpu_mmu_tlb_flush();
 }
 
@@ -322,7 +324,7 @@ void cpu_write_mem(uint32_t addr, void* data, uint32_t length)
             return;
         }
     }
-    memcpy(cpu.mem + addr, data, length);
+    hcpy(cpu.mem + addr, data, length);
 #ifdef INSTRUMENT
     cpu_instrument_dma(addr, data, length);
 #endif

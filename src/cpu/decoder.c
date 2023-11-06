@@ -2035,6 +2035,7 @@ static int decode_FF(struct decoded_instruction* i)
             return 1;
         }
     CPU_FATAL("unreachable");
+    return 0;
 }
 
 static int decode_0F00(struct decoded_instruction* i)

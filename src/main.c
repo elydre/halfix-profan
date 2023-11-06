@@ -84,7 +84,7 @@ int main(int argc, char** argv)
 
             if (!o->name)
                 break;
-            if (!strcmp(long_ver ? o->name : o->alias, arg + (long_ver + 1))) {
+            if (!strhcmp(long_ver ? o->name : o->alias, arg + (long_ver + 1))) {
                 char* data;
                 if (o->flags & HASARG) {
                     if (!(data = argv[++i])) {
@@ -117,7 +117,7 @@ parse_config:
         return -1;
     }
     fseek(f, 0, SEEK_END);
-    buf = malloc((filesz = ftell(f)) + 1);
+    buf = halloc((filesz = ftell(f)) + 1);
     fseek(f, 0, SEEK_SET);
     if (fread(buf, filesz, 1, f) != 1) {
         perror("fread");
@@ -130,7 +130,7 @@ parse_config:
     fclose(f);
 
     int result = parse_cfg(&pc, buf);
-    free(buf);
+    hfree(buf);
     if (result < 0)
         return -1;
 

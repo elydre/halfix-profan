@@ -61,8 +61,8 @@ enum {
 static inline char* slice_string(char* y, int start, int end)
 {
     int length = end - start;
-    char* result = malloc(length + 1);
-    memcpy(result, y + start, length);
+    char* result = halloc(length + 1);
+    hcpy(result, y + start, length);
     result[length] = 0;
     return result;
 }
@@ -70,9 +70,9 @@ static inline char* slice_string(char* y, int start, int end)
 static struct ini_section* ini_parse(char* x)
 {
     int state = STATE_DEFAULT,
-        length = strlen(x),
+        length = strhlen(x),
         i = 0, strstart = 0, strend = 0, include_whitespace = 0;
-    struct ini_section *result = calloc(1, sizeof(struct ini_section)), *head = result;
+    struct ini_section *result = challoc(1, sizeof(struct ini_section)), *head = result;
     struct ini_field* current_field = NULL;
     while (i < length) {
         int c = x[i++];
@@ -97,7 +97,7 @@ static struct ini_section* ini_parse(char* x)
         case STATE_SECTION:
             if (c == ']') {
                 // Add an element to our linked list.
-                struct ini_section* sect = calloc(1, sizeof(struct ini_section));
+                struct ini_section* sect = challoc(1, sizeof(struct ini_section));
                 sect->name = slice_string(x, strstart, i - 1);
                 head->next = sect;
                 head = sect;
@@ -107,7 +107,7 @@ static struct ini_section* ini_parse(char* x)
         case STATE_KEY:
             // keystart[\s]=[\s+]
             if (c == '=') {
-                struct ini_field *field = calloc(1, sizeof(struct ini_field)), *temp;
+                struct ini_field *field = challoc(1, sizeof(struct ini_field)), *temp;
                 field->name = slice_string(x, strstart, strend);
                 temp = head->fields;
                 head->fields = field;
@@ -155,7 +155,7 @@ static struct ini_section* get_section(struct ini_section* sect, char* name)
 {
     while (sect) {
         if (sect->name) {
-            if (!strcmp(sect->name, name))
+            if (!strhcmp(sect->name, name))
                 return sect;
         }
         sect = sect->next;
@@ -166,7 +166,7 @@ static char* get_field_string(struct ini_section* sect, char* name)
 {
     struct ini_field* f = sect->fields;
     while (f) {
-        if (!strcmp(f->name, name))
+        if (!strhcmp(f->name, name))
             return f->data;
         f = f->next;
     }
@@ -179,7 +179,7 @@ static int get_field_enum(struct ini_section* sect, char* name, const struct ini
         return def;
     int i = 0;
     while (vals[i].name) {
-        if (!strcmp(vals[i].name, x))
+        if (!strhcmp(vals[i].name, x))
             return vals[i].value;
         i++;
     }
@@ -245,19 +245,19 @@ static void free_ini(struct ini_section* sect)
 {
     while (sect) {
         // Free the name
-        free(sect->name);
+        hfree(sect->name);
         // Free the fields
         struct ini_field* f = sect->fields;
         while (f) {
-            free(f->name);
-            free(f->data);
+            hfree(f->name);
+            hfree(f->data);
             struct ini_field* f_next = f->next;
-            free(f);
+            hfree(f);
             f = f_next;
         }
         // Now move to the next one
         struct ini_section* next = sect->next;
-        free(sect);
+        hfree(sect);
         sect = next;
     }
 }
@@ -341,9 +341,9 @@ static char* dupstr(char* src)
 {
     if (!src)
         return NULL;
-    int len = strlen(src);
-    char* res = malloc(len + 1);
-    strcpy(res, src);
+    int len = strhlen(src);
+    char* res = halloc(len + 1);
+    strhcpy(res, src);
     return res;
 }
 
@@ -428,8 +428,10 @@ int parse_cfg(struct pc_settings* pc, char* data)
                         n = mac[j + i] - 'A';
                     else if (mac[j + i] >= 'a' && mac[j + i] <= 'f')
                         n = mac[j + i] - 'a';
-                    else
+                    else {
                         FATAL("INI", "Malformed MAC address\n");
+                        n = 0;
+                    }
                     mac_part = (mac_part << 4) | n;
                 }
                 i += 2;

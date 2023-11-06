@@ -5,8 +5,7 @@
 #include "display.h"
 #include "state.h"
 #include <stdlib.h>
-
-//#define REALTIME_TIMING
+#include <string.h>
 
 #ifdef REALTIME_TIMING
 #include <sys/time.h>
@@ -27,10 +26,10 @@ void qmalloc_init(void)
 {
     if (qmalloc_slabs == NULL) {
         qmalloc_slabs_size = 1;
-        qmalloc_slabs = malloc(1);
+        qmalloc_slabs = halloc(1);
         qmalloc_slabs_resize();
     }
-    qmalloc_data = malloc(QMALLOC_SIZE);
+    qmalloc_data = halloc(QMALLOC_SIZE);
     qmalloc_usage = 0;
     qmalloc_size = QMALLOC_SIZE;
     qmalloc_slabs[qmalloc_slabs_size - 1] = qmalloc_data;
@@ -57,11 +56,99 @@ void* qmalloc(int size, int align)
 void qfree(void)
 {
     for (int i = 0; i < qmalloc_slabs_size; i++) {
-        free(qmalloc_slabs[i]);
+        hfree(qmalloc_slabs[i]);
     }
-    free(qmalloc_slabs);
+    hfree(qmalloc_slabs);
     qmalloc_slabs = NULL;
     qmalloc_init();
+}
+void* safe_halloc(
+#ifdef DEBUG_MEM
+    const char* file,
+    const char* function,
+    int line,
+#endif
+    size_t size
+) {
+    void* result = malloc(size);
+    if (result == NULL) {
+#ifdef DEBUG_MEM
+        FATAL("MEM", "Failed to allocate memory at %s (%s:%i)\n", function, file, line);
+#else
+        FATAL("MEM", "Failed to allocate memory\n");
+#endif
+    }
+    return result;
+}
+void* safe_rehalloc(
+#ifdef DEBUG_MEM
+    const char* file,
+    const char* function,
+    int line,
+#endif
+    void* memblock,
+    size_t size
+) {
+#ifdef SDL2_BUILD
+    void* result = SDL_realloc(memblock, size);
+#else
+    void* result = realloc(memblock, size);
+#endif
+    if (result == NULL) {
+#ifdef DEBUG_MEM
+        FATAL("MEM", "Failed to reallocate memory at %s (%s:%i)\n", function, file, line);
+#else
+        FATAL("MEM", "Failed to reallocate memory\n");
+#endif
+    }
+    return result;
+}
+void* safe_challoc(
+#ifdef DEBUG_MEM
+    const char* file,
+    const char* function,
+    int line,
+#endif
+    size_t num,
+    size_t size
+) {
+#ifdef SDL2_BUILD
+    void* result = SDL_calloc(num, size);
+#else
+    void* result = calloc(num, size);
+#endif
+    if (result == NULL) {
+#ifdef DEBUG_MEM
+        FATAL("MEM", "Failed to c allocate memory at %s (%s:%i)\n", function, file, line);
+#else
+        FATAL("MEM", "Failed to c allocate memory\n");
+#endif
+    }
+    return result;
+}
+void* safe_hcpy(
+#ifdef DEBUG_MEM
+    const char* file,
+    const char* function,
+    int line,
+#endif
+    void* dst,
+    void* src,
+    size_t n
+) {
+    if ((src >= dst ? src - dst : dst - src) < n) {
+#ifdef DEBUG_MEM
+        LOG("MEM", "Unsafe memory copy at %s (%s:%i)\n", function, file, line);
+#else
+        LOG("MEM", "Unsafe memory copy\n");
+#endif
+        return hmove(dst, src, n);
+    }
+#ifdef SDL2_BUILD
+    return SDL_memcpy(dst, src, n);
+#else
+    return memcpy(dst, src, n);
+#endif
 }
 
 struct aalloc_info {
@@ -72,7 +159,7 @@ struct aalloc_info {
 void* aalloc(int size, int align)
 {
     int adjusted = align - 1;
-    void* actual = calloc(1, sizeof(void*) + size + adjusted);
+    void* actual = challoc(1, sizeof(void*) + size + adjusted);
     struct aalloc_info* ai = ((void*)((uintptr_t)(actual + sizeof(void*) + adjusted) & ~adjusted)) - sizeof(void*);
     ai->actual_ptr = actual;
     return ((void*)ai) + sizeof(void*);
@@ -80,7 +167,7 @@ void* aalloc(int size, int align)
 void afree(void* ptr)
 {
     struct aalloc_info* a = ptr - sizeof(void*);
-    free(a->actual_ptr);
+    hfree(a->actual_ptr);
 }
 
 // Timing functions
@@ -131,7 +218,7 @@ void add_now(itick_t a)
 void util_debug(void)
 {
     display_release_mouse();
-#ifndef EMSCRIPTEN
+#if !defined(EMSCRIPTEN) && !defined(ASM_DISABLED)
     __asm__("int3");
 #else
     printf("Breakpoint reached -- aborting\n");
