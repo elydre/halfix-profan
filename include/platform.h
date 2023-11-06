@@ -7,7 +7,7 @@
 #include <malloc.h>
 #elif defined(PROFAN)
 #include <stdlib.h>
-#define alloca(x) malloc(x)
+#define alloca(x) calloc(x, 1)
 #else
 #include <alloca.h>
 // This flag is required for MSVCRT to read binary files normally.

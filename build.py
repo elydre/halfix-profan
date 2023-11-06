@@ -5,8 +5,8 @@ LD      = "ld"
 
 OUTPUT  = "halfix"
 
-CFLAGS  = "-ffreestanding -fno-exceptions -m32 -I ./profan_zlib -I ./include -D PROFAN -DNATIVE_BUILD"
-LDFLAGS = "-T link.ld -z max-page-size=0x1000 -Map=halfix.map"
+CFLAGS  = "-ffreestanding -fno-exceptions -m32 -I ./profan_zlib -I ./include -D PROFAN"
+LDFLAGS = "-T link.ld -Map=halfix.map"
 
 OBJDIR  = "build"
 SRCDIRS  = ["src/cpu", "src/cpu/ops", "src/hardware", "src/host", "src"]
