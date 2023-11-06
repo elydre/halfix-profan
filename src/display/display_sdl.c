@@ -4,8 +4,8 @@
 // We still need SDL for events and the window title, but the blitting can be done independently.
 // See: https://github.com/emscripten-core/emscripten/blob/incoming/src/library_sdl.js
 
-#if 1
 #include "display.h"
+#include "platform.h"
 #include "devices.h"
 #include "util.h"
 #include <SDL/SDL.h>
@@ -78,7 +78,7 @@ void display_set_resolution(int width, int height)
 
     if (surface_pixels)
         free(surface_pixels);
-    surface_pixels = malloc(width * height * 4);
+    surface_pixels = halloc(width * height * 4);
 
     if (surface)
         SDL_FreeSurface(surface);
@@ -332,7 +332,7 @@ void display_handle_events(void)
         }
         case SDL_MOUSEMOTION: {
             if (input_captured)
-                kbd_send_mouse_move(event.motion.xrel, event.motion.yrel);
+                kbd_send_mouse_move(event.motion.xrel, event.motion.yrel, 0, 0);
             break;
         }
         case SDL_KEYUP: {
@@ -383,25 +383,10 @@ void display_init(void)
     display_mouse_capture_update(1);
 #endif
 }
+void display_quit(void) {
+    // TODO
+}
 void display_sleep(int ms)
 {
     SDL_Delay(ms);
 }
-
-#else // Headless mode
-#include "util.h"
-static uint32_t pixels[800 * 500];
-void display_init(void) {}
-void display_update(int scanline_start, int scanlines)
-{
-    UNUSED(scanline_start | scanlines);
-}
-void display_set_resolution(int width, int height)
-{
-    UNUSED(width | height);
-}
-void* display_get_pixels(void)
-{
-    return pixels;
-}
-#endif

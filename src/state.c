@@ -18,6 +18,7 @@
 #endif
 
 #if defined(_WIN32) && !defined(EMSCRIPTEN)
+#include <windows.h>
 #define PATHSEP '\\'
 #define PATHSEP_STR "\\"
 #else
@@ -62,7 +63,7 @@ static uint32_t read32(struct rstream* r)
 static char* readstr(struct rstream* r)
 {
     int length = strlen((void*)&r->buf[r->pos]) + 1;
-    char* dest = malloc(length);
+    char* dest = halloc(length);
     memcpy(dest, &r->buf[r->pos], length);
     r->pos += length;
     return dest;
@@ -103,7 +104,7 @@ struct wstream {
 };
 static void wstream_init(struct wstream* w, int initial_size)
 {
-    w->buf = malloc(initial_size);
+    w->buf = halloc(initial_size);
     w->pos = 0;
     w->bufsize = initial_size;
 }
@@ -208,7 +209,7 @@ struct bjson_object* state_get_object(struct bjson_object* o, char* key)
 static char* dupstr(char* v)
 {
     int len = strlen(v) + 1;
-    char* res = malloc(len + 1);
+    char* res = halloc(len + 1);
     memcpy(res, v, len);
     return res;
 }
@@ -247,14 +248,14 @@ void state_add_object(struct bjson_object* o, char* key, struct bjson_object* va
 // Creates a BJSON object and initializes it.
 struct bjson_object* state_create_bjson_object(int keyvalues)
 {
-    struct bjson_object* obj = malloc(sizeof(struct bjson_object));
+    struct bjson_object* obj = halloc(sizeof(struct bjson_object));
     obj->length = keyvalues;
-    obj->keys = calloc(sizeof(struct bjson_key_value), keyvalues);
+    obj->keys = calloc(keyvalues, sizeof(struct bjson_key_value));
     return obj;
 }
 void state_init_bjson_mem(struct bjson_data* arr, int length)
 {
-    arr->data = malloc(length);
+    arr->data = halloc(length);
     arr->length = length;
 }
 
@@ -304,7 +305,7 @@ void state_string(struct bjson_object* cur, char* name, char** val)
         }
         if (!ok) // Either we hit an unexpected \00 or we didn't hit one at all!
             STATE_FATAL("Invalid string literal");
-        char* dest = malloc(length);
+        char* dest = halloc(length);
         memcpy(dest, arr->data, length);
         *val = dest;
     } else {
@@ -393,12 +394,21 @@ void state_file(int size, char* name, void* ptr)
     sprintf(temp, "%s" PATHSEP_STR "%s", global_file_base, name);
     if (is_reading) {
 #ifndef EMSCRIPTEN
-        int fd = open(temp, O_RDONLY | O_BINARY);
-        if (fd == -1)
+#ifdef USE_F_API
+        FILE* fh = fopen(temp, "rb");
+        if (!fh)
             STATE_FATAL("Unable to open file %s\n", temp);
-        if (read(fd, ptr, size) != size)
+        if (fread(ptr, 1, size, fh) != size)
             STATE_FATAL("Could not read\n");
-        close(fd);
+        fclose(fh);
+#else
+        int fh = open(temp, O_RDONLY | O_BINARY);
+        if (fh == -1)
+            STATE_FATAL("Unable to open file %s\n", temp);
+        if (read(fh, ptr, size) != size)
+            STATE_FATAL("Could not read\n");
+        close(fh);
+#endif
 #else
         EM_ASM_({
             window["loadFile"]($0, $1, $2);
@@ -406,12 +416,21 @@ void state_file(int size, char* name, void* ptr)
 #endif
     } else {
 #ifndef EMSCRIPTEN
-        int fd = open(temp, O_WRONLY | O_CREAT | O_BINARY | O_TRUNC, 0666);
-        if (fd == -1)
+#ifdef USE_F_API
+        FILE* fh = fopen(temp, "wb"); // TODO: is this right?
+        if (!fh)
             STATE_FATAL("Unable to create file %s\n", temp);
-        if (write(fd, ptr, size) != size)
+        if (fwrite(ptr, 1, size, fh) != size)
             STATE_FATAL("Could not write\n");
-        close(fd);
+        fclose(fh);
+#else
+        int fh = open(temp, O_WRONLY | O_CREAT | O_BINARY | O_TRUNC, 0666);
+        if (fh == -1)
+            STATE_FATAL("Unable to create file %s\n", temp);
+        if (write(fh, ptr, size) != size)
+            STATE_FATAL("Could not write\n");
+        close(fh);
+#endif
 #else
         EM_ASM_({
             window["saveFile"]($0, $1, $2);
@@ -425,11 +444,11 @@ static char* normalize(char* a)
     int len = strlen(a);
     char* res;
     if (a[len - 1] == PATHSEP) {
-        res = malloc(len);
+        res = halloc(len);
         memcpy(res, a, len);
         res[len - 1] = 0;
     } else {
-        res = malloc(len + 1);
+        res = halloc(len + 1);
         memcpy(res, a, len + 1);
     }
     return res;
@@ -442,15 +461,27 @@ void state_read_from_file(char* fn)
     sprintf(path, "%s" PATHSEP_STR "state.bin", fn);
 
 #ifndef EMSCRIPTEN
-    int fd = open(path, O_RDONLY | O_BINARY);
-    if (fd == -1)
+#ifdef USE_F_API
+    FILE* fh = fopen(path, "rb");
+    if (!fh)
         STATE_FATAL("Cannot open file %s\n", fn);
-    int size = lseek(fd, 0, SEEK_END);
-    lseek(fd, 0, SEEK_SET);
-    void* buf = malloc(size);
-    if (read(fd, buf, size) != size)
+    int size = fseek(fh, 0, SEEK_END);
+    fseek(fh, 0, SEEK_SET);
+    void* buf = halloc(size);
+    if (fread(buf, 1, size, fh) != size)
         STATE_FATAL("Cannot read from file %s\n", fn);
-    close(fd);
+    fclose(fh);
+#else
+    int fh = open(path, O_RDONLY | O_BINARY);
+    if (fh == -1)
+        STATE_FATAL("Cannot open file %s\n", fn);
+    int size = lseek(fh, 0, SEEK_END);
+    lseek(fh, 0, SEEK_SET);
+    void* buf = halloc(size);
+    if (read(fh, buf, size) != size)
+        STATE_FATAL("Cannot read from file %s\n", fn);
+    close(fh);
+#endif
 #else
     void* buf = (void*)(EM_ASM_INT({
         return window["loadFile2"]($0, $1, $2);
@@ -486,12 +517,21 @@ void state_store_to_file(char* fn)
 
     sprintf(path, "%s" PATHSEP_STR "state.bin", fn);
 
-    int fd = open(path, O_WRONLY | O_CREAT | O_BINARY, 0666);
-    if (fd == -1)
+#ifdef USE_F_API
+    FILE* fh = fopen(path, "wb"); // TODO: right?
+    if (!fh)
         STATE_FATAL("Cannot open file %s\n", fn);
-    if (write(fd, w.buf, w.pos) != (ssize_t)w.pos) // Clang complains that w.pos and write have different signs.
+    if (fwrite(w.buf, 1, w.pos, fh) != (ssize_t)w.pos) // Clang complains that w.pos and write have different signs.
         STATE_FATAL("Cannot write to file %s\n", fn);
-    close(fd);
+    fclose(fh);
+#else
+    int fh = open(path, O_WRONLY | O_CREAT | O_BINARY, 0666);
+    if (fh == -1)
+        STATE_FATAL("Cannot open file %s\n", fn);
+    if (write(fh, w.buf, w.pos) != (ssize_t)w.pos) // Clang complains that w.pos and write have different signs.
+        STATE_FATAL("Cannot write to file %s\n", fn);
+    close(fh);
+#endif
     wstream_destroy(&w);
     bjson_destroy_object(global_obj);
     free(global_file_base);
@@ -536,13 +576,16 @@ void state_mkdir(char* path)
 {
 #ifndef EMSCRIPTEN
 #ifdef _WIN32
-    if (mkdir(path) == -1) {
+    // TODO: Unicode
+    if (!CreateDirectoryA(path, NULL) && GetLastError() != ERROR_ALREADY_EXISTS) {
+        STATE_FATAL("Unable to make new directory %s\n", path);
+    }
 #else
     if (mkdir(path, 0777) == -1) {
-#endif
         if (errno != EEXIST)
             STATE_FATAL("Unable to make new directory %s\n", path);
     }
+#endif
 #else
     UNUSED(path);
 #endif

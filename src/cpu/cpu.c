@@ -4,6 +4,7 @@
 #include "cpu/fpu.h"
 #include "cpu/instrument.h"
 #include "cpuapi.h"
+#include "platform.h"
 #include "devices.h"
 #include <string.h>
 
@@ -24,7 +25,7 @@ void cpu_set_a20(int a20_enabled)
 
 int cpu_init_mem(int size)
 {
-    cpu->mem = calloc(1, size);
+    cpu->mem = halloc(size);
     memset(cpu->mem + 0xC0000, -1, 0x40000);
     cpu->memory_size = size;
 
@@ -72,9 +73,11 @@ int cpu_run(int cycles)
             }
         }
 
+#ifndef NO_AUTO_QUIT
         // Don't continue executing if we are in a hlt state
         if (cpu->exit_reason == EXIT_STATUS_HLT)
             return 0;
+#endif
 
         if (cpu->interrupts_blocked) {
             // Run one instruction

@@ -166,9 +166,10 @@ static void bios_writeb(uint32_t port, uint32_t data)
         id = port >> 8 & 1;
         bios_data[id][bios_ptr[id]++] = data;
         if (bios_ptr[id] == 100 || data == '\n') {
-            bios_data[id][bios_ptr[id]] = 0;
-            fprintf(stderr, "%sBIOS says: '%s'\n", id ? "VGA" : "", bios_data[id]);
-            printf("%sBIOS says: '%s'\n", id ? "VGA" : "", bios_data[id]);
+            bios_data[id][bios_ptr[id] - 1] = 0;
+            // fprintf(stderr, "%sBIOS says: %s", id ? "VGA" : "", bios_data[id]);
+            // printf("%sBIOS says: %s\n", id ? "VGA" : "", bios_data[id]);
+            LOG("%sBIOS", "%s\n", id ? "VGA" : "", bios_data[id]);
             bios_ptr[id] = 0;
         }
         break;

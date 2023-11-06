@@ -14,4 +14,6 @@
 #define O_BINARY 0 
 #endif
 
+#define halloc(x) calloc(x, 1)
+
 #endif

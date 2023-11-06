@@ -123,6 +123,7 @@ int cpu_get_of(void)
         return cpu->eflags >> 11 & 1;
     default:
         CPU_FATAL("Unknown of op: %d\n", cpu->laux & LAUX_METHOD_MASK);
+        return 0;
     }
 }
 
@@ -169,6 +170,7 @@ int cpu_get_af(void)
         return cpu->eflags >> 4 & 1;
     default:
         CPU_FATAL("Unknown af op: %d\n", cpu->laux & LAUX_METHOD_MASK);
+        return 0;
     }
 }
 void cpu_set_af(int set)
@@ -243,6 +245,7 @@ int cpu_get_cf(void)
         return 0;
     default:
         CPU_FATAL("Unknown cf op: %d\n", cpu->laux & LAUX_METHOD_MASK);
+        return 0;
     }
 }
 void cpu_set_cf(int set)

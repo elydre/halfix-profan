@@ -9,6 +9,7 @@
 
 #include "cpuapi.h"
 #include "devices.h"
+#include "platform.h"
 #include "display.h"
 #include "io.h"
 #include "state.h"
@@ -315,7 +316,7 @@ static void vga_update_size(void)
     if (vga.vbe_scanlines_modified)
         vga.vbe_scanlines_modified = realloc(vga.vbe_scanlines_modified, vga.total_height);
     else
-        vga.vbe_scanlines_modified = malloc(vga.total_height);
+        vga.vbe_scanlines_modified = halloc(vga.total_height);
     memset(vga.vbe_scanlines_modified, 1, vga.total_height);
 
     vga.scanlines_to_update = height >> 1;
@@ -355,7 +356,7 @@ static void vga_change_attr_cache(int i)
 
 #define MASK(n) (uint8_t)(~n)
 
-static const uint32_t vbe_maximums[3] = { 1024, 768, 32 };
+static const uint32_t vbe_maximums[3] = { 3840, 2160, 32 };
 
 #ifndef VGA_LIBRARY
 static
@@ -1545,7 +1546,7 @@ static void vga_pci_init(struct loaded_file* vgabios)
     io_register_mmio_read(vga.vgabios_addr = 0xFEB00000, 0x20000, vga_rom_readb, NULL, NULL);
     io_register_mmio_write(vga.vgabios_addr, 0x20000, vga_rom_writeb, NULL, NULL);
 
-    vga.rom = calloc(1, 65536);
+    vga.rom = halloc(65536);
     memcpy(vga.rom, vgabios->data, vgabios->length & 65535);
     vga.rom_size = vgabios->length;
 

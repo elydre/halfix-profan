@@ -117,7 +117,7 @@ parse_config:
         return -1;
     }
     fseek(f, 0, SEEK_END);
-    buf = malloc((filesz = ftell(f)) + 1);
+    buf = halloc((filesz = ftell(f)) + 1);
     fseek(f, 0, SEEK_SET);
     if (fread(buf, filesz, 1, f) != 1) {
         perror("fread");

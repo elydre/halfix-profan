@@ -288,8 +288,10 @@ int scasb16(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg16[CX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int scasb32(int flags)
 {
@@ -331,8 +333,10 @@ int scasb32(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg32[ECX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int scasw16(int flags)
 {
@@ -374,8 +378,10 @@ int scasw16(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg16[CX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int scasw32(int flags)
 {
@@ -417,8 +423,10 @@ int scasw32(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg32[ECX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int scasd16(int flags)
 {
@@ -460,8 +468,10 @@ int scasd16(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg16[CX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int scasd32(int flags)
 {
@@ -503,8 +513,10 @@ int scasd32(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg32[ECX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int insb16(int flags)
 {
@@ -804,8 +816,10 @@ int cmpsb16(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg16[CX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int cmpsb32(int flags)
 {
@@ -853,8 +867,10 @@ int cmpsb32(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg32[ECX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int cmpsw16(int flags)
 {
@@ -902,8 +918,10 @@ int cmpsw16(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg16[CX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int cmpsw32(int flags)
 {
@@ -951,8 +969,10 @@ int cmpsw32(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg32[ECX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int cmpsd16(int flags)
 {
@@ -1000,8 +1020,10 @@ int cmpsd16(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg16[CX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int cmpsd32(int flags)
 {
@@ -1049,8 +1071,10 @@ int cmpsd32(int flags)
             if(src == dest) return 0;
         }
         return cpu->reg32[ECX] != 0;
+        default:
+        CPU_FATAL("unreachable");
+        return 0;
     }
-    CPU_FATAL("unreachable");
 }
 int lodsb16(int flags)
 {

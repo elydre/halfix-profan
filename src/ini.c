@@ -4,6 +4,7 @@
 #include "net.h"
 #include "pc.h"
 #include "util.h"
+#include "platform.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -61,7 +62,7 @@ enum {
 static inline char* slice_string(char* y, int start, int end)
 {
     int length = end - start;
-    char* result = malloc(length + 1);
+    char* result = halloc(length + 1);
     memcpy(result, y + start, length);
     result[length] = 0;
     return result;
@@ -342,7 +343,7 @@ static char* dupstr(char* src)
     if (!src)
         return NULL;
     int len = strlen(src);
-    char* res = malloc(len + 1);
+    char* res = halloc(len + 1);
     strcpy(res, src);
     return res;
 }
@@ -428,8 +429,10 @@ int parse_cfg(struct pc_settings* pc, char* data)
                         n = mac[j + i] - 'A';
                     else if (mac[j + i] >= 'a' && mac[j + i] <= 'f')
                         n = mac[j + i] - 'a';
-                    else
+                    else {
                         FATAL("INI", "Malformed MAC address\n");
+                        n = 0;
+                    }
                     mac_part = (mac_part << 4) | n;
                 }
                 i += 2;
