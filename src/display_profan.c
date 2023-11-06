@@ -2,6 +2,7 @@
 
 #include <syscall.h>
 #include <stdlib.h>
+#include "devices.h"
 
 // display_update
 // display_handle_events
@@ -35,13 +36,22 @@ void display_release_mouse(void) {
 }
 
 void display_handle_events(void) {
-    ;
+    int k = c_kb_get_scfh();
+    if (k == 0)
+        return;
+    kbd_add_key(k & 0xFF);
 }
 
 void display_update(void) {
-    for (int i = 0; i < x; i++)
-        for (int j = 0; j < y; j++)
-            c_vesa_set_pixel(i, j, screen[i + j * x]);
+    for (int i = 0; i <= x; i++) {
+        for (int j = 0; j <= y; j++) {
+            if (i == x || j == y)
+                c_vesa_set_pixel(i, j, 0xFFFFFF);
+            else
+                c_vesa_set_pixel(i, j, screen[i + j * x]);
+        }
+    }
+
 }
 
 
