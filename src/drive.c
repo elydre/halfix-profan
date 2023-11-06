@@ -1,6 +1,8 @@
 // A set of drivers that regulates access to external files.
 // All disk image reads/writes go through this single function
 
+#define DISABLE_ZLIB
+
 #include "drive.h"
 #include "platform.h"
 #include "state.h"
@@ -1021,10 +1023,6 @@ int drive_autodetect_type(char* path)
     FILE* fh = fopen(path, "r");
     if (!fh)
         return -1;
-    if(stat(path, &statbuf)){
-        fclose(fh);
-        return -1;
-    }
     fclose(fh);
 #else
     int fh = open(path, O_RDONLY);

@@ -5,72 +5,58 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <zlib.h>
 
-// __udivdi3 definition
 unsigned long long __udivdi3(unsigned long long num, unsigned long long den) {
-    unsigned long long quot = 0, qbit = 1;
+    unsigned long long quotient = 0;
+    unsigned long long remainder = 0;
+    unsigned long long mask = 1ULL << 63; // Le bit le plus significatif
 
-    if (den == 0) {
-        return 0; // divide by zero
-    }
+    for(int i = 0; i < 64; i++) {
+        remainder = (remainder << 1) | ((num & mask) >> 63); // Met à jour le reste
+        num = num << 1; // Décalage à gauche de num
+        quotient = quotient << 1; // Décalage à gauche du quotient
 
-    // Left-justify denominator and count shift
-    while ((signed long long)den >= 0) {
-        den <<= 1;
-        qbit <<= 1;
-    }
-
-    while (qbit) {
-        if (den <= num) {
-            num -= den;
-            quot += qbit;
+        if (remainder >= den) {
+            remainder -= den;
+            quotient |= 1; // Met à jour le bit de quotient
         }
-        den >>= 1;
-        qbit >>= 1;
     }
 
-    return quot;
+    return quotient;
 }
 
-// __divdi3 definition
 signed long long __divdi3(signed long long num, signed long long den) {
-    int neg = 0;
-
-    if (num < 0) {
-        num = -num;
-        neg = !neg;
-    }
-    if (den < 0) {
-        den = -den;
-        neg = !neg;
+    int sign = 1;
+    if ((num < 0 && den > 0) || (num > 0 && den < 0)) {
+        sign = -1;
     }
 
-    return neg ? -__udivdi3(num, den) : __udivdi3(num, den);
+    unsigned long long unsigned_num = (num < 0) ? -num : num;
+    unsigned long long unsigned_den = (den < 0) ? -den : den;
+
+    unsigned long long quotient = __udivdi3(unsigned_num, unsigned_den);
+
+    return sign * quotient;
 }
 
-// __umoddi3 definition
 unsigned long long __umoddi3(unsigned long long num, unsigned long long den) {
-    if (den == 0) {
-        return num; // divide by zero
-    }
-
-    // Left-justify denominator and count shift
-    while ((signed long long)den >= 0) {
-        den <<= 1;
-    }
-
-    while (den > num) {
-        den >>= 1;
-    }
-
-    return num - den;
+    unsigned long long quotient = __udivdi3(num, den);
+    unsigned long long remainder = num - den * quotient;
+    return remainder;
 }
 
-
-// __moddi3 definition
 long long __moddi3(long long a, long long b) {
-    return a - __divdi3(a, b) * b;
+    int sign = 1;
+    if (a < 0) {
+        sign = -1;
+    }
+
+    unsigned long long unsigned_a = (a < 0) ? -a : a;
+    unsigned long long unsigned_b = (b < 0) ? -b : b;
+
+    unsigned long long remainder = __umoddi3(unsigned_a, unsigned_b);
+
+    return sign * remainder;
 }
 
 typedef struct {
@@ -182,20 +168,6 @@ off_t lseek(int fd, off_t offset, int whence) {
     return open_files[fd]->offset;
 }
 
-int inflateInit_ (z_streamp strm, const char *version, int stream_size) {
-    printf("inflateInit_ called\n");
-    return 0;
-}
-
-int inflate (z_streamp strm, int flush) {
-    printf("inflate called\n");
-    return 0;
-}
-
-int inflateEnd (z_streamp strm) {
-    printf("inflateEnd called\n");
-    return 0;
-}
 
 int fstat(int fd, struct stat *buf) {
     printf("fstat called\n");
