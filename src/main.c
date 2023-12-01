@@ -65,10 +65,7 @@ static void generic_help(const struct option* options)
 
 int main(int argc, char** argv)
 {
-    UNUSED(argc);
-    UNUSED(argv);
-
-    char* configfile = "default.conf";
+    char* configfile = "/zada/halfix/default.cfg";
     int filesz, realtime = 0;
     FILE* f;
     char* buf;

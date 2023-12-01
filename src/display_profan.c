@@ -49,12 +49,11 @@ void display_update(void) {
     for (int i = 0; i <= x; i++) {
         for (int j = 0; j <= y; j++) {
             if (i == x || j == y)
-                fb[i + j * pitch] = screen[i + j * x];
+                fb[i + j * pitch] = 0xFFFFFF;
             else
                 fb[i + j * pitch] = screen[i + j * x];
         }
     }
-
 }
 
 
