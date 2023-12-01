@@ -11,8 +11,7 @@ uint32_t ioport_in;
 
 //#define LOG_ALL_IO
 
-// #define IO_LOG(x, ...) LOG("I/O", x, ##__VA_ARGS__)
-#define IO_LOG(...)
+#define IO_LOG(x, ...) LOG("I/O", x, ##__VA_ARGS__)
 
 static io_read **read;
 static io_write **write;

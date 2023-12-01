@@ -5,7 +5,7 @@ LD      = "ld"
 
 OUTPUT  = "halfix"
 
-CFLAGS  = "-ffreestanding -fno-exceptions -m32 -I ./profan_zlib -I ./include -D PROFAN"
+CFLAGS  = "-ffreestanding -fno-exceptions -m32 -I ./profan_zlib -I ./include -D PROFAN -O1"
 LDFLAGS = "-T link.ld -Map=halfix.map"
 
 OBJDIR  = "build"

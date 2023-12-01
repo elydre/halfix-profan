@@ -15,7 +15,7 @@
 void* aalloc(int size, int align);
 void afree(void* ptr);
 
-//#define LOGGING_DISABLED
+#define LOGGING_DISABLED
 
 #ifdef EMSCRIPTEN
 //#if 0
@@ -38,7 +38,7 @@ void afree(void* ptr);
 #define debugger util_debug()
 
 #ifdef LOGGING_DISABLED
-#define LOG(component, x, ...) NOP()
+#define LOG(component, x, ...)
 #else
 #define LOG(component, x, ...) fprintf(stderr, "[" component "] " x, ##__VA_ARGS__)
 #endif
