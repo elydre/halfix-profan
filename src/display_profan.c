@@ -43,12 +43,15 @@ void display_handle_events(void) {
 }
 
 void display_update(void) {
+    uint32_t *fb = c_vesa_get_fb();
+    uint32_t pitch = c_vesa_get_pitch();
+
     for (int i = 0; i <= x; i++) {
         for (int j = 0; j <= y; j++) {
             if (i == x || j == y)
-                c_vesa_set_pixel(i, j, 0xFFFFFF);
+                fb[i + j * pitch] = screen[i + j * x];
             else
-                c_vesa_set_pixel(i, j, screen[i + j * x]);
+                fb[i + j * pitch] = screen[i + j * x];
         }
     }
 
