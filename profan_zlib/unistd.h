@@ -7,6 +7,10 @@
 #define NULL 0
 #endif
 
+#ifndef SEEK_SET
+#define SEEK_SET 0
+#endif
+
 #ifndef SEEK_CUR
 #define SEEK_CUR 1
 #endif
@@ -15,21 +19,17 @@
 #define SEEK_END 2
 #endif
 
-#ifndef SEEK_SET
-#define SEEK_SET 0
-#endif
-
-#define STDERR_FILENO 2
-#define STDIN_FILENO 0
+#define STDIN_FILENO  0
 #define STDOUT_FILENO 1
+#define STDERR_FILENO 2
 
-extern char  *optarg;
-extern int    optind, opterr, optopt;
+#define get_func_addr ((uint32_t (*)(uint32_t, uint32_t)) *(uint32_t *) 0x1ffffb)
 
 #define access ((int (*)(const char *, int)) get_func_addr(UNISTD_ID, 2))
 #define alarm ((unsigned int (*)(unsigned int)) get_func_addr(UNISTD_ID, 3))
 #define chdir ((int (*)(const char *)) get_func_addr(UNISTD_ID, 4))
 #define chown ((int (*)(const char *, uid_t, gid_t)) get_func_addr(UNISTD_ID, 5))
+#define close ((int (*)(int)) get_func_addr(UNISTD_ID, 6))
 #define confstr ((size_t (*)(int, char *, size_t)) get_func_addr(UNISTD_ID, 7))
 #define crypt ((char *(*)(char *, const char *)) get_func_addr(UNISTD_ID, 8))
 #define ctermid ((char *(*)(char *)) get_func_addr(UNISTD_ID, 9))
@@ -71,13 +71,14 @@ extern int    optind, opterr, optopt;
 #define lchown ((int (*)(const char *, uid_t, gid_t)) get_func_addr(UNISTD_ID, 45))
 #define link ((int (*)(const char *, const char *)) get_func_addr(UNISTD_ID, 46))
 #define lockf ((int (*)(int, int, off_t)) get_func_addr(UNISTD_ID, 47))
+#define lseek ((off_t (*)(int, off_t, int)) get_func_addr(UNISTD_ID, 48))
 #define nice ((int (*)(int)) get_func_addr(UNISTD_ID, 49))
 #define pathconf ((long (*)(const char *, int)) get_func_addr(UNISTD_ID, 50))
 #define pause ((int (*)(void)) get_func_addr(UNISTD_ID, 51))
 #define pipe ((int (*)(int *)) get_func_addr(UNISTD_ID, 52))
 #define pread ((ssize_t (*)(int, void *, size_t, off_t)) get_func_addr(UNISTD_ID, 53))
 #define pwrite ((ssize_t (*)(int, const void *, size_t, off_t)) get_func_addr(UNISTD_ID, 54))
-#define internal_read(a, b, c) ((ssize_t (*)(int, void *, size_t)) get_func_addr(UNISTD_ID, 55))
+#define read_unistd(a, b, c) ((ssize_t (*)(int, void *, size_t)) get_func_addr(UNISTD_ID, 55))(a, b, c)
 #define readlink ((ssize_t (*)(const char *, char *, size_t)) get_func_addr(UNISTD_ID, 56))
 #define rmdir ((int (*)(const char *)) get_func_addr(UNISTD_ID, 57))
 #define setegid ((int (*)(gid_t)) get_func_addr(UNISTD_ID, 58))
@@ -103,11 +104,6 @@ extern int    optind, opterr, optopt;
 #define unlink ((int (*)(const char *)) get_func_addr(UNISTD_ID, 78))
 #define usleep ((int (*)(useconds_t)) get_func_addr(UNISTD_ID, 79))
 #define vfork ((pid_t (*)(void)) get_func_addr(UNISTD_ID, 80))
-#define internal_write ((ssize_t (*)(int, const void *, size_t)) get_func_addr(UNISTD_ID, 81))
-
-ssize_t read(int fd, void *buf, size_t count);
-ssize_t write(int fd, const void *buf, size_t count);
-off_t lseek(int fd, off_t offset, int whence);
-int close(int fd);
+#define write_unistd(a, b, c) ((ssize_t (*)(int, const void *, size_t)) get_func_addr(UNISTD_ID, 81))(a, b, c)
 
 #endif
