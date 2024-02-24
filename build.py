@@ -29,7 +29,6 @@ def compile_file(src):
     global success
     obj = os.path.join(OBJDIR, src.replace(".c", ".o").split("/")[-1])
     cmd = f"{CC} -c {src} -o {obj} {CFLAGS}"
-    print(src, obj)
     execute_command(cmd)
     success += 1
     return obj
