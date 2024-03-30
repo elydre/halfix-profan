@@ -6,12 +6,11 @@ LD      = "ld"
 OUTPUT  = "halfix"
 
 CFLAGS  = "-ffreestanding -fno-exceptions -m32 -I ./profan_zlib -I ./include -D PROFAN -O1"
-LDFLAGS = "-T link.ld -Map=halfix.map"
+LDFLAGS = "-nostdlib -L../profanOS/out/zlibs -T link.ld -z max-page-size=0x1000 -lc -lm"
 
 OBJDIR  = "build"
 SRCDIRS  = ["src/cpu", "src/cpu/ops", "src/hardware", "src/host", "src"]
 
-#SRC = [e for d in SRCDIRS for e in os.listdir(d) if e.endswith(".c")]
 SRC = [os.path.join(d, e) for d in SRCDIRS for e in os.listdir(d) if e.endswith(".c")]
 
 success = 0
@@ -34,8 +33,7 @@ def compile_file(src):
     return obj
 
 def link_files(entry, objs, output = OUTPUT):
-    execute_command(f"{LD} {LDFLAGS} -o {output}.pe {entry} {' '.join(objs)} ")
-    execute_command(f"objcopy -O binary {output}.pe {output}.bin")
+    execute_command(f"{LD} {LDFLAGS} -o {output}.elf {entry} {' '.join(objs)} ")
 
 def main():
     execute_command(f"mkdir -p {OBJDIR}")
@@ -44,8 +42,6 @@ def main():
 
     entry = compile_file("entry.c")
     link_files(entry, objs)
-
-    execute_command("rm *.pe")
 
 if __name__ == "__main__":
     main()

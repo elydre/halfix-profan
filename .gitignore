@@ -4,6 +4,6 @@
 *.map
 *.out
 halfix
-halfix.bin
+halfix.elf
 *.iso
 build/
