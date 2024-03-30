@@ -15,11 +15,18 @@ jobs:
     - name: install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc
+        sudo apt-get install -y gcc nasm make python3
 
-    - name: build src
+    - name: build profanOS disk
       run: |
-        python3 build.py
+        git clone https://github.com/elydre/profanOS.git
+        cd profanOS
+        make disk
+        cd ..
+      
+    - name: build halfix
+      run: |
+        python3 build.py profanOS
 
     - name: Release to GitHub
       uses: marvinpinto/action-automatic-releases@latest
@@ -27,5 +34,6 @@ jobs:
         title: "halfix for profanOS"
         automatic_release_tag: latest
         repo_token: "${{ secrets.GIT_TOKEN }}"
+        prerelease: false
         files: |
-          halfix.bin
+          halfix.elf
