@@ -405,7 +405,7 @@ void state_file(int size, char* name, void* ptr)
         int fh = open(temp, O_RDONLY | O_BINARY);
         if (fh == -1)
             STATE_FATAL("Unable to open file %s\n", temp);
-        if (read_unistd(fh, ptr, size) != size)
+        if (read(fh, ptr, size) != size)
             STATE_FATAL("Could not read\n");
         close(fh);
 #endif
@@ -427,7 +427,7 @@ void state_file(int size, char* name, void* ptr)
         int fh = open(temp, O_WRONLY | O_CREAT | O_BINARY | O_TRUNC, 0666);
         if (fh == -1)
             STATE_FATAL("Unable to create file %s\n", temp);
-        if (write_unistd(fh, ptr, size) != size)
+        if (write(fh, ptr, size) != size)
             STATE_FATAL("Could not write\n");
         close(fh);
 #endif
@@ -478,7 +478,7 @@ void state_read_from_file(char* fn)
     int size = lseek(fh, 0, SEEK_END);
     lseek(fh, 0, SEEK_SET);
     void* buf = halloc(size);
-    if (read_unistd(fh, buf, size) != size)
+    if (read(fh, buf, size) != size)
         STATE_FATAL("Cannot read from file %s\n", fn);
     close(fh);
 #endif
@@ -528,7 +528,7 @@ void state_store_to_file(char* fn)
     int fh = open(path, O_WRONLY | O_CREAT | O_BINARY, 0666);
     if (fh == -1)
         STATE_FATAL("Cannot open file %s\n", fn);
-    if (write_unistd(fh, w.buf, w.pos) != (ssize_t)w.pos) // Clang complains that w.pos and write have different signs.
+    if (write(fh, w.buf, w.pos) != (ssize_t)w.pos) // Clang complains that w.pos and write have different signs.
         STATE_FATAL("Cannot write to file %s\n", fn);
     close(fh);
 #endif

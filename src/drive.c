@@ -193,7 +193,7 @@ static void* drive_read_file(struct drive_internal_info* this, char* fn)
         data = halloc(this->block_size);
         size = lseek(fh, 0, SEEK_END);
         lseek(fh, 0, SEEK_SET);
-        if (read_unistd(fh, data, size) != (ssize_t)size)
+        if (read(fh, data, size) != (ssize_t)size)
             DRIVE_FATAL("Could not read file %s\n", fn);
         close(fh);
         return data;
@@ -204,7 +204,7 @@ static void* drive_read_file(struct drive_internal_info* this, char* fn)
     size = lseek(fh, 0, SEEK_END);
     lseek(fh, 0, SEEK_SET);
     readbuf = halloc(size);
-    if (read_unistd(fh, readbuf, size) != (ssize_t)size)
+    if (read(fh, readbuf, size) != (ssize_t)size)
         DRIVE_FATAL("Could not read file %s\n", fn);
 #endif
 #ifdef DISABLE_ZLIB
@@ -773,7 +773,7 @@ int drive_init(struct drive_info* info, char* filename)
     int size = lseek(fh, 0, SEEK_END);
     lseek(fh, 0, SEEK_SET);
     void* data = halloc(size);
-    if (read_unistd(fh, data, size) != size)
+    if (read(fh, data, size) != size)
         return -1;
     close(fh);
 #endif
@@ -863,7 +863,7 @@ static int drive_simple_add_cache(struct simple_driver* info, drv_offset_t offse
     if ((uint32_t)fread(dest, 1, info->block_size, info->fh) != info->block_size)
 #else
     lseek(info->fh, offset & (drv_offset_t) ~(info->block_size - 1), SEEK_SET); // Seek to the beginning of the current block
-    if ((uint32_t)read_unistd(info->fh, dest, info->block_size) != info->block_size)
+    if ((uint32_t)read(info->fh, dest, info->block_size) != info->block_size)
 #endif
         DRIVE_FATAL("Unable to read %d bytes from image file\n", (int)info->block_size);
     return 0;
@@ -903,7 +903,7 @@ static int drive_simple_write(void* this, void* cb_ptr, void* buffer, uint32_t s
             if (fwrite(buffer, 1, 512, info->fh) != 512)
 #else
             lseek(info->fh, offset, SEEK_SET);
-            if (write_unistd(info->fh, buffer, 512) != 512)
+            if (write(info->fh, buffer, 512) != 512)
 #endif
                 DRIVE_FATAL("Unable to write 512 bytes to image file\n");
         }
@@ -932,7 +932,7 @@ static int drive_simple_read(void* this, void* cb_ptr, void* buffer, uint32_t si
             if (fread(buffer, 1, 512, info->fh) != 512)
 #else
             lseek(info->fh, offset, SEEK_SET);
-            if (read_unistd(info->fh, buffer, 512) != 512)
+            if (read(info->fh, buffer, 512) != 512)
 #endif
                 DRIVE_FATAL("Unable to read 512 bytes from image file\n");
         }
