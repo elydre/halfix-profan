@@ -1,6 +1,6 @@
 #ifdef PROFAN
 
-#include <syscall.h>
+#include <profan/syscall.h>
 #include <stdlib.h>
 #include "devices.h"
 

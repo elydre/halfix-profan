@@ -1,7 +1,7 @@
 #ifndef SYS_STAT_H
 #define SYS_STAT_H
 
-#include <type.h>
+#include <profan/type.h>
 
 #define dev_t unsigned int
 #define ino_t unsigned int

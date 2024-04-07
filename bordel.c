@@ -1,9 +1,4 @@
 #include <sys/stat.h>
-#include <syscall.h>
-#include <filesys.h>
-#include <profan.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 
 unsigned long long __udivdi3(unsigned long long num, unsigned long long den) {
