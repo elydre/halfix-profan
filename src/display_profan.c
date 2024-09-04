@@ -28,7 +28,7 @@ void display_set_resolution(int width, int height) {
 }
 
 void display_sleep(int ms) {
-    c_process_sleep(ms, c_process_get_pid());
+    syscall_process_sleep(ms, syscall_process_pid());
 }
 
 void display_release_mouse(void) {
@@ -36,15 +36,15 @@ void display_release_mouse(void) {
 }
 
 void display_handle_events(void) {
-    int k = c_kb_get_scfh();
+    int k = syscall_sc_get();
     if (k == 0)
         return;
     kbd_add_key(k & 0xFF);
 }
 
 void display_update(void) {
-    uint32_t *fb = c_vesa_get_fb();
-    uint32_t pitch = c_vesa_get_pitch();
+    uint32_t *fb = syscall_vesa_fb();
+    uint32_t pitch = syscall_vesa_pitch();
 
     for (int i = 0; i <= x; i++) {
         for (int j = 0; j <= y; j++) {
