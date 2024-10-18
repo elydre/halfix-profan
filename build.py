@@ -12,8 +12,8 @@ LD      = "ld"
 
 OUTPUT  = "halfix"
 
-CFLAGS  = "-ffreestanding -fno-exceptions -m32 -I ./profan_zlib -I ./include -D PROFAN -O1 -nostdinc"
-LDFLAGS = f"-nostdlib -L {profan_path}/out/zlibs -T link.ld -z max-page-size=0x1000 -lc -lm"
+CFLAGS  = "-ffreestanding -fno-exceptions -m32 -I ./profan_zlib -I ./include -D PROFAN -nostdinc -O3 -fno-stack-protector -fno-omit-frame-pointer"
+LDFLAGS = f"-nostdlib -L {profan_path}/out/zlibs -T link.ld -lc -lm"
 
 OBJDIR  = "build"
 SRCDIRS  = ["src/cpu", "src/cpu/ops", "src/hardware", "src/host", "src"]
@@ -28,7 +28,7 @@ def execute_command(cmd):
     rcode = os.system(cmd)
     if rcode == 0: return
     print(f"Command failed with exit code {rcode}")
-    print(f"Successfully compiled {success} files / {len(SRC)}")
+    print(f"Successfully compiled {success} files / {len(SRC) + 2}")
     exit(rcode if rcode < 256 else 1)
 
 def compile_file(src):
