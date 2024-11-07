@@ -8,6 +8,8 @@
 #include "devices.h"
 #include <string.h>
 
+#include <profan.h>
+
 struct cpu *cpu;
 
 void cpu_set_a20(int a20_enabled)
@@ -25,7 +27,7 @@ void cpu_set_a20(int a20_enabled)
 
 int cpu_init_mem(int size)
 {
-    cpu->mem = halloc(size);
+    cpu->mem = profan_malloc(size, 0);
     memset(cpu->mem + 0xC0000, -1, 0x40000);
     cpu->memory_size = size;
 
