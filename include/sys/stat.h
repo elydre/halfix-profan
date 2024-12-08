@@ -1,18 +1,7 @@
 #ifndef SYS_STAT_H
 #define SYS_STAT_H
 
-#include <profan/type.h>
-
-#define dev_t unsigned int
-#define ino_t unsigned int
-#define mode_t unsigned int
-#define nlink_t unsigned int
-// #define uid_t unsigned int
-// #define gid_t unsigned int
-// #define off_t unsigned int
-#define blksize_t unsigned int
-#define blkcnt_t unsigned int
-// #define time_t unsigned int
+#include <sys/types.h>
 
 struct stat {
     dev_t     st_dev;      /* ID du périphérique contenant le fichier */
